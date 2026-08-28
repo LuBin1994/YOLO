@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
       // 开发阶段占位图（Unsplash），上线前移除
       {
         protocol: "https",
-        hostname: "images.unsplash.com",
+        hostname: "**.unsplash.com",
       },
       {
         protocol: "https",

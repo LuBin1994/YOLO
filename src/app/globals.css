@@ -58,12 +58,14 @@ body {
 }
 
 /* ---------- 标题层级 ---------- */
-h1,
-h2,
-h3,
-h4 {
-  @apply font-sans tracking-tight font-semibold text-ink-900;
-  letter-spacing: -0.02em;
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-sans tracking-tight font-semibold text-ink-900;
+    letter-spacing: -0.02em;
+  }
 }
 
 /* 超大展示标题 */

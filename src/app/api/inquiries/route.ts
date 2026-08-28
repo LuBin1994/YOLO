@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { sendInquiryAck } from "@/lib/email";
 
 /**
  * POST /api/inquiries
@@ -53,6 +54,9 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
+
+    // 提交成功后向客户发送英文确认邮件（发送失败不阻塞表单成功返回）
+    await sendInquiryAck(email, name);
 
     return NextResponse.json(
       { message: "Thank you. Our team will get back to you within 24 hours." },

@@ -8,7 +8,7 @@ export default function Hero() {
   return (
     <section className="relative flex min-h-screen items-end overflow-hidden bg-forest-950">
       <Image
-        src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2400&q=80"
+        src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1170&auto=format"
         alt="Southeast Asia garment factory production floor"
         fill
         priority
@@ -22,7 +22,7 @@ export default function Hero() {
         <p className="text-[11px] uppercase tracking-[0.32em] text-sand-200/90">
           Vertically Integrated · Southeast Asia
         </p>
-        <h1 className="display-xl mt-6 max-w-5xl text-sand-50">
+        <h1 className="display-xl mt-6 max-w-5xl text-sand-100/85">
           Apparel manufacturing,<br />
           from fiber to finished garment.
         </h1>
