@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+/* =============================================================
+   设计系统 · 绿色环保 / 艺术画廊质感
+   主色：森林绿 forest · 点缀：苔藓 moss · 背景：米白 sand
+   ============================================================= */
+
+@theme {
+  /* 字体 */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Helvetica Neue", Arial, sans-serif;
+
+  /* 森林绿主色系 */
+  --color-forest-50: #f0f5f1;
+  --color-forest-100: #dce9df;
+  --color-forest-200: #b9d3c2;
+  --color-forest-300: #8db59e;
+  --color-forest-400: #5f9378;
+  --color-forest-500: #3f735d;
+  --color-forest-600: #2f5c4a;
+  --color-forest-700: #264a3c;
+  --color-forest-800: #1f3b31;
+  --color-forest-900: #16302a;
+  --color-forest-950: #0b1e19;
+
+  /* 苔藓点缀绿 */
+  --color-moss-300: #a8c686;
+  --color-moss-400: #8ab264;
+  --color-moss-500: #6d974a;
+  --color-moss-600: #557a3a;
+
+  /* 米白背景 */
+  --color-sand-50: #faf9f6;
+  --color-sand-100: #f4f2ec;
+  --color-sand-200: #e9e5da;
+
+  /* 近黑墨色文字 */
+  --color-ink-900: #141a16;
+  --color-ink-600: #4a554e;
+  --color-ink-400: #7d877f;
+
+  /* 留白节奏 */
+  --spacing-section: clamp(4rem, 10vw, 8rem);
+}
+
+/* ---------- 基础 ---------- */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-sand-50 text-ink-900 font-sans antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  @apply bg-forest-700 text-white;
+}
+
+/* ---------- 标题层级 ---------- */
+h1,
+h2,
+h3,
+h4 {
+  @apply font-sans tracking-tight font-semibold text-ink-900;
+  letter-spacing: -0.02em;
+}
+
+/* 超大展示标题 */
+.display-xl {
+  @apply text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tighter;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.display-lg {
+  @apply text-4xl md:text-6xl font-semibold tracking-tighter;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+/* ---------- 布局工具 ---------- */
+.container-site {
+  @apply mx-auto w-full max-w-[1440px] px-6 md:px-10 lg:px-16;
+}
+
+.section-pad {
+  @apply py-section;
+}
+
+/* 画廊式图片容器（图片作为视觉焦点） */
+.frame {
+  @apply relative overflow-hidden bg-forest-100;
+}
+
+.frame img {
+  @apply object-cover transition-transform duration-700 ease-out;
+}
+
+.frame:hover img {
+  transform: scale(1.03);
+}
+
+/* ---------- 按钮 ---------- */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 bg-forest-700 px-7 py-3.5 text-sm font-medium tracking-wide text-sand-50 transition-colors duration-300 hover:bg-forest-800;
+}
+
+.btn-outline {
+  @apply inline-flex items-center justify-center gap-2 border border-ink-900/20 px-7 py-3.5 text-sm font-medium tracking-wide transition-colors duration-300 hover:border-forest-700 hover:text-forest-700;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 text-ink-900 underline-offset-8 transition-colors duration-300 hover:underline;
+}
+
+/* ---------- 表单 ---------- */
+.input-field {
+  @apply w-full border-b border-ink-900/20 bg-transparent py-3 text-base outline-none transition-colors
+    placeholder:text-ink-400 focus:border-forest-600;
+}
+
+/* ---------- 细线 ---------- */
+.hairline {
+  @apply border-ink-900/10;
+}
