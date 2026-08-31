@@ -29,6 +29,7 @@ create table if not exists public.products (
 );
 
 create index if not exists idx_products_published on public.products (published, sort_order desc);
+
 create index if not exists idx_products_category on public.products (category);
 
 -- =============================================================
