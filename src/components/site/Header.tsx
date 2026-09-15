@@ -45,10 +45,7 @@ export default function Header() {
           aria-label="YOLO APPAREL PTE. LTD. — Home"
         >
           <span className="text-lg md:text-xl font-semibold tracking-tight">
-            YOLO
-          </span>
-          <span className="hidden sm:inline text-[10px] uppercase tracking-[0.28em] text-forest-600">
-            APPAREL PTE. LTD.
+            YOLO APPAREL PTE. LTD.
           </span>
         </Link>
 

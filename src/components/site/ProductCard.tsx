@@ -9,7 +9,8 @@ interface ProductCardProps {
 }
 
 /**
- * 产品卡片：画廊质感大图 + 悬停放大，信息极简。
+ * 产品卡片：Primesource 式简洁卡 —— 图上、标题中、元数据下，
+ * 无边框、等宽比例，靠间距形成秩序。
  */
 export default function ProductCard({
   product,
@@ -23,14 +24,14 @@ export default function ProductCard({
         href={`/products/${product.slug}`}
         className="group grid grid-cols-1 gap-6 border-b hairline py-10 transition-colors hover:bg-sand-100/60 md:grid-cols-[320px_1fr] md:items-center"
       >
-        <div className="frame aspect-[4/3]">
+        <div className="card-media aspect-[4/3]">
           {cover ? (
             <Image
               src={cover}
               alt={product.title}
               fill
               sizes="(max-width: 768px) 100vw, 320px"
-              className="group-hover:scale-[1.03] transition-transform duration-700"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
             />
           ) : null}
         </div>
@@ -47,6 +48,11 @@ export default function ProductCard({
           <p className="text-sm text-ink-600">
             {product.materials.join(" · ")}
           </p>
+          {product.moq ? (
+            <p className="text-xs uppercase tracking-[0.18em] text-ink-400">
+              MOQ {product.moq.toLocaleString()} pcs
+            </p>
+          ) : null}
           <p className="text-sm font-medium text-forest-700">
             {product.price_range}
           </p>
@@ -57,29 +63,30 @@ export default function ProductCard({
 
   return (
     <Link href={`/products/${product.slug}`} className="group block">
-      <div className="frame aspect-[3/4]">
+      <div className="card-media">
         {cover ? (
           <Image
             src={cover}
             alt={product.title}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="group-hover:scale-[1.03] transition-transform duration-700"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
         ) : null}
       </div>
-      <div className="mt-4 flex items-start justify-between gap-4">
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-forest-600">
-            {product.category}
-          </p>
-          <h3 className="mt-1 text-base font-medium tracking-tight text-ink-900">
-            {product.title}
-          </h3>
-        </div>
-        <p className="shrink-0 text-[13px] text-ink-600">
-          {product.price_range}
+      <div className="mt-5">
+        <h3 className="text-lg font-medium tracking-tight text-ink-900">
+          {product.title}
+        </h3>
+        <p className="mt-2 flex flex-wrap items-center gap-x-3 text-xs uppercase tracking-[0.16em] text-ink-400">
+          <span>{product.category}</span>
+          {product.moq ? <span>MOQ {product.moq.toLocaleString()}</span> : null}
         </p>
+        {product.price_range ? (
+          <p className="mt-2 text-sm text-forest-700">
+            {product.price_range}
+          </p>
+        ) : null}
       </div>
     </Link>
   );

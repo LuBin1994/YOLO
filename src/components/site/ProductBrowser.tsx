@@ -79,9 +79,9 @@ export default function ProductBrowser({
         {filtered.length} {filtered.length === 1 ? "STYLE" : "STYLES"}
       </p>
 
-      {/* 网格视图 */}
+      {/* 网格视图：等宽三列，与首页品类卡一致的秩序感 */}
       {view === "grid" ? (
-        <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="card-grid-3 mt-10">
           {filtered.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

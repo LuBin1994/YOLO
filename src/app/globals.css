@@ -68,17 +68,18 @@ body {
   }
 }
 
-/* 超大展示标题 */
+/* 展示标题：Primesource 式克制排印 —— 字重 medium、字距接近中性，
+   靠字号与留白建立气场，不用超粗/超紧字距。 */
 .display-xl {
-  @apply text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tighter;
-  line-height: 0.98;
-  letter-spacing: -0.035em;
+  @apply text-4xl font-medium md:text-6xl lg:text-7xl;
+  line-height: 1.06;
+  letter-spacing: -0.01em;
 }
 
 .display-lg {
-  @apply text-4xl md:text-6xl font-semibold tracking-tighter;
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  @apply text-3xl font-medium md:text-5xl;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 
 /* ---------- 布局工具 ---------- */
@@ -126,3 +127,99 @@ body {
 .hairline {
   @apply border-ink-900/10;
 }
+
+/* =============================================================
+   Primesource 式排版工具类
+   ============================================================= */
+
+/* 深色带：满宽容器，内部左窄右宽文案栏 */
+.band-dark {
+  @apply bg-forest-950 text-sand-100;
+}
+
+/* 黑色胶囊横条：压在大图底部的全宽标签行（双拼 Banner 下方） */
+.banner-strip {
+  @apply bg-forest-950 py-3.5 text-center text-[11px] font-medium uppercase tracking-[0.28em] text-sand-100;
+}
+
+/* 大图上叠印的小标签 */
+.overlay-eyebrow {
+  @apply text-xs font-medium tracking-[0.14em] text-sand-100/85;
+}
+
+/* 大图上叠印的主标题（窄字距、非超大，克制） */
+.overlay-title {
+  @apply font-semibold tracking-[0.04em];
+  line-height: 1.02;
+}
+
+/* 实心方角小按钮：栏内 CTA */
+.btn-solid-sm {
+  @apply inline-flex items-center justify-center px-7 py-2.5 text-xs font-medium tracking-wide text-white transition-opacity duration-300 hover:opacity-85;
+}
+
+/* 等宽卡片网格（品类 / 产品） */
+.card-grid-3 {
+  @apply grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+/* 卡片内的图片容器：固定比例、无边框、极简 */
+.card-media {
+  @apply relative aspect-[4/3] overflow-hidden bg-sand-200;
+}
+
+/* 大号排印段落：把能力清单当图形使用 */
+.typo-lead {
+  @apply font-semibold tracking-tight;
+  font-size: clamp(1.5rem, 3.4vw, 2.6rem);
+  line-height: 1.28;
+}
+
+/* 强调色文字（用于标签、链接 hover） */
+.text-accent {
+  @apply text-forest-600;
+}
+
+/* ---------- 图片跑马灯 ---------- */
+/* 两行同向滚动的图片带：鼠标悬停整块暂停（见 ImageMarquee.tsx） */
+.marquee-viewport {
+  @apply overflow-hidden;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation-name: marquee-left;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  /* 基础时长，行内样式会按行覆盖为自己需要的值 */
+  animation-duration: 44s;
+}
+
+/* 悬停暂停：把动画状态置为 paused，保持当前位置不回弹 */
+.marquee-viewport:hover .marquee-track,
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* 图片格：满幅无间隙，与 Primesource 的贴边排布一致 */
+.marquee-cell {
+  @apply relative h-[26vh] w-[48vw] shrink-0 overflow-hidden bg-sand-200 md:h-[28vh] md:w-[22vw] lg:w-[17vw];
+}
+
+@keyframes marquee-left {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    /* 内容重复两遍，位移 -50% 即完成一次无缝循环 */
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/*
+ * 注意：这里【不要】加 prefers-reduced-motion 把 animation 置为 none 的规则。
+ * 产品图片跑马灯是本页的展示主体，命中该偏好时整块会变成死图。
+ * 若要兼顾无障碍，只降低速度（调大 animation-duration），不要禁用动画。
+ */

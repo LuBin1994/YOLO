@@ -302,3 +302,184 @@ export const SITE = {
   phone: "+84 28 3xxx xxxx",
   address: "Ho Chi Minh City, Vietnam · Phnom Penh, Cambodia",
 } as const;
+
+/* =============================================================
+   静态展示内容（不进数据库）
+   与 Primesource 式版式配套：Welcome 带、能力清单、品类卡片、
+   工厂工艺步骤、资质条。后台不可编辑，改文案直接改本文件。
+   ============================================================= */
+
+/** 首页双拼 Banner 两栏 */
+export const HOME_BANNERS = [
+  {
+    eyebrow: "Officially Licensed Manufacturing",
+    title: "PRIVATE LABEL",
+    cta: { label: "Explore", href: "/products" },
+    image:
+      "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1600&auto=format",
+    strip: "Full Package Service",
+  },
+  {
+    eyebrow: "AW26 Program Open",
+    title: "SEASONAL",
+    cta: { label: "Explore", href: "/contact" },
+    image:
+      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1600&auto=format",
+    strip: "AW26 Launching Soon",
+  },
+] as const;
+
+/** 首页 Welcome 深色带 */
+export const HOME_WELCOME = {
+  heading: "Welcome",
+  body: "YOLO APPAREL PTE. LTD. is a Southeast Asia based apparel group offering complete manufacturing solutions — from concept, design and fabric sourcing through production, quality assurance and final shipment. We operate our own factories, which means no trading middlemen between your brand and the sewing floor.",
+  /** 右侧大号排印：直接把能力清单当图形 */
+  lead: [
+    "Sourcing and Manufacturing /",
+    "Design Support /",
+    "Performance Sportswear /",
+    "Outerwear / Denim & Twill /",
+    "Knitwear and Intimates",
+  ],
+} as const;
+
+/** 首页品类卡片（等宽三列，两行共六项） */
+export const HOME_CATEGORIES = [
+  {
+    name: "Activewear & Sportswear",
+    body: "As a leading manufacturing partner, we build performance programs with top-tier fabric mills and in-house bonding lines.",
+    image:
+      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format",
+  },
+  {
+    name: "Streetwear & Casualwear",
+    body: "Unlock the potential of urban fashion with heavyweight jersey, garment dyeing and drop-shoulder constructions.",
+    image:
+      "https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=1200&auto=format",
+  },
+  {
+    name: "Outerwear",
+    body: "Versatile outerwear designed to withstand all weather conditions — bonded shells, taped seams and insulated liners.",
+    image:
+      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1200&auto=format",
+  },
+  {
+    name: "Denim & Twill",
+    body: "Innovative techniques and high-quality materials, ensuring each piece combines style and comfort for the modern consumer.",
+    image:
+      "https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=1200&auto=format",
+  },
+  {
+    name: "Loungewear & Intimates",
+    body: "Elevate your offerings with soft-touch knits, seamless constructions and considered finishing.",
+    image:
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1200&auto=format",
+  },
+  {
+    name: "Babies & Childrenswear",
+    body: "Products designed with comfort and practicality in mind, meeting the compliance standards of every target market.",
+    image:
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=1200&auto=format",
+  },
+] as const;
+
+/** 工厂页：四步工艺流程 */
+export const FACTORY_PROCESS = [
+  {
+    step: "01",
+    title: "Fabric Sourcing & Dyeing",
+    body: "Direct relationships with mills across Vietnam, China and Taiwan. In-house dye houses running closed-loop water recycling.",
+  },
+  {
+    step: "02",
+    title: "Cutting & Spreading",
+    body: "Automated cutting lines with CAD nesting, marker efficiency tracking and full fabric consumption reporting per order.",
+  },
+  {
+    step: "03",
+    title: "Sewing & Assembly",
+    body: "Six production lines, 1,200 operators, modular workstations for knit, woven and bonded constructions.",
+  },
+  {
+    step: "04",
+    title: "QC, Finishing & Logistics",
+    body: "AQL 2.5 inspection, in-line and final audits, third-party lab testing, pressing, packing and export documentation.",
+  },
+] as const;
+
+/** 产品页：生产品类说明（等宽三列，作为目录的延伸） */
+export const PRODUCT_CAPABILITIES = [
+  {
+    index: "01",
+    name: "Knit & Jersey",
+    body: "Single and double jersey, pique, fleece and french terry. Circular knitting partners with in-house garment dyeing and wash development.",
+  },
+  {
+    index: "02",
+    name: "Woven & Twill",
+    body: "Poplin, twill, canvas and linen blends. Automated cutting, matching and full-piece pressing for a clean finish.",
+  },
+  {
+    index: "03",
+    name: "Denim & Washes",
+    body: "Selvedge and stretch denim with laser whiskering, ozone and e-flow finishing for low-water wash programmes.",
+  },
+  {
+    index: "04",
+    name: "Bonded & Technical",
+    body: "Seam-sealed shells, taped seams, 3-layer lamination and stretch membranes for performance outerwear lines.",
+  },
+  {
+    index: "05",
+    name: "Intimates & Seamless",
+    body: "Santoni seamless machines, bonded edges and soft-touch knits for loungewear and intimates collections.",
+  },
+  {
+    index: "06",
+    name: "Trims & Packaging",
+    body: "Custom labels, hangtags, woven patches, polybags and retail-ready folding — all coordinated under one order.",
+  },
+] as const;
+
+/** 产品页：图片跑马灯两行（上行向左、下行向右，悬停暂停） */
+export const PRODUCT_MARQUEE = [
+  {
+    duration: 40,
+    images: [
+      "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=900&auto=format",
+      "https://images.unsplash.com/photo-1516762689617-e1cffcef479d?q=80&w=900&auto=format",
+      "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=900&auto=format",
+      "https://images.unsplash.com/photo-1503341504253-dff4815485f1?q=80&w=900&auto=format",
+      "https://images.unsplash.com/photo-1554568218-0f1715e72254?q=80&w=900&auto=format",
+      "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=900&auto=format",
+    ],
+  },
+  {
+    duration: 54,
+    images: [
+      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=900&auto=format",
+      "https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?q=80&w=900&auto=format",
+      "https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=900&auto=format",
+      "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?q=80&w=900&auto=format",
+      "https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=900&auto=format",
+      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=900&auto=format",
+    ],
+  },
+] as const;
+
+/** 工厂页：产能与资质数据 */
+export const FACTORY_STATS = [
+  { label: "Monthly Capacity", value: "1.2M+ pcs" },
+  { label: "Production Lines", value: "6 lines" },
+  { label: "Workforce", value: "3,800+ staff" },
+  { label: "Facility Area", value: "42,000 m²" },
+] as const;
+
+/** 资质条（首页与工厂页共用） */
+export const CERTIFICATIONS = [
+  "GOTS",
+  "Oeko-Tex Standard 100",
+  "BSCI Audited",
+  "WRAP Certified",
+  "GRS Recycled",
+] as const;
