@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 /**
@@ -21,9 +21,19 @@ function LoginForm() {
       : null
   );
   const [submitting, setSubmitting] = useState(false);
+  /** 连续失败次数与冷却剩余秒数（客户端节流，真正防爆破需在 Supabase 开启 CAPTCHA） */
+  const failures = useRef(0);
+  const [lockLeft, setLockLeft] = useState(0);
+
+  useEffect(() => {
+    if (lockLeft <= 0) return;
+    const timer = setTimeout(() => setLockLeft((s) => s - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [lockLeft]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submitting || lockLeft > 0) return;
     setSubmitting(true);
     setError(null);
 
@@ -34,6 +44,11 @@ function LoginForm() {
     });
 
     if (error) {
+      failures.current += 1;
+      // 第 3 次失败起指数退避：15s → 30s → 60s → 上限 120s
+      if (failures.current >= 3) {
+        setLockLeft(Math.min(15 * 2 ** (failures.current - 3), 120));
+      }
       setError(
         error.message === "Invalid login credentials"
           ? "邮箱或密码错误。"
@@ -42,6 +57,8 @@ function LoginForm() {
       setSubmitting(false);
       return;
     }
+
+    failures.current = 0;
 
     router.push("/admin");
     router.refresh();
@@ -93,11 +110,21 @@ function LoginForm() {
 
       <button
         type="submit"
-        disabled={submitting}
+        disabled={submitting || lockLeft > 0}
         className="btn-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {submitting ? "登录中..." : "登录"}
+        {submitting
+          ? "登录中..."
+          : lockLeft > 0
+            ? `请等待 ${lockLeft} 秒`
+            : "登录"}
       </button>
+
+      {lockLeft > 0 ? (
+        <p className="text-xs leading-relaxed text-ink-400">
+          连续登录失败已触发保护，请稍后重试。
+        </p>
+      ) : null}
     </form>
   );
 }

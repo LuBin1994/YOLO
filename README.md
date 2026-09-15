@@ -128,9 +128,41 @@ src/
   3. 未配置 token 时看板显示配置引导，不影响前台。
 - 隐私友好：无 Cookie、不跨站追踪。
 
+## 安全配置
+
+### 已内置（代码层）
+
+| 项 | 位置 |
+|---|---|
+| 安全响应头（HSTS / nosniff / Referrer-Policy / X-Frame-Options / Permissions-Policy / CSP） | `vercel.json` |
+| 关闭 `X-Powered-By` | `next.config.ts` → `poweredByHeader: false` |
+| 询盘接口限流（单 IP 60 秒 5 次，进程级） | `src/lib/rate-limit.ts` + `/api/inquiries` |
+| 蜜罐字段 + 最小填写耗时识别机器人 | `ContactForm.tsx` + `/api/inquiries` |
+| 后台登录连续失败指数退避（第 3 次起 15s→30s→60s→120s） | `src/app/admin/login/page.tsx` |
+| RLS + `is_admin()` 安全定义者函数、写操作二次鉴权 | `supabase/schema.sql`、`src/lib/admin.ts` |
+
+> 注意：内存限流是**单 Serverless 实例级**的，多实例并发下配额会被放大。
+> 抗分布式刷量需配合 Vercel WAF 自定义规则或边缘限流。
+
+### 需在 Supabase 后台手动开启（代码无法代劳）
+
+1. **Authentication → Sign In / Providers → Email**
+   - 开启 **CAPTCHA**（hCaptcha 或 Cloudflare Turnstile）— 防爆破
+   - 开启 **Leaked Password Protection** — 拒绝已泄露密码
+   - 关闭 **Allow new users to sign up** — 管理员账号必须手动创建
+2. **Authentication → URL Configuration**：Site URL 与 Redirect URLs 只填生产域名（防开放重定向截获 token）
+3. **Authentication → Policies**：缩短 JWT 有效期（如 1 小时）、开启 **Refresh Token Rotation**
+4. **管理员账号**：开启 MFA（TOTP）
+5. **Project Settings → Authentication**：生产环境配置自定义 SMTP（默认 SMTP 有严格限流）
+
 ## 生产检查清单
 
 - [ ] 替换占位图为 Storage 图片
 - [ ] 收紧 Storage bucket 的 `allowed_mime_types`
 - [ ] 为 `admins` 表更换默认角色权限
 - [ ] 配置自定义域名与邮件白名单
+- [ ] 环境变量只在 Vercel 配置，`SMTP_PASS` / `VERCEL_TOKEN` 定期轮换
+- [ ] 为 Preview 部署开启 Vercel Deployment Protection（避免未上线版本被搜到）
+- [ ] 收窄 `next.config.ts` 的 `images.remotePatterns` 到自己的 Supabase 项目域名，删除 Unsplash
+- [ ] 配置数据库备份策略（免费版无 PITR）
+- [ ] 补操作审计日志与错误监控

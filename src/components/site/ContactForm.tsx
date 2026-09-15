@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type FormState = {
   status: "idle" | "submitting" | "success" | "error";
@@ -17,6 +17,12 @@ interface ContactFormProps {
  */
 export default function ContactForm({ product }: ContactFormProps) {
   const [state, setState] = useState<FormState>({ status: "idle" });
+  /** 表单挂载时刻，用于计算填写耗时（服务端据此识别秒提交机器人） */
+  const mountedAt = useRef(0);
+
+  useEffect(() => {
+    mountedAt.current = Date.now();
+  }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -35,6 +41,9 @@ export default function ContactForm({ product }: ContactFormProps) {
           phone: data.get("phone"),
           message: data.get("message"),
           product: data.get("product") ?? product,
+          // 蜜罐字段：真实用户看不到，机器人自动填会被服务端静默丢弃
+          website: data.get("website"),
+          elapsed: Date.now() - mountedAt.current,
         }),
       });
 
@@ -42,6 +51,7 @@ export default function ContactForm({ product }: ContactFormProps) {
       if (!res.ok) throw new Error(body.error ?? "Submission failed");
 
       form.reset();
+      mountedAt.current = Date.now();
       setState({ status: "success", message: body.message });
     } catch (err) {
       setState({
@@ -57,6 +67,22 @@ export default function ContactForm({ product }: ContactFormProps) {
       {product ? (
         <input type="hidden" name="product" value={product} />
       ) : null}
+
+      {/* 蜜罐字段：视觉移出屏幕，真实用户不会填写，机器人自动填则被服务端丢弃 */}
+      <div
+        aria-hidden="true"
+        className="absolute left-[-9999px] top-0 h-0 w-0 overflow-hidden opacity-0"
+      >
+        <label htmlFor="website">Website</label>
+        <input
+          id="website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          defaultValue=""
+        />
+      </div>
 
       <div className="grid gap-10 md:grid-cols-2">
         <div>

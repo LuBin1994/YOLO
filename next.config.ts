@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // 不暴露 X-Powered-By: Next.js
+  poweredByHeader: false,
   images: {
     remotePatterns: [
       // Supabase Storage（公开读的 media 存储桶）
