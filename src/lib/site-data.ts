@@ -296,7 +296,7 @@ export async function getPage(slug: string): Promise<Page | null> {
 
 /** 站点品牌信息 */
 export const SITE = {
-  name: "Meridian Apparel Group",
+  name: "YOLO APPAREL PTE. LTD.",
   tagline: "Apparel Manufacturing in Southeast Asia",
   email: "sales@meridianapparel.com",
   phone: "+84 28 3xxx xxxx",

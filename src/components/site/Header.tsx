@@ -42,13 +42,13 @@ export default function Header() {
         <Link
           href="/"
           className="flex items-baseline gap-2 text-ink-900"
-          aria-label="Meridian Apparel Group — Home"
+          aria-label="YOLO APPAREL PTE. LTD. — Home"
         >
           <span className="text-lg md:text-xl font-semibold tracking-tight">
-            Meridian
+            YOLO
           </span>
           <span className="hidden sm:inline text-[10px] uppercase tracking-[0.28em] text-forest-600">
-            Apparel Group
+            APPAREL PTE. LTD.
           </span>
         </Link>
 

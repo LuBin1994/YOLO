@@ -121,7 +121,7 @@ export default function AdminLoginPage() {
             管理后台
           </p>
           <p className="display-lg mt-4 text-sand-50">
-            Meridian Apparel Group
+            YOLO APPAREL PTE. LTD.
           </p>
         </div>
       </div>

@@ -44,7 +44,7 @@ export default function AdminSidebar({ admin }: AdminSidebarProps) {
           M<span className="text-moss-400">.</span>
         </span>
         <div className="hidden md:block">
-          <p className="text-sm font-medium text-sand-50">Meridian</p>
+          <p className="text-sm font-medium text-sand-50">YOLO</p>
           <p className="text-[10px] uppercase tracking-[0.2em] text-sand-200/60">
             管理后台
           </p>
