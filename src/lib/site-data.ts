@@ -1,3 +1,5 @@
+import type { FilmClip } from "@/components/site/VideoWall";
+import type { MarqueeRow, MarqueeTile } from "@/components/site/ImageMarquee";
 import type { Page, Product } from "./supabase/types";
 
 /**
@@ -343,6 +345,39 @@ export const HOME_WELCOME = {
   ],
 } as const;
 
+/**
+ * 首页风格影片墙：四列竖版循环短片（对齐 Primesource 首页的做法）。
+ * - 素材已本地化到 public/media/，不再依赖外链
+ * - 规格：竖版 3:4（832×1088 / 536×720 等）、静音 H.264、可无缝循环
+ * - poster 为各条视频的首帧，视频 canplay 之前显示这张静态图
+ * - 替换素材：直接覆盖 public/media/style-film-0X.mp4 与同名 .jpg，不用改代码
+ *
+ * ⚠️ 当前四条素材取自参考站 Primesource，仅用于开发期看效果，
+ *    属于他人资产，正式上线前必须替换为自有或已授权素材。
+ */
+export const HOME_STYLE_FILM: readonly FilmClip[] = [
+  {
+    label: "Jersey tee and chino look on the model",
+    video: "/media/style-film-01.mp4",
+    poster: "/media/style-film-01.jpg",
+  },
+  {
+    label: "Camo jacket and jogger look on the model",
+    video: "/media/style-film-02.mp4",
+    poster: "/media/style-film-02.jpg",
+  },
+  {
+    label: "Seamless activewear set on the model",
+    video: "/media/style-film-03.mp4",
+    poster: "/media/style-film-03.jpg",
+  },
+  {
+    label: "Printed sleepwear set on the model",
+    video: "/media/style-film-04.mp4",
+    poster: "/media/style-film-04.jpg",
+  },
+];
+
 /** 首页品类卡片（等宽三列，两行共六项） */
 export const HOME_CATEGORIES = [
   {
@@ -441,31 +476,45 @@ export const PRODUCT_CAPABILITIES = [
   },
 ] as const;
 
-/** 产品页：图片跑马灯两行（上行向左、下行向右，悬停暂停） */
-export const PRODUCT_MARQUEE = [
-  {
-    duration: 40,
-    images: [
-      "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=900&auto=format",
-      "https://images.unsplash.com/photo-1516762689617-e1cffcef479d?q=80&w=900&auto=format",
-      "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=900&auto=format",
-      "https://images.unsplash.com/photo-1503341504253-dff4815485f1?q=80&w=900&auto=format",
-      "https://images.unsplash.com/photo-1554568218-0f1715e72254?q=80&w=900&auto=format",
-      "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=900&auto=format",
-    ],
-  },
-  {
-    duration: 54,
-    images: [
-      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=900&auto=format",
-      "https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?q=80&w=900&auto=format",
-      "https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=900&auto=format",
-      "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?q=80&w=900&auto=format",
-      "https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=900&auto=format",
-      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=900&auto=format",
-    ],
-  },
-] as const;
+/**
+ * 产品页：图片跑马灯两行。
+ * 图源直接取自产品数据（cover_image + images 去重），不再维护独立的静态图集：
+ * 后台新增/替换产品图片后，图墙自动跟着变。
+ * - 每格携带 href 指向该产品详情页，整格可点
+ * - 按奇偶交替分到两行，避免同一产品的多图挤在一行
+ * - 两行给不同时长，避免节奏整齐划一
+ */
+export function buildProductMarquee(products: Product[]): MarqueeRow[] {
+  const tiles: MarqueeTile[] = [];
+
+  for (const product of products) {
+    // cover_image 常常等于 images[0]，去重后按原顺序保留
+    const sources = [product.cover_image, ...product.images].filter(
+      (src, index, all): src is string =>
+        Boolean(src) && all.indexOf(src) === index
+    );
+
+    for (const src of sources) {
+      tiles.push({
+        src,
+        href: `/products/${product.slug}`,
+        alt: product.title,
+      });
+    }
+  }
+
+  if (tiles.length === 0) return [];
+
+  /* 分两行、时长不同以免节奏整齐划一；行数由 durations.length 决定，图按奇偶交替分配 */
+  const durations = [40, 54];
+  return durations
+    .map((duration, rowIndex) => ({
+      duration,
+      images: tiles.filter((_, i) => i % durations.length === rowIndex),
+    }))
+    /* 图片极少时可能分不出两行，空行直接丢掉 */
+    .filter((row) => row.images.length > 0);
+}
 
 /** 工厂页：产能与资质数据 */
 export const FACTORY_STATS = [

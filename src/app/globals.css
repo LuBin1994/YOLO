@@ -208,6 +208,24 @@ body {
   @apply relative h-[26vh] w-[48vw] shrink-0 overflow-hidden bg-sand-200 md:h-[28vh] md:w-[22vw] lg:w-[17vw];
 }
 
+/* 格子内的链接层：铺满整格，让整张图成为可点区域 */
+.marquee-link {
+  @apply absolute inset-0 block;
+}
+
+/* 悬停放大：单格图片放大，超出部分被 .marquee-cell 裁掉，视觉上即"填满放大" */
+.marquee-cell img {
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.marquee-cell:hover img {
+  transform: scale(1.08);
+}
+
+.marquee-link:focus-visible {
+  @apply outline-2 outline-forest-600 outline-offset-[-3px];
+}
+
 @keyframes marquee-left {
   from {
     transform: translate3d(0, 0, 0);

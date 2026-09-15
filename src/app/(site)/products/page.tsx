@@ -8,7 +8,7 @@ import {
   CERTIFICATIONS,
   FACTORY_STATS,
   PRODUCT_CAPABILITIES,
-  PRODUCT_MARQUEE,
+  buildProductMarquee,
   getPage,
   getProducts,
 } from "@/lib/site-data";
@@ -27,6 +27,9 @@ export default async function ProductsPage() {
     getProducts(),
     getPage("products"),
   ]);
+
+  // 图墙图源即产品图片，每格点击进入对应产品详情页
+  const marqueeRows = buildProductMarquee(products);
 
   return (
     <>
@@ -54,8 +57,10 @@ export default async function ProductsPage() {
         </div>
       </section>
 
-      {/* ③ 图片跑马灯：两行反向滚动，悬停暂停 */}
-      <ImageMarquee rows={PRODUCT_MARQUEE} label="YOLO Apparel style" />
+      {/* ③ 图片跑马灯：两行滚动，悬停暂停；图源=产品图片，悬停放大、点击进详情页 */}
+      {marqueeRows.length > 0 ? (
+        <ImageMarquee rows={marqueeRows} label="YOLO Apparel style" />
+      ) : null}
 
       {/* ④ 目录主体：分类筛选 + 网格/列表切换 */}
       <section className="container-site pt-16 pb-24 md:pt-20 md:pb-32">

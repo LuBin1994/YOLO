@@ -4,10 +4,12 @@ import Link from "next/link";
 import SplitBanner from "@/components/site/SplitBanner";
 import DarkBand from "@/components/site/DarkBand";
 import ProductCard from "@/components/site/ProductCard";
+import VideoWall from "@/components/site/VideoWall";
 import {
   CERTIFICATIONS,
   HOME_BANNERS,
   HOME_CATEGORIES,
+  HOME_STYLE_FILM,
   HOME_WELCOME,
   getProducts,
 } from "@/lib/site-data";
@@ -34,7 +36,10 @@ export default async function HomePage() {
         lead={HOME_WELCOME.lead}
       />
 
-      {/* ③ 品类卡片组：等宽三列，两行共六项 */}
+      {/* ③ 风格影片墙：四列竖版循环短片，满宽贴边 */}
+      <VideoWall clips={HOME_STYLE_FILM} />
+
+      {/* ④ 品类卡片组：等宽三列，两行共六项 */}
       <section className="container-site section-pad">
         <div className="flex flex-col gap-4 md:flex-row md:items-baseline md:justify-between">
           <h2 className="display-lg max-w-2xl">What we manufacture.</h2>
@@ -66,7 +71,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ④ 精选产品 */}
+      {/* ⑤ 精选产品 */}
       <section className="border-t hairline bg-sand-100/60">
         <div className="container-site section-pad">
           <div className="flex flex-col gap-4 md:flex-row md:items-baseline md:justify-between">
@@ -92,7 +97,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ⑤ 资质条 */}
+      {/* ⑥ 资质条 */}
       <section className="border-y hairline">
         <div className="container-site flex flex-wrap items-center justify-center gap-x-12 gap-y-4 py-8">
           {CERTIFICATIONS.map((c) => (
@@ -106,7 +111,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ⑥ 深色 CTA 带 */}
+      {/* ⑦ 深色 CTA 带 */}
       <section className="band-dark w-full">
         <div className="container-site py-24 text-center md:py-32">
           <p className="text-[11px] uppercase tracking-[0.3em] text-forest-300">
