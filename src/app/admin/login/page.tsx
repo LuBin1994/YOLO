@@ -133,7 +133,7 @@ export default function AdminLoginPage() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       {/* 品牌区 */}
-      <div className="relative hidden overflow-hidden bg-forest-950 lg:block">
+      <div className="relative hidden overflow-hidden bg-ink-950 lg:block">
         <Image
           src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1600&q=80"
           alt="Factory"
@@ -142,27 +142,26 @@ export default function AdminLoginPage() {
           sizes="50vw"
           className="object-cover opacity-50"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-forest-950 via-transparent to-transparent" />
-        <div className="relative z-10 flex h-full flex-col justify-end p-12">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-sand-200/80">
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+        <div className="relative z-10 flex h-full flex-col justify-end p-14">
+          <p className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.3em] text-white/70">
+            <span aria-hidden className="h-[3px] w-6 bg-volt-400" />
             管理后台
           </p>
-          <p className="display-lg mt-4 text-sand-50">
-            YOLO APPAREL PTE. LTD.
-          </p>
+          <p className="display-xl mt-6 text-white">YOLO APPAREL PTE. LTD.</p>
         </div>
       </div>
 
       {/* 表单区 */}
-      <div className="flex items-center justify-center bg-sand-50 px-6 py-16">
+      <div className="flex items-center justify-center bg-paper px-6 py-16">
         <div className="w-full max-w-sm">
           <Link
             href="/"
-            className="text-xs tracking-wide text-ink-400 transition-colors hover:text-forest-700"
+            className="text-xs tracking-wide text-ink-400 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:text-ink-950 hover:decoration-volt-500"
           >
             ← 返回官网
           </Link>
-          <h1 className="mt-8 text-3xl font-semibold tracking-tight">
+          <h1 className="mt-8 text-3xl font-medium tracking-tight text-ink-950 md:text-4xl">
             登录管理后台
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-ink-600">

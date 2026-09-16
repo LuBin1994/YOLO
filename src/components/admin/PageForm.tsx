@@ -98,14 +98,14 @@ export default function PageForm({ page }: PageFormProps) {
   }
 
   const inputCls =
-    "w-full border border-ink-900/15 bg-white px-3 py-2.5 text-sm outline-none transition-colors focus:border-forest-600";
+    "w-full border border-ink-900/15 bg-white px-3 py-2.5 text-sm outline-none transition-colors focus:border-ink-950";
   const labelCls = "mb-1.5 block text-[11px] uppercase tracking-[0.2em] text-ink-400";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Hero */}
       <section className="space-y-5">
-        <p className="text-[11px] uppercase tracking-[0.24em] text-forest-600">
+        <p className="text-[11px] uppercase tracking-[0.24em] text-ink-400">
           头部大图
         </p>
         <div>
@@ -132,7 +132,7 @@ export default function PageForm({ page }: PageFormProps) {
       {/* Sections */}
       <section className="space-y-6">
         <div className="flex items-center justify-between">
-          <p className="text-[11px] uppercase tracking-[0.24em] text-forest-600">
+          <p className="text-[11px] uppercase tracking-[0.24em] text-ink-400">
             内容块
           </p>
           <div className="flex items-center gap-2">
@@ -141,7 +141,7 @@ export default function PageForm({ page }: PageFormProps) {
                 key={opt.value}
                 type="button"
                 onClick={() => setSections((prev) => [...prev, newSection(opt.value)])}
-                className="border hairline px-2.5 py-1 text-xs text-ink-600 transition-colors hover:border-forest-600 hover:text-forest-700"
+                className="border border-ink-900/8 px-3 py-1.5 text-xs text-ink-600 transition-colors hover:border-ink-950 hover:text-ink-950"
               >
                 + {opt.label}
               </button>
@@ -150,13 +150,13 @@ export default function PageForm({ page }: PageFormProps) {
         </div>
 
         {sections.length === 0 ? (
-          <p className="border hairline bg-white/60 px-4 py-8 text-center text-sm text-ink-400">
+          <p className="border border-ink-900/8 bg-white px-4 py-8 text-center text-sm text-ink-400">
             暂无内容块，点击上方按钮添加标题、段落或图片。
           </p>
         ) : null}
 
         {sections.map((section, i) => (
-          <div key={i} className="border hairline bg-white/70 p-4">
+          <div key={i} className="border border-ink-900/8 bg-white p-4">
             <div className="mb-4 flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
                 <select
@@ -180,7 +180,7 @@ export default function PageForm({ page }: PageFormProps) {
                   type="button"
                   onClick={() => moveSection(i, -1)}
                   disabled={i === 0}
-                  className="text-xs text-ink-400 hover:text-ink-900 disabled:opacity-30"
+                  className="text-xs text-ink-400 hover:text-ink-950 disabled:opacity-30"
                   aria-label="上移"
                 >
                   ↑
@@ -189,7 +189,7 @@ export default function PageForm({ page }: PageFormProps) {
                   type="button"
                   onClick={() => moveSection(i, 1)}
                   disabled={i === sections.length - 1}
-                  className="text-xs text-ink-400 hover:text-ink-900 disabled:opacity-30"
+                  className="text-xs text-ink-400 hover:text-ink-950 disabled:opacity-30"
                   aria-label="下移"
                 >
                   ↓

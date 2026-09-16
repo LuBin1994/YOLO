@@ -1,12 +1,20 @@
 /**
  * Vercel Web Analytics 数据读取（服务端）
  *
- * 依赖环境变量（Vercel 部署时自动注入 projectId/teamId，token 需手动配置）：
- * - VERCEL_TOKEN        必填：Vercel Access Token（Settings → Tokens）
- * - VERCEL_PROJECT_ID   必填：部署时自动注入（prj_ 开头）
- * - VERCEL_TEAM_ID      团队项目自动注入，个人项目可省略
+ * 依赖环境变量：
+ * - VERCEL_TOKEN        必填：Vercel Access Token（Dashboard → Settings → Tokens）
+ * - VERCEL_PROJECT_ID   必填：prj_ 开头
+ * - VERCEL_TEAM_ID      仅团队（Team）项目需要，个人账号项目留空
  *
- * 未配置时返回 null，界面展示配置引导。
+ * 【重要】VERCEL_PROJECT_ID / VERCEL_TEAM_ID 是 Vercel 的「系统环境变量」，
+ * 只在 Vercel 平台上的构建与运行时注入。用 `next dev` 在本地跑时它们**不存在**，
+ * 必须在 .env.local 里手动填写；否则本模块只会返回 unconfigured。
+ * 本地不想手填，可改用 `vercel dev`，或先 `vercel link` 再填 .vercel/project.json 里的值。
+ *
+ * 返回值区分三种状态，避免「没配置」与「调用失败」都显示成同一句话：
+ * - ok            取数成功
+ * - unconfigured  缺少环境变量（附带缺失的变量名）
+ * - error         API 调用失败（附带真实错误信息，便于排障）
  */
 
 export interface AnalyticsTotals {
@@ -27,6 +35,13 @@ export interface AnalyticsData {
   devices: AnalyticsRow[]; // top N
   range: { since: string; until: string };
 }
+
+export type AnalyticsResult =
+  | { status: "ok"; data: AnalyticsData }
+  /** 缺少环境变量。missing 列出缺了哪几个，直接展示给管理员。 */
+  | { status: "unconfigured"; missing: string[] }
+  /** API 调用失败（token 无权限、项目未开启 Web Analytics、网络问题等）。 */
+  | { status: "error"; message: string };
 
 const API_BASE = "https://api.vercel.com/v1/query/web-analytics/visits";
 
@@ -57,19 +72,25 @@ async function query(
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(`Web Analytics API ${res.status}: ${text.slice(0, 200)}`);
+    throw new Error(
+      `Web Analytics API ${res.status} ${res.statusText}: ${text.slice(0, 300)}`
+    );
   }
   return res.json();
 }
 
 export async function getAnalytics(
   days = 30
-): Promise<AnalyticsData | null> {
+): Promise<AnalyticsResult> {
   const token = process.env.VERCEL_TOKEN;
   const projectId = process.env.VERCEL_PROJECT_ID;
   const teamId = process.env.VERCEL_TEAM_ID;
 
-  if (!token || !projectId) return null;
+  const missing: string[] = [];
+  if (!token) missing.push("VERCEL_TOKEN");
+  if (!projectId) missing.push("VERCEL_PROJECT_ID");
+  // 分开判断：既能列出全部缺失项，又能让 TS 在此之后把两者收窄为 string
+  if (!token || !projectId) return { status: "unconfigured", missing };
 
   const since = isoDaysAgo(days);
   const until = isoDaysAgo(0);
@@ -103,17 +124,21 @@ export async function getAnalytics(
     };
 
     return {
-      totals: {
-        pageviews: countData?.pageviews ?? 0,
-        visitors: countData?.visitors ?? 0,
+      status: "ok",
+      data: {
+        totals: {
+          pageviews: countData?.pageviews ?? 0,
+          visitors: countData?.visitors ?? 0,
+        },
+        daily: mapRows(dailyRes, "timestamp"),
+        countries: mapRows(countryRes, "country"),
+        devices: mapRows(deviceRes, "deviceType"),
+        range: { since, until },
       },
-      daily: mapRows(dailyRes, "timestamp"),
-      countries: mapRows(countryRes, "country"),
-      devices: mapRows(deviceRes, "deviceType"),
-      range: { since, until },
     };
   } catch (err) {
-    console.error("[analytics] fetch failed:", err);
-    return null;
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[analytics] fetch failed:", message);
+    return { status: "error", message };
   }
 }

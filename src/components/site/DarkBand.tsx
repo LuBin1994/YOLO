@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 /**
- * 深色正文带：满宽深色容器，内部左窄右宽两栏。
+ * 深色正文带：满宽近黑容器，内部左窄右宽两栏。
  * 左栏为小标题 + 正文，右栏为大号排印（把能力清单当图形使用）。
  * 右栏可选配图，用于内页。
  */
@@ -27,18 +27,19 @@ export default function DarkBand({
         <div className="grid gap-12 lg:grid-cols-[1fr_2.1fr] lg:gap-20">
           {/* 左栏：窄 */}
           <div>
-            <h2 className="text-lg font-medium tracking-tight text-sand-50 md:text-xl">
+            <span className="rule-volt" aria-hidden />
+            <h2 className="mt-6 text-lg font-medium tracking-tight text-white md:text-xl">
               {heading}
             </h2>
-            <p className="mt-5 max-w-sm text-sm leading-[1.85] text-sand-100/60">
+            <p className="mt-5 max-w-sm text-sm leading-[1.85] text-white/55">
               {body}
             </p>
           </div>
 
-          {/* 右栏：宽 */}
+          {/* 右栏：宽，把能力清单当图形 */}
           <div>
             {lead && lead.length > 0 ? (
-              <div className="typo-lead text-sand-50">
+              <div className="typo-lead text-white">
                 {lead.map((line) => (
                   <p key={line}>{line}</p>
                 ))}
@@ -46,7 +47,7 @@ export default function DarkBand({
             ) : null}
 
             {image ? (
-              <div className="relative mt-10 aspect-[16/9] overflow-hidden bg-forest-900">
+              <div className="relative mt-10 aspect-[16/9] overflow-hidden bg-white/5">
                 <Image
                   src={image}
                   alt=""
@@ -58,7 +59,7 @@ export default function DarkBand({
             ) : null}
 
             {footer ? (
-              <p className="mt-8 max-w-2xl text-sm leading-[1.85] text-sand-100/60">
+              <p className="mt-8 max-w-2xl text-sm leading-[1.85] text-white/55">
                 {footer}
               </p>
             ) : null}

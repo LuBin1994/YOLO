@@ -9,9 +9,9 @@ import type { Inquiry, InquiryStatus } from "@/lib/supabase/types";
 import { formatDateTime, shiftDate, todayInAdminTz } from "@/lib/datetime";
 
 const STATUS_META: Record<InquiryStatus, { label: string; cls: string }> = {
-  new: { label: "新询盘", cls: "bg-moss-500/15 text-moss-600" },
+  new: { label: "新询盘", cls: "bg-ink-950/8 text-ink-950" },
   read: { label: "已读", cls: "bg-amber-500/15 text-amber-600" },
-  replied: { label: "已回复", cls: "bg-forest-700/10 text-forest-700" },
+  replied: { label: "已回复", cls: "bg-moss-500/15 text-moss-600" },
 };
 
 /** 快捷时段：null 表示不限时间段 */
@@ -123,7 +123,7 @@ export default function InquiryList({
       {/* ---------- 筛选区 ---------- */}
       <form
         onSubmit={handleSearch}
-        className="flex flex-wrap items-center gap-x-4 gap-y-3 border hairline bg-white/70 px-4 py-3"
+        className="flex flex-wrap items-center gap-x-4 gap-y-3 border border-ink-900/8 bg-white px-4 py-3"
       >
         <label htmlFor="inquiry-search" className="sr-only">
           搜索询盘
@@ -136,7 +136,7 @@ export default function InquiryList({
           type="search"
           defaultValue={keyword}
           placeholder="搜索姓名、邮箱、电话或询盘内容…"
-          className="min-w-[200px] flex-1 border-b border-ink-900/15 bg-transparent px-1 py-1.5 text-sm outline-none transition-colors placeholder:text-ink-400 focus:border-forest-600"
+          className="min-w-[200px] flex-1 border-b border-ink-900/15 bg-transparent px-1 py-1.5 text-sm outline-none transition-colors placeholder:text-ink-400 focus:border-ink-950"
         />
 
         <div className="flex items-center gap-2">
@@ -153,7 +153,7 @@ export default function InquiryList({
             type="date"
             defaultValue={fromDate}
             aria-label="起始日期"
-            className="border-b border-ink-900/15 bg-transparent px-1 py-1 text-xs tabular-nums text-ink-600 outline-none transition-colors focus:border-forest-600"
+            className="border-b border-ink-900/15 bg-transparent px-1 py-1 text-xs tabular-nums text-ink-600 outline-none transition-colors focus:border-ink-950"
           />
           <span className="text-xs text-ink-400">—</span>
           <input
@@ -162,20 +162,20 @@ export default function InquiryList({
             type="date"
             defaultValue={toDate}
             aria-label="结束日期"
-            className="border-b border-ink-900/15 bg-transparent px-1 py-1 text-xs tabular-nums text-ink-600 outline-none transition-colors focus:border-forest-600"
+            className="border-b border-ink-900/15 bg-transparent px-1 py-1 text-xs tabular-nums text-ink-600 outline-none transition-colors focus:border-ink-950"
           />
         </div>
 
         <button
           type="submit"
-          className="border border-forest-700 bg-forest-700 px-4 py-1.5 text-xs font-medium text-white transition-colors hover:bg-forest-800"
+          className="border border-ink-950 bg-ink-950 px-5 py-2.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-volt-400 hover:text-ink-950"
         >
           筛选
         </button>
         {hasFilter ? (
           <Link
             href="/admin/inquiries"
-            className="text-xs text-ink-400 transition-colors hover:text-ink-900"
+            className="text-xs text-ink-400 transition-colors hover:text-ink-950"
           >
             清除
           </Link>
@@ -190,7 +190,7 @@ export default function InquiryList({
             key={range.label}
             type="button"
             onClick={() => applyQuickRange(range.days)}
-            className="border border-ink-900/15 bg-white px-2.5 py-1 text-ink-600 transition-colors hover:border-forest-600 hover:text-forest-700"
+            className="border border-ink-900/15 bg-white px-2.5 py-1 text-ink-600 transition-colors hover:border-ink-950 hover:text-ink-950"
           >
             {range.label}
           </button>
@@ -219,7 +219,7 @@ export default function InquiryList({
 
       {/* ---------- 列表 ---------- */}
       {inquiries.length === 0 ? (
-        <div className="mt-3 border hairline bg-white/60 px-6 py-16 text-center">
+        <div className="mt-3 border border-ink-900/8 bg-white px-6 py-16 text-center">
           <p className="text-sm text-ink-400">
             {hasFilter
               ? "放宽或清除筛选条件后再看看。"
@@ -227,7 +227,7 @@ export default function InquiryList({
           </p>
         </div>
       ) : (
-        <div className="mt-3 overflow-x-auto border hairline bg-white/70">
+        <div className="mt-3 overflow-x-auto border border-ink-900/8 bg-white">
           <table className="w-full min-w-[640px] text-sm">
             <thead>
               <tr className="border-b hairline text-left text-[11px] uppercase tracking-[0.14em] text-ink-400">
@@ -260,7 +260,7 @@ export default function InquiryList({
                         </span>
                       </td>
                       <td className="px-4 py-3.5">
-                        <span className="block font-medium text-ink-900">{inq.name}</span>
+                        <span className="block font-medium text-ink-950">{inq.name}</span>
                         <span className="block text-xs text-ink-400">{inq.email}</span>
                       </td>
                       <td className="hidden whitespace-nowrap px-4 py-3.5 text-ink-600 lg:table-cell">
@@ -301,7 +301,7 @@ export default function InquiryList({
                             </p>
                           </div>
 
-                          <p className="mt-4 whitespace-pre-wrap rounded bg-white/80 p-4 text-sm leading-relaxed text-ink-900">
+                          <p className="mt-4 whitespace-pre-wrap rounded bg-white/80 p-4 text-sm leading-relaxed text-ink-950">
                             {inq.message}
                           </p>
 
@@ -323,8 +323,8 @@ export default function InquiryList({
                                 onClick={() => updateStatus(inq.id, status)}
                                 className={`border px-3 py-1.5 text-xs transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                                   inq.status === status
-                                    ? "border-forest-700 bg-forest-700 text-white"
-                                    : "border-ink-900/15 bg-white text-ink-600 hover:border-forest-600 hover:text-forest-700"
+                                    ? "border-ink-950 bg-ink-950 text-white"
+                                    : "border-ink-900/15 bg-white text-ink-600 hover:border-ink-950 hover:text-ink-950"
                                 }`}
                               >
                                 {label}

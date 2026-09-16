@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import AnalyticsPanel from "@/components/admin/AnalyticsPanel";
 import { getAnalytics } from "@/lib/analytics";
 import { createClient } from "@/lib/supabase/server";
@@ -51,36 +52,39 @@ export default async function AdminDashboardPage() {
 
   return (
     <div>
-      <p className="text-[11px] uppercase tracking-[0.24em] text-forest-600">
-        总览
-      </p>
-      <h1 className="mt-3 text-3xl font-semibold tracking-tight">数据看板</h1>
-      <p className="mt-2 text-sm text-ink-600">
-        内容、询盘与访客数据一目了然。
-      </p>
+      <AdminPageHeader
+        eyebrow="总览"
+        title="数据看板"
+        description="内容、询盘与访客数据一目了然。"
+      />
 
-      <div className="mt-10 grid gap-5 sm:grid-cols-3">
+      <div className="mt-10 grid gap-6 sm:grid-cols-3">
         {cards.map((c) => (
           <Link
             key={c.href}
             href={c.href}
-            className="group border hairline bg-white/60 p-6 transition-colors hover:border-forest-600/40 hover:bg-white"
+            className="group relative overflow-hidden border border-ink-900/8 bg-white p-8 transition-colors duration-300 hover:border-ink-900/25"
           >
-            <p className="text-[11px] uppercase tracking-[0.2em] text-ink-400">
+            {/* hover 时左侧青柠条滑出，给一点反馈而不刺眼 */}
+            <span
+              aria-hidden
+              className="absolute inset-y-0 left-0 w-[3px] origin-top scale-y-0 bg-volt-400 transition-transform duration-300 ease-out group-hover:scale-y-100"
+            />
+            <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
               {c.label}
             </p>
-            <p className="mt-3 text-4xl font-semibold tracking-tight text-ink-900">
+            <p className="mt-4 text-5xl font-medium tracking-tight text-ink-950">
               {c.value}
             </p>
-            <p className="mt-2 text-xs text-ink-400 group-hover:text-forest-700">
+            <p className="mt-4 text-xs text-ink-400 transition-colors duration-300 group-hover:text-ink-950">
               {c.hint} →
             </p>
           </Link>
         ))}
       </div>
 
-      <div className="mt-10">
-        <AnalyticsPanel data={analytics} />
+      <div className="mt-12">
+        <AnalyticsPanel result={analytics} />
       </div>
     </div>
   );

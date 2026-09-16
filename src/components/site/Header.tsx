@@ -14,8 +14,8 @@ const NAV_LINKS = [
 
 /**
  * 极简导航：Logo 左、导航右。
- * 滚动后叠加毛玻璃背景；首页首屏透明悬浮于 Hero 之上。
- * 窄屏用汉堡按钮控制竖向下拉菜单，五项导航全部保留（不再截断）。
+ * 滚动后叠加白色毛玻璃背景；首页首屏透明悬浮于 Hero 之上。
+ * 当前项与 hover 用青柠细线滑入标示，制造轻量微交互。
  */
 export default function Header() {
   const pathname = usePathname();
@@ -42,44 +42,61 @@ export default function Header() {
 
   /* 菜单展开时也铺底色，否则首屏透明 header 上的下拉面板会与 Hero 糊在一起 */
   const solid = scrolled || !isHome || menuOpen;
+  /* 透明态只出现在首页首屏，此时 header 悬浮在深色大图上，文字必须反白 */
+  const onImage = !solid;
+  const barColor = onImage ? "bg-white" : "bg-ink-950";
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         solid
-          ? "bg-sand-50/90 backdrop-blur-md border-b border-ink-900/5"
+          ? "bg-white/90 backdrop-blur-md border-b border-ink-900/5"
           : "bg-transparent"
       }`}
     >
       <div className="container-site flex h-16 items-center justify-between md:h-20">
         <Link
           href="/"
-          className="flex items-baseline gap-2 text-ink-900"
+          className={`flex items-baseline gap-2 transition-colors duration-300 ${
+            onImage ? "text-white" : "text-ink-950"
+          }`}
           aria-label="YOLO APPAREL PTE. LTD. — Home"
         >
-          <span className="text-lg font-semibold tracking-tight md:text-xl">
+          <span className="text-lg font-medium tracking-tight md:text-xl">
             YOLO APPAREL PTE. LTD.
           </span>
         </Link>
 
         {/* 桌面导航 */}
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              aria-current={
-                pathname.startsWith(link.href) ? "page" : undefined
-              }
-              className={`text-[13px] tracking-wide transition-colors duration-200 ${
-                pathname.startsWith(link.href)
-                  ? "text-forest-700 font-medium"
-                  : "text-ink-600 hover:text-ink-900"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const active = pathname.startsWith(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={active ? "page" : undefined}
+                className={`group relative text-[13px] tracking-wide transition-colors duration-200 ${
+                  onImage
+                    ? active
+                      ? "font-medium text-white"
+                      : "text-white/70 hover:text-white"
+                    : active
+                      ? "font-medium text-ink-950"
+                      : "text-ink-600 hover:text-ink-950"
+                }`}
+              >
+                {link.label}
+                {/* 青柠细线：当前项常驻，其余 hover 时滑入 */}
+                <span
+                  aria-hidden
+                  className={`absolute -bottom-1.5 left-0 h-[2px] bg-volt-400 transition-[width] duration-300 ease-out ${
+                    active ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
+                />
+              </Link>
+            );
+          })}
         </nav>
 
         {/* 移动端菜单按钮：三条线 → X */}
@@ -93,17 +110,17 @@ export default function Header() {
         >
           <span className="relative block h-4 w-6" aria-hidden>
             <span
-              className={`absolute left-0 top-0 block h-[1.5px] w-6 bg-ink-900 transition-transform duration-300 ease-out ${
+              className={`absolute left-0 top-0 block h-[1.5px] w-6 ${barColor} transition-transform duration-300 ease-out ${
                 menuOpen ? "translate-y-[7px] rotate-45" : ""
               }`}
             />
             <span
-              className={`absolute left-0 top-[7px] block h-[1.5px] w-6 bg-ink-900 transition-opacity duration-200 ${
+              className={`absolute left-0 top-[7px] block h-[1.5px] w-6 ${barColor} transition-opacity duration-200 ${
                 menuOpen ? "opacity-0" : "opacity-100"
               }`}
             />
             <span
-              className={`absolute left-0 top-[14px] block h-[1.5px] w-6 bg-ink-900 transition-transform duration-300 ease-out ${
+              className={`absolute left-0 top-[14px] block h-[1.5px] w-6 ${barColor} transition-transform duration-300 ease-out ${
                 menuOpen ? "-translate-y-[7px] -rotate-45" : ""
               }`}
             />
@@ -115,35 +132,36 @@ export default function Header() {
       <nav
         id="mobile-nav"
         aria-label="Mobile"
-        className={`overflow-hidden bg-sand-50/95 backdrop-blur-md transition-[max-height,opacity,visibility] duration-300 ease-out md:hidden ${
-          menuOpen ? "visible max-h-[24rem] opacity-100" : "invisible max-h-0 opacity-0"
+        className={`overflow-hidden bg-white/95 backdrop-blur-md transition-[max-height,opacity,visibility] duration-300 ease-out md:hidden ${
+          menuOpen
+            ? "visible max-h-[24rem] opacity-100"
+            : "invisible max-h-0 opacity-0"
         }`}
       >
         <ul className="container-site flex flex-col">
-          {NAV_LINKS.map((link) => (
-            <li
-              key={link.href}
-              className="border-b hairline last:border-b-0"
-            >
-              <Link
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                aria-current={
-                  pathname.startsWith(link.href) ? "page" : undefined
-                }
-                className={`flex items-center justify-between py-4 text-base tracking-wide transition-colors duration-200 ${
-                  pathname.startsWith(link.href)
-                    ? "font-medium text-forest-700"
-                    : "text-ink-900"
-                }`}
-              >
-                {link.label}
-                <span aria-hidden className="text-ink-400">
-                  →
-                </span>
-              </Link>
-            </li>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const active = pathname.startsWith(link.href);
+            return (
+              <li key={link.href} className="border-b hairline last:border-b-0">
+                <Link
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  aria-current={active ? "page" : undefined}
+                  className={`flex items-center justify-between py-4 text-base tracking-wide transition-colors duration-200 ${
+                    active ? "font-medium text-ink-950" : "text-ink-600"
+                  }`}
+                >
+                  {link.label}
+                  <span
+                    aria-hidden
+                    className={active ? "text-volt-500" : "text-ink-400"}
+                  >
+                    →
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </header>

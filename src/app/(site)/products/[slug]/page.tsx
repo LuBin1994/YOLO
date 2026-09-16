@@ -51,20 +51,20 @@ export default async function ProductDetailPage({ params }: Props) {
         <div className="lg:sticky lg:top-28 lg:self-start">
           <Link
             href="/products"
-            className="text-xs tracking-wide text-ink-400 transition-colors hover:text-forest-700"
+            className="text-xs tracking-wide text-ink-400 transition-colors hover:text-ink-950"
           >
             ← All products
           </Link>
 
-          <p className="mt-8 text-[11px] uppercase tracking-[0.24em] text-forest-600">
+          <p className="mt-8 text-[11px] font-medium uppercase tracking-[0.3em] text-ink-400">
             {product.category}
           </p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">
+          <h1 className="mt-3 text-4xl font-medium tracking-tight text-ink-950 md:text-5xl">
             {product.title}
           </h1>
 
           {product.price_range ? (
-            <p className="mt-5 text-lg font-medium text-forest-700">
+            <p className="mt-5 text-lg font-medium text-ink-950">
               {product.price_range}
             </p>
           ) : null}
@@ -82,7 +82,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 <dt className="w-28 shrink-0 text-[11px] uppercase tracking-[0.2em] text-ink-400">
                   Materials
                 </dt>
-                <dd className="text-sm text-ink-900">
+                <dd className="text-sm text-ink-950">
                   {product.materials.join(" · ")}
                 </dd>
               </div>
@@ -92,7 +92,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 <dt className="w-28 shrink-0 text-[11px] uppercase tracking-[0.2em] text-ink-400">
                   MOQ
                 </dt>
-                <dd className="text-sm text-ink-900">
+                <dd className="text-sm text-ink-950">
                   {product.moq.toLocaleString()} pcs / colorway
                 </dd>
               </div>
@@ -101,7 +101,7 @@ export default async function ProductDetailPage({ params }: Props) {
               <dt className="w-28 shrink-0 text-[11px] uppercase tracking-[0.2em] text-ink-400">
                 Customization
               </dt>
-              <dd className="text-sm text-ink-900">
+              <dd className="text-sm text-ink-950">
                 Fabric · trims · labels · packaging
               </dd>
             </div>

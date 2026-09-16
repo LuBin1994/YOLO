@@ -9,15 +9,17 @@ const FOOTER_LINKS = [
 ];
 
 /**
- * 页脚：品牌信息 + 导航 + 联系方式，细线分隔。
+ * 页脚：品牌信息 + 导航 + 联系方式。
+ * 保持浅底（首页末尾已是近黑 CTA 带，页脚再压黑会连成一片），
+ * 靠超大字号品牌字标收尾。
  */
 export default function Footer() {
   return (
-    <footer className="border-t hairline bg-sand-100/60">
+    <footer className="border-t hairline bg-sand-50">
       <div className="container-site py-16 md:py-20">
         <div className="grid gap-12 md:grid-cols-[1.5fr_1fr_1fr]">
           <div>
-            <p className="text-xl font-semibold tracking-tight text-ink-900">
+            <p className="text-xl font-medium tracking-tight text-ink-950">
               {SITE.name}
             </p>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-ink-600">
@@ -27,15 +29,13 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className="text-[11px] uppercase tracking-[0.22em] text-ink-400">
-              Explore
-            </p>
+            <p className="eyebrow">Explore</p>
             <ul className="mt-4 space-y-3">
               {FOOTER_LINKS.map((l) => (
                 <li key={l.href}>
                   <Link
                     href={l.href}
-                    className="text-sm text-ink-600 transition-colors hover:text-forest-700"
+                    className="text-sm text-ink-600 underline decoration-transparent underline-offset-4 transition-colors duration-300 hover:text-ink-950 hover:decoration-volt-500"
                   >
                     {l.label}
                   </Link>
@@ -45,14 +45,12 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className="text-[11px] uppercase tracking-[0.22em] text-ink-400">
-              Contact
-            </p>
+            <p className="eyebrow">Contact</p>
             <ul className="mt-4 space-y-3 text-sm text-ink-600">
               <li>
                 <a
                   href={`mailto:${SITE.email}`}
-                  className="transition-colors hover:text-forest-700"
+                  className="underline decoration-transparent underline-offset-4 transition-colors duration-300 hover:text-ink-950 hover:decoration-volt-500"
                 >
                   {SITE.email}
                 </a>
@@ -63,7 +61,15 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col gap-2 border-t hairline pt-8 text-xs text-ink-400 sm:flex-row sm:items-center sm:justify-between">
+        {/* 品牌字标：超大排印收尾，制造记忆点 */}
+        <p
+          className="mt-16 select-none text-[13vw] font-medium leading-[0.85] tracking-[-0.04em] text-ink-950/10 md:text-[9vw]"
+          aria-hidden
+        >
+          YOLO APPAREL
+        </p>
+
+        <div className="mt-10 flex flex-col gap-2 border-t hairline pt-8 text-xs text-ink-400 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()} {SITE.name}. All rights reserved.
           </p>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import PageForm from "@/components/admin/PageForm";
 import { createClient } from "@/lib/supabase/server";
 
@@ -25,13 +26,12 @@ export default async function AdminPageEditPage({ params }: Props) {
   if (!page) notFound();
 
   return (
-    <div className="max-w-3xl">
-      <p className="text-[11px] uppercase tracking-[0.24em] text-forest-600">
-        内容 · /{page.slug}
-      </p>
-      <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-        编辑：{page.title}
-      </h1>
+    <div className="max-w-4xl">
+      <AdminPageHeader
+        eyebrow={`内容 · /${page.slug}`}
+        title={`编辑：${page.title}`}
+        description="编辑页面富文本内容，保存后前台即时生效。"
+      />
       <div className="mt-10">
         <PageForm page={page} />
       </div>

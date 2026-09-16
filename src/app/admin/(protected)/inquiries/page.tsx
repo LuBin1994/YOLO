@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import InquiryList from "@/components/admin/InquiryList";
 import { createClient } from "@/lib/supabase/server";
 import { endOfDayISO, isDateInput, startOfDayISO } from "@/lib/datetime";
@@ -88,24 +89,31 @@ export default async function AdminInquiriesPage({ searchParams }: Props) {
 
   return (
     <div>
-      <p className="text-[11px] uppercase tracking-[0.24em] text-forest-600">
-        询盘
-      </p>
-      <h1 className="mt-3 text-3xl font-semibold tracking-tight">询盘管理</h1>
+      <AdminPageHeader
+        eyebrow="询盘"
+        title="询盘管理"
+        description="查看并回复来自官网联系表单的客户询盘。"
+      />
 
-      <div className="mt-6 flex flex-wrap gap-6 text-sm text-ink-600">
-        <span>
-          <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-moss-500" />
-          新询盘: <b>{counts.new}</b>
-        </span>
-        <span>
-          <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-amber-500" />
-          已读: <b>{counts.read}</b>
-        </span>
-        <span>
-          <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-forest-700" />
-          已回复: <b>{counts.replied}</b>
-        </span>
+      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        {[
+          { label: "新询盘", value: counts.new, dot: "bg-ink-400" },
+          { label: "已读", value: counts.read, dot: "bg-amber-500" },
+          { label: "已回复", value: counts.replied, dot: "bg-moss-500" },
+        ].map((s) => (
+          <div
+            key={s.label}
+            className="flex items-center justify-between border border-ink-900/8 bg-white px-6 py-5"
+          >
+            <span className="flex items-center gap-2.5 text-sm text-ink-600">
+              <span className={`inline-block h-2 w-2 rounded-full ${s.dot}`} />
+              {s.label}
+            </span>
+            <span className="text-2xl font-medium tracking-tight text-ink-950">
+              {s.value}
+            </span>
+          </div>
+        ))}
       </div>
 
       <div className="mt-8">

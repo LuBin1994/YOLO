@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import DeleteButton from "@/components/admin/DeleteButton";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import Pagination from "@/components/admin/Pagination";
 import ProductFilters from "@/components/admin/ProductFilters";
 import { CATEGORY_LABELS, categoryLabel } from "@/lib/utils";
@@ -97,19 +98,16 @@ export default async function AdminProductsPage({ searchParams }: Props) {
 
   return (
     <div>
-      <div className="flex items-end justify-between gap-6">
-        <div>
-          <p className="text-[11px] uppercase tracking-[0.24em] text-forest-600">
-            产品目录
-          </p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-            产品管理
-          </h1>
-        </div>
-        <Link href="/admin/products/new" className="btn-primary shrink-0">
-          + 新建产品
-        </Link>
-      </div>
+      <AdminPageHeader
+        eyebrow="产品目录"
+        title="产品管理"
+        description="维护产品的分类、价格、起订量与发布状态，改动即时同步到前台。"
+        actions={
+          <Link href="/admin/products/new" className="btn-primary shrink-0">
+            + 新建产品
+          </Link>
+        }
+      />
 
       <div className="mt-8">
         <ProductFilters
@@ -145,55 +143,55 @@ export default async function AdminProductsPage({ searchParams }: Props) {
             } · 显示第 ${rangeStart}–${rangeEnd} 条`}
       </p>
 
-      <div className="mt-3 overflow-x-auto border hairline bg-white/60">
+      <div className="mt-6 overflow-x-auto border border-ink-900/8 bg-white">
         <table className="w-full min-w-[720px] text-left text-sm">
           <thead>
-            <tr className="border-b hairline text-[11px] uppercase tracking-[0.18em] text-ink-400">
-              <th className="px-4 py-3 font-medium">产品</th>
-              <th className="px-4 py-3 font-medium">分类</th>
-              <th className="px-4 py-3 font-medium">价格</th>
-              <th className="px-4 py-3 font-medium">起订量</th>
-              <th className="px-4 py-3 font-medium">状态</th>
-              <th className="px-4 py-3 text-right font-medium">操作</th>
+            <tr className="border-b border-ink-900/8 bg-sand-50 text-[11px] uppercase tracking-[0.18em] text-ink-400">
+              <th className="px-5 py-4 font-medium">产品</th>
+              <th className="px-5 py-4 font-medium">分类</th>
+              <th className="px-5 py-4 font-medium">价格</th>
+              <th className="px-5 py-4 font-medium">起订量</th>
+              <th className="px-5 py-4 font-medium">状态</th>
+              <th className="px-5 py-4 text-right font-medium">操作</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((p) => (
               <tr
                 key={p.id}
-                className="border-b hairline last:border-0 hover:bg-sand-100/50"
+                className="border-b border-ink-900/8 transition-colors duration-200 last:border-0 hover:bg-sand-50"
               >
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-12 w-9 shrink-0 overflow-hidden bg-sand-100">
+                <td className="px-5 py-4">
+                  <div className="flex items-center gap-4">
+                    <div className="relative h-14 w-11 shrink-0 overflow-hidden bg-sand-100">
                       {p.cover_image ? (
                         <Image
                           src={p.cover_image}
                           alt={p.title}
                           fill
-                          sizes="36px"
+                          sizes="44px"
                           className="object-cover"
                         />
                       ) : null}
                     </div>
                     <div className="min-w-0">
-                      <p className="truncate font-medium text-ink-900">
+                      <p className="truncate font-medium text-ink-950">
                         {p.title}
                       </p>
                       <p className="truncate text-xs text-ink-400">/{p.slug}</p>
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3 text-ink-600">
+                <td className="px-5 py-4 text-ink-600">
                   {categoryLabel(p.category)}
                 </td>
-                <td className="px-4 py-3 text-ink-600">
+                <td className="px-5 py-4 text-ink-600">
                   {p.price_range ?? "—"}
                 </td>
-                <td className="px-4 py-3 text-ink-600">
+                <td className="px-5 py-4 text-ink-600">
                   {p.moq ? `${p.moq.toLocaleString()} 件` : "—"}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-5 py-4">
                   <div className="flex items-center gap-2">
                     <span
                       className={`h-1.5 w-1.5 rounded-full ${
@@ -206,11 +204,11 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center justify-end gap-4">
+                <td className="px-5 py-4">
+                  <div className="flex items-center justify-end gap-5">
                     <Link
                       href={`/admin/products/${p.id}/edit`}
-                      className="text-xs text-forest-700 hover:underline"
+                      className="text-xs text-ink-950 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:decoration-volt-500"
                     >
                       编辑
                     </Link>
@@ -224,7 +222,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
             ))}
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-12 text-center text-sm text-ink-400">
+                <td colSpan={6} className="px-5 py-20 text-center text-sm text-ink-400">
                   {hasFilter ? (
                     "放宽或清除筛选条件后再看看。"
                   ) : (
@@ -232,7 +230,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                       暂无产品。{" "}
                       <Link
                         href="/admin/products/new"
-                        className="text-forest-700 hover:underline"
+                        className="text-ink-950 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:decoration-volt-500"
                       >
                         立即创建第一个产品 →
                       </Link>

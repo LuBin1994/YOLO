@@ -8,6 +8,7 @@ type ViewMode = "grid" | "list";
 
 /**
  * 产品浏览区：分类筛选 + 网格/列表切换。
+ * 激活态统一用近黑药丸，保持与全站一致；青柠只留给细节点缀。
  */
 export default function ProductBrowser({
   products,
@@ -34,17 +35,18 @@ export default function ProductBrowser({
     <div>
       {/* 工具栏：分类 + 视图切换 */}
       <div className="flex flex-col gap-6 border-b hairline pb-8 md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-wrap gap-x-7 gap-y-2">
+        <div className="flex flex-wrap gap-2">
           {categories.map((c) => (
             <button
               key={c}
               type="button"
               onClick={() => setActiveCategory(c)}
-              className={`text-sm capitalize transition-colors ${
+              className={`rounded-full px-4 py-1.5 text-xs capitalize tracking-wide transition-colors duration-200 ${
                 activeCategory === c
-                  ? "text-forest-700 font-medium"
-                  : "text-ink-400 hover:text-ink-900"
+                  ? "bg-ink-950 font-medium text-white"
+                  : "border border-ink-900/15 text-ink-600 hover:border-ink-950 hover:text-ink-950"
               }`}
+              aria-pressed={activeCategory === c}
             >
               {c}
             </button>
@@ -62,10 +64,10 @@ export default function ProductBrowser({
               key={mode}
               type="button"
               onClick={() => setView(mode)}
-              className={`px-4 py-2 text-xs tracking-wide transition-colors ${
+              className={`px-4 py-2 text-xs tracking-wide transition-colors duration-200 ${
                 view === mode
-                  ? "bg-forest-700 text-sand-50"
-                  : "text-ink-600 hover:bg-forest-700/10"
+                  ? "bg-ink-950 font-medium text-white"
+                  : "text-ink-600 hover:bg-sand-100"
               }`}
               aria-pressed={view === mode}
             >

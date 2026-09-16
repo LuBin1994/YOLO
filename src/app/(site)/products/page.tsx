@@ -4,6 +4,7 @@ import PageHero from "@/components/site/PageHero";
 import ImageMarquee from "@/components/site/ImageMarquee";
 import ProductBrowser from "@/components/site/ProductBrowser";
 import SectionAction from "@/components/site/SectionAction";
+import Reveal from "@/components/site/Reveal";
 import {
   CERTIFICATIONS,
   FACTORY_STATS,
@@ -42,14 +43,14 @@ export default async function ProductsPage() {
       />
 
       {/* ② 关键数字条 */}
-      <section className="border-b hairline bg-sand-100/70">
+      <section className="border-b hairline bg-sand-50">
         <div className="container-site grid grid-cols-2 gap-y-8 py-10 md:grid-cols-4">
           {FACTORY_STATS.map((s) => (
             <div key={s.label}>
               <p className="text-[11px] uppercase tracking-[0.24em] text-ink-400">
                 {s.label}
               </p>
-              <p className="mt-2 text-2xl font-semibold tracking-tight text-ink-900 md:text-3xl">
+              <p className="mt-2 text-3xl font-medium tracking-tight text-ink-950 md:text-4xl">
                 {s.value}
               </p>
             </div>
@@ -68,7 +69,7 @@ export default async function ProductsPage() {
       </section>
 
       {/* ⑤ 生产品类：等宽三列，作为目录的延伸说明 */}
-      <section className="border-t hairline bg-sand-100/60">
+      <section className="border-t hairline bg-sand-50">
         <div className="container-site section-pad">
           <SectionAction
             title="What we manufacture"
@@ -76,19 +77,21 @@ export default async function ProductsPage() {
             label="See our factory"
           />
 
-          <div className="card-grid-3 mt-14">
-            {PRODUCT_CAPABILITIES.map((c) => (
-              <article key={c.name}>
-                <p className="text-xs tracking-[0.22em] text-forest-600">
-                  {c.index}
-                </p>
-                <h3 className="mt-3 text-xl font-medium tracking-tight text-ink-900 md:text-2xl">
-                  {c.name}
-                </h3>
-                <p className="mt-3 max-w-sm text-sm leading-relaxed text-ink-600">
-                  {c.body}
-                </p>
-              </article>
+          <div className="card-grid-3 mt-16">
+            {PRODUCT_CAPABILITIES.map((c, i) => (
+              <Reveal key={c.name} delay={i * 70}>
+                <article>
+                  <p className="text-2xl font-medium tracking-tight text-ink-950/20">
+                    {c.index}
+                  </p>
+                  <h3 className="mt-3 text-xl font-medium tracking-tight text-ink-950 md:text-2xl">
+                    {c.name}
+                  </h3>
+                  <p className="mt-3 max-w-sm text-sm leading-relaxed text-ink-600">
+                    {c.body}
+                  </p>
+                </article>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -108,30 +111,32 @@ export default async function ProductsPage() {
         </div>
       </section>
 
-      {/* ⑦ 深色 CTA 带 */}
+      {/* ⑦ 近黑 CTA 带 */}
       <section className="band-dark w-full">
         <div className="container-site py-24 text-center md:py-28">
-          <h2 className="display-lg mx-auto max-w-3xl text-sand-50">
-            Have a style in mind?
-          </h2>
-          <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-sand-100/60">
-            Send us your tech pack, reference sample or a sketch. We will come
-            back with fabric options, counter samples and a costed quotation.
-          </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center bg-sand-50 px-8 py-4 text-sm font-medium tracking-wide text-forest-950 transition-colors hover:bg-white"
-            >
-              Request a Quote
-            </Link>
-            <Link
-              href="/sustainability"
-              className="inline-flex items-center justify-center border border-sand-50/40 px-8 py-4 text-sm font-medium tracking-wide text-sand-50 transition-colors hover:border-sand-50 hover:bg-sand-50/10"
-            >
-              Our Materials
-            </Link>
-          </div>
+          <Reveal>
+            <h2 className="display-lg mx-auto max-w-3xl text-white">
+              Have a style in mind?
+            </h2>
+            <p className="mx-auto mt-7 max-w-xl text-sm leading-relaxed text-white/55">
+              Send us your tech pack, reference sample or a sketch. We will come
+              back with fabric options, counter samples and a costed quotation.
+            </p>
+            <div className="mt-11 flex flex-wrap items-center justify-center gap-4">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center bg-volt-400 px-8 py-4 text-sm font-medium tracking-wide text-ink-950 transition-colors duration-300 hover:bg-white"
+              >
+                Request a Quote
+              </Link>
+              <Link
+                href="/sustainability"
+                className="inline-flex items-center justify-center border border-white/30 px-8 py-4 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:border-white hover:bg-white hover:text-ink-950"
+              >
+                Our Materials
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
     </>

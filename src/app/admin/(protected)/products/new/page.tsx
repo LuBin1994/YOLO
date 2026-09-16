@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import ProductForm from "@/components/admin/ProductForm";
 
 export const metadata: Metadata = {
@@ -8,13 +9,12 @@ export const metadata: Metadata = {
 
 export default function AdminProductNewPage() {
   return (
-    <div className="max-w-3xl">
-      <p className="text-[11px] uppercase tracking-[0.24em] text-forest-600">
-        产品目录
-      </p>
-      <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-        新建产品
-      </h1>
+    <div className="max-w-4xl">
+      <AdminPageHeader
+        eyebrow="产品目录"
+        title="新建产品"
+        description="填写产品信息并发布，前台产品页会即时更新。"
+      />
       <div className="mt-10">
         <ProductForm />
       </div>

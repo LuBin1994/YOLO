@@ -20,7 +20,7 @@ export default function Pagination({
   return (
     <nav
       aria-label="分页"
-      className="mt-6 flex flex-wrap items-center justify-between gap-4"
+      className="mt-8 flex flex-wrap items-center justify-between gap-4"
     >
       <p className="text-xs text-ink-400">
         第 {page} / {totalPages} 页
@@ -88,7 +88,7 @@ function PageLink({
   children: React.ReactNode;
 } & React.AriaAttributes) {
   const base =
-    "inline-flex h-8 min-w-8 items-center justify-center border px-2.5 text-xs transition-colors";
+    "inline-flex h-9 min-w-9 items-center justify-center rounded-md border px-3 text-xs transition-colors duration-200";
 
   if (disabled) {
     return (
@@ -103,8 +103,8 @@ function PageLink({
       href={href}
       className={`${base} ${
         active
-          ? "border-forest-700 bg-forest-700 text-white"
-          : "border-ink-900/15 bg-white text-ink-600 hover:border-forest-600 hover:text-forest-700"
+          ? "border-ink-950 bg-ink-950 font-medium text-white"
+          : "border-ink-900/15 bg-white text-ink-600 hover:border-ink-950 hover:text-ink-950"
       }`}
       {...rest}
     >

@@ -153,7 +153,7 @@ export default function ContactForm({ product }: ContactFormProps) {
         </button>
 
         {state.status === "success" ? (
-          <p className="text-sm font-medium text-forest-600">{state.message}</p>
+          <p className="text-sm font-medium text-emerald-700">{state.message}</p>
         ) : null}
         {state.status === "error" ? (
           <p className="text-sm font-medium text-red-600">{state.message}</p>

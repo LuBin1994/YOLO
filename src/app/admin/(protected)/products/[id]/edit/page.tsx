@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import ProductForm from "@/components/admin/ProductForm";
 import { createClient } from "@/lib/supabase/server";
 
@@ -25,13 +26,12 @@ export default async function AdminProductEditPage({ params }: Props) {
   if (!product) notFound();
 
   return (
-    <div className="max-w-3xl">
-      <p className="text-[11px] uppercase tracking-[0.24em] text-forest-600">
-        产品目录
-      </p>
-      <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-        编辑：{product.title}
-      </h1>
+    <div className="max-w-4xl">
+      <AdminPageHeader
+        eyebrow="产品目录"
+        title={`编辑：${product.title}`}
+        description="修改后保存，前台产品页会即时更新。"
+      />
       <div className="mt-10">
         <ProductForm product={product} />
       </div>

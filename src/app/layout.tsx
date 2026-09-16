@@ -23,6 +23,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
+      <head>
+        {/* 兜底：JS 未启用/加载失败时，滚动揭示的初始隐藏态会把内容永久藏住 */}
+        <noscript>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
+      </head>
       <body className="min-h-full flex flex-col">
         {children}
         {/* Vercel Web Analytics：隐私友好的访客数据追踪 */}

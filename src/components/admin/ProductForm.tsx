@@ -83,14 +83,14 @@ export default function ProductForm({ product }: ProductFormProps) {
   }
 
   const inputCls =
-    "w-full border border-ink-900/15 bg-white px-3 py-2.5 text-sm outline-none transition-colors focus:border-forest-600";
+    "w-full border border-ink-900/15 bg-white px-3 py-2.5 text-sm outline-none transition-colors focus:border-ink-950";
   const labelCls = "mb-1.5 block text-[11px] uppercase tracking-[0.2em] text-ink-400";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* 基础信息 */}
       <section className="space-y-5">
-        <p className="text-[11px] uppercase tracking-[0.24em] text-forest-600">
+        <p className="text-[11px] uppercase tracking-[0.24em] text-ink-400">
           基本信息
         </p>
         <div>
@@ -181,7 +181,7 @@ export default function ProductForm({ product }: ProductFormProps) {
 
       {/* 图片 */}
       <section className="space-y-5">
-        <p className="text-[11px] uppercase tracking-[0.24em] text-forest-600">
+        <p className="text-[11px] uppercase tracking-[0.24em] text-ink-400">
           图片 <span className="text-ink-400">（Supabase 存储）</span>
         </p>
         <ImageUploader
@@ -193,7 +193,7 @@ export default function ProductForm({ product }: ProductFormProps) {
 
       {/* 设置 */}
       <section className="space-y-5">
-        <p className="text-[11px] uppercase tracking-[0.24em] text-forest-600">
+        <p className="text-[11px] uppercase tracking-[0.24em] text-ink-400">
           设置
         </p>
         <div className="grid gap-5 sm:grid-cols-2">
@@ -209,21 +209,21 @@ export default function ProductForm({ product }: ProductFormProps) {
           </div>
         </div>
         <div className="flex flex-wrap gap-8 pt-1">
-          <label className="flex cursor-pointer items-center gap-3 text-sm text-ink-900">
+          <label className="flex cursor-pointer items-center gap-3 text-sm text-ink-950">
             <input
               type="checkbox"
               checked={featured}
               onChange={(e) => setFeatured(e.target.checked)}
-              className="h-4 w-4 accent-forest-700"
+              className="h-4 w-4 accent-ink-950"
             />
             首页精选
           </label>
-          <label className="flex cursor-pointer items-center gap-3 text-sm text-ink-900">
+          <label className="flex cursor-pointer items-center gap-3 text-sm text-ink-950">
             <input
               type="checkbox"
               checked={published}
               onChange={(e) => setPublished(e.target.checked)}
-              className="h-4 w-4 accent-forest-700"
+              className="h-4 w-4 accent-ink-950"
             />
             发布
           </label>

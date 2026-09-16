@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 /* =============================================================
-   设计系统 · 绿色环保 / 艺术画廊质感
-   主色：森林绿 forest · 点缀：苔藓 moss · 背景：米白 sand
+   设计系统 · 年轻时尚编辑部质感
+   基底：高亮白 paper · 重音：近黑 ink-950 · 品牌：森林绿 forest
+   活力强调：电光青柠 volt（仅小剂量点缀）
    ============================================================= */
 
 @theme {
@@ -10,7 +11,7 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
     "Helvetica Neue", Arial, sans-serif;
 
-  /* 森林绿主色系 */
+  /* 森林绿主色系（品牌资产，退为点缀与细节） */
   --color-forest-50: #f0f5f1;
   --color-forest-100: #dce9df;
   --color-forest-200: #b9d3c2;
@@ -29,7 +30,7 @@
   --color-moss-500: #6d974a;
   --color-moss-600: #557a3a;
 
-  /* 米白背景 */
+  /* 米白背景（用于区块轻微交替，不再是页面主底色） */
   --color-sand-50: #faf9f6;
   --color-sand-100: #f4f2ec;
   --color-sand-200: #e9e5da;
@@ -38,6 +39,23 @@
   --color-ink-900: #141a16;
   --color-ink-600: #4a554e;
   --color-ink-400: #7d877f;
+
+  /* ---------- 年轻化基底：高亮白 + 近黑重音 ---------- */
+
+  /* 页面主底色改为纯白，替代原来的米白：
+     白底 + 黑块对撞是时尚品牌最常用的高对比底子，比米白更干净利落。 */
+  --color-paper: #ffffff;
+
+  /* 重音色块改近黑，替代原来的 forest-950：
+     同样是"大面积深色块"，深绿读作沉稳工业，近黑读作时尚编辑部。 */
+  --color-ink-950: #0a0a0a;
+
+  /* 活力强调色（volt 电光青柠）：仅小剂量点缀
+     【约束】不可用作白底上的正文/标题色，对比度不足；
+     只用于色块底（配黑字）、下划线、hover 填充、细线、角标。 */
+  --color-volt-300: #e6ff85;
+  --color-volt-400: #d6f94b;
+  --color-volt-500: #c4ed2b;
 
   /* 留白节奏 */
   --spacing-section: clamp(4rem, 10vw, 8rem);
@@ -49,12 +67,12 @@ html {
 }
 
 body {
-  @apply bg-sand-50 text-ink-900 font-sans antialiased;
+  @apply bg-paper text-ink-900 font-sans antialiased;
   text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  @apply bg-forest-700 text-white;
+  @apply bg-ink-950 text-white;
 }
 
 /* ---------- 标题层级 ---------- */
@@ -63,23 +81,28 @@ body {
   h2,
   h3,
   h4 {
-    @apply font-sans tracking-tight font-semibold text-ink-900;
-    letter-spacing: -0.02em;
+    @apply font-sans font-medium text-ink-900;
+    letter-spacing: -0.025em;
   }
 }
 
-/* 展示标题：Primesource 式克制排印 —— 字重 medium、字距接近中性，
-   靠字号与留白建立气场，不用超粗/超紧字距。 */
+/* 展示标题：字号大、行高紧、字距紧，但字重保持 medium。
+   年轻感来自"字号落差"，不来自"字重加粗"——加粗是潮牌语汇，容易过火。 */
 .display-xl {
-  @apply text-4xl font-medium md:text-6xl lg:text-7xl;
-  line-height: 1.06;
-  letter-spacing: -0.01em;
+  @apply text-5xl font-medium md:text-7xl lg:text-8xl;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
 }
 
 .display-lg {
-  @apply text-3xl font-medium md:text-5xl;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  @apply text-4xl font-medium md:text-6xl;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+/* 与之配对的小标签：制造"超大标题 vs 极小标签"的落差感 */
+.eyebrow {
+  @apply text-[11px] font-medium uppercase tracking-[0.3em] text-ink-400;
 }
 
 /* ---------- 布局工具 ---------- */
@@ -93,7 +116,7 @@ body {
 
 /* 画廊式图片容器（图片作为视觉焦点） */
 .frame {
-  @apply relative overflow-hidden bg-forest-100;
+  @apply relative overflow-hidden bg-sand-100;
 }
 
 .frame img {
@@ -105,22 +128,23 @@ body {
 }
 
 /* ---------- 按钮 ---------- */
+/* 主按钮改用近黑，hover 反色为青柠（配黑字），形成明确的"想点"反馈 */
 .btn-primary {
-  @apply inline-flex items-center justify-center gap-2 bg-forest-700 px-7 py-3.5 text-sm font-medium tracking-wide text-sand-50 transition-colors duration-300 hover:bg-forest-800;
+  @apply inline-flex items-center justify-center gap-2 bg-ink-950 px-7 py-3.5 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:bg-volt-400 hover:text-ink-950;
 }
 
 .btn-outline {
-  @apply inline-flex items-center justify-center gap-2 border border-ink-900/20 px-7 py-3.5 text-sm font-medium tracking-wide transition-colors duration-300 hover:border-forest-700 hover:text-forest-700;
+  @apply inline-flex items-center justify-center gap-2 border border-ink-900/20 px-7 py-3.5 text-sm font-medium tracking-wide transition-colors duration-300 hover:border-ink-950 hover:bg-ink-950 hover:text-white;
 }
 
 .btn-ghost {
-  @apply inline-flex items-center justify-center gap-2 text-ink-900 underline-offset-8 transition-colors duration-300 hover:underline;
+  @apply inline-flex items-center justify-center gap-2 text-ink-900 underline decoration-volt-500 decoration-2 underline-offset-8 transition-colors duration-300 hover:decoration-ink-950;
 }
 
 /* ---------- 表单 ---------- */
 .input-field {
   @apply w-full border-b border-ink-900/20 bg-transparent py-3 text-base outline-none transition-colors
-    placeholder:text-ink-400 focus:border-forest-600;
+    placeholder:text-ink-400 focus:border-ink-950;
 }
 
 /* ---------- 细线 ---------- */
@@ -128,34 +152,39 @@ body {
   @apply border-ink-900/10;
 }
 
+/* 强调细线：用于区块标题下方的短横，小剂量注入活力 */
+.rule-volt {
+  @apply block h-[3px] w-12 bg-volt-400;
+}
+
 /* =============================================================
-   Primesource 式排版工具类
+   版面工具类（Primesource 式结构骨架，配色已切换为白底黑块）
    ============================================================= */
 
 /* 深色带：满宽容器，内部左窄右宽文案栏 */
 .band-dark {
-  @apply bg-forest-950 text-sand-100;
+  @apply bg-ink-950 text-white;
 }
 
 /* 黑色胶囊横条：压在大图底部的全宽标签行（双拼 Banner 下方） */
 .banner-strip {
-  @apply bg-forest-950 py-3.5 text-center text-[11px] font-medium uppercase tracking-[0.28em] text-sand-100;
+  @apply bg-ink-950 py-3.5 text-center text-[11px] font-medium uppercase tracking-[0.28em] text-white;
 }
 
 /* 大图上叠印的小标签 */
 .overlay-eyebrow {
-  @apply text-xs font-medium tracking-[0.14em] text-sand-100/85;
+  @apply text-xs font-medium tracking-[0.14em] text-white/85;
 }
 
-/* 大图上叠印的主标题（窄字距、非超大，克制） */
+/* 大图上叠印的主标题 */
 .overlay-title {
-  @apply font-semibold tracking-[0.04em];
-  line-height: 1.02;
+  @apply font-medium tracking-[0.01em];
+  line-height: 1;
 }
 
 /* 实心方角小按钮：栏内 CTA */
 .btn-solid-sm {
-  @apply inline-flex items-center justify-center px-7 py-2.5 text-xs font-medium tracking-wide text-white transition-opacity duration-300 hover:opacity-85;
+  @apply inline-flex items-center justify-center px-7 py-2.5 text-xs font-medium tracking-wide text-white transition-colors duration-300;
 }
 
 /* 等宽卡片网格（品类 / 产品） */
@@ -165,19 +194,20 @@ body {
 
 /* 卡片内的图片容器：固定比例、无边框、极简 */
 .card-media {
-  @apply relative aspect-[4/3] overflow-hidden bg-sand-200;
+  @apply relative aspect-[4/3] overflow-hidden bg-sand-100;
 }
 
 /* 大号排印段落：把能力清单当图形使用 */
 .typo-lead {
-  @apply font-semibold tracking-tight;
-  font-size: clamp(1.5rem, 3.4vw, 2.6rem);
-  line-height: 1.28;
+  @apply font-medium;
+  font-size: clamp(1.6rem, 3.6vw, 2.9rem);
+  line-height: 1.24;
+  letter-spacing: -0.025em;
 }
 
 /* 强调色文字（用于标签、链接 hover） */
 .text-accent {
-  @apply text-forest-600;
+  @apply text-ink-950;
 }
 
 /* ---------- 图片跑马灯 ---------- */
@@ -205,7 +235,7 @@ body {
 
 /* 图片格：满幅无间隙，与 Primesource 的贴边排布一致 */
 .marquee-cell {
-  @apply relative h-[26vh] w-[48vw] shrink-0 overflow-hidden bg-sand-200 md:h-[28vh] md:w-[22vw] lg:w-[17vw];
+  @apply relative h-[26vh] w-[48vw] shrink-0 overflow-hidden bg-sand-100 md:h-[28vh] md:w-[22vw] lg:w-[17vw];
 }
 
 /* 格子内的链接层：铺满整格，让整张图成为可点区域 */
@@ -223,7 +253,7 @@ body {
 }
 
 .marquee-link:focus-visible {
-  @apply outline-2 outline-forest-600 outline-offset-[-3px];
+  @apply outline-2 outline-ink-950 outline-offset-[-3px];
 }
 
 @keyframes marquee-left {
@@ -241,3 +271,31 @@ body {
  * 产品图片跑马灯是本页的展示主体，命中该偏好时整块会变成死图。
  * 若要兼顾无障碍，只降低速度（调大 animation-duration），不要禁用动画。
  */
+
+/* ---------- 滚动揭示 ---------- */
+/* 用法见 Reveal.tsx：进入视口后加上 .is-visible */
+
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 760ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/*
+ * 与跑马灯相反，这里的降级是安全的：内容只是"不做入场动画"，
+ * 仍然完整可见。所以 reduced-motion 下直接显示即可，不会造成内容丢失。
+ */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
