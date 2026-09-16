@@ -60,7 +60,7 @@ export default async function ProductsPage() {
 
       {/* ③ 图片跑马灯：两行滚动，悬停暂停；图源=产品图片，悬停放大、点击进详情页 */}
       {marqueeRows.length > 0 ? (
-        <ImageMarquee rows={marqueeRows} label="YOLO Apparel style" />
+        <ImageMarquee rows={marqueeRows} label="TEM Apparel style" />
       ) : null}
 
       {/* ④ 目录主体：分类筛选 + 网格/列表切换 */}

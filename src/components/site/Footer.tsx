@@ -66,7 +66,7 @@ export default function Footer() {
           className="mt-16 select-none text-[13vw] font-medium leading-[0.85] tracking-[-0.04em] text-ink-950/10 md:text-[9vw]"
           aria-hidden
         >
-          YOLO APPAREL
+          TEM APPAREL
         </p>
 
         <div className="mt-10 flex flex-col gap-2 border-t hairline pt-8 text-xs text-ink-400 sm:flex-row sm:items-center sm:justify-between">

@@ -55,7 +55,7 @@ export default function AdminSidebar({ admin }: AdminSidebarProps) {
         </span>
         <div className="hidden min-w-0 md:block">
           <p className="truncate text-sm font-medium text-white">
-            YOLO APPAREL
+            TEM APPAREL
           </p>
           <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">
             管理后台
