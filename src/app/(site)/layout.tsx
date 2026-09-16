@@ -7,8 +7,8 @@ import Footer from "@/components/site/Footer";
  */
 export const metadata: Metadata = {
   title: {
-    default: "YOLO APPAREL PTE. LTD.",
-    template: "%s | YOLO APPAREL PTE. LTD.",
+    default: "TEM APPAREL PTE. LTD.",
+    template: "%s | TEM APPAREL PTE. LTD.",
   },
 };
 

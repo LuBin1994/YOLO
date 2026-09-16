@@ -148,7 +148,7 @@ export default function AdminLoginPage() {
             <span aria-hidden className="h-[3px] w-6 bg-volt-400" />
             管理后台
           </p>
-          <p className="display-xl mt-6 text-white">YOLO APPAREL PTE. LTD.</p>
+          <p className="display-xl mt-6 text-white">TEM APPAREL PTE. LTD.</p>
         </div>
       </div>
 

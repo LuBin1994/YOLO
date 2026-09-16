@@ -60,10 +60,10 @@ export default function Header() {
           className={`flex items-baseline gap-2 transition-colors duration-300 ${
             onImage ? "text-white" : "text-ink-950"
           }`}
-          aria-label="YOLO APPAREL PTE. LTD. — Home"
+          aria-label="TEM APPAREL PTE. LTD. — Home"
         >
           <span className="text-lg font-medium tracking-tight md:text-xl">
-            YOLO APPAREL PTE. LTD.
+            TEM APPAREL PTE. LTD.
           </span>
         </Link>
 

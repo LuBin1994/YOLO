@@ -11,8 +11,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "YOLO APPAREL PTE. LTD. — Apparel Manufacturing in Southeast Asia",
-    template: "%s | YOLO APPAREL PTE. LTD.",
+    default: "TEM APPAREL PTE. LTD. — Apparel Manufacturing in Southeast Asia",
+    template: "%s | TEM APPAREL PTE. LTD.",
   },
   description:
     "Vertically integrated apparel manufacturer in Southeast Asia. Sustainable materials, full supply chain control, B2B wholesale programs.",

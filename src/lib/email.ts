@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 
 /** 站点信息（用于邮件署名与回复地址） */
-const SITE_NAME = "YOLO APPAREL PTE. LTD.";
+const SITE_NAME = "TEM APPAREL PTE. LTD.";
 const SITE_EMAIL = "sales@meridianapparel.com";
 
 /**

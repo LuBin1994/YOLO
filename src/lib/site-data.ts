@@ -298,7 +298,7 @@ export async function getPage(slug: string): Promise<Page | null> {
 
 /** 站点品牌信息 */
 export const SITE = {
-  name: "YOLO APPAREL PTE. LTD.",
+  name: "TEM APPAREL PTE. LTD.",
   tagline: "Apparel Manufacturing in Southeast Asia",
   email: "sales@meridianapparel.com",
   phone: "+84 28 3xxx xxxx",
@@ -334,7 +334,7 @@ export const HOME_BANNERS = [
 /** 首页 Welcome 深色带 */
 export const HOME_WELCOME = {
   heading: "Welcome",
-  body: "YOLO APPAREL PTE. LTD. is a Southeast Asia based apparel group offering complete manufacturing solutions — from concept, design and fabric sourcing through production, quality assurance and final shipment. We operate our own factories, which means no trading middlemen between your brand and the sewing floor.",
+  body: "TEM APPAREL PTE. LTD. is a Southeast Asia based apparel group offering complete manufacturing solutions — from concept, design and fabric sourcing through production, quality assurance and final shipment. We operate our own factories, which means no trading middlemen between your brand and the sewing floor.",
   /** 右侧大号排印：直接把能力清单当图形 */
   lead: [
     "Sourcing and Manufacturing /",

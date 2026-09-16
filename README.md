@@ -1,4 +1,4 @@
-# YOLO APPAREL PTE. LTD. — 离岸官网系统
+# TEM APPAREL PTE. LTD. — 离岸官网系统
 
 面向海外客户的服装外贸集团官网系统：**独立前台展示站 + 独立后台管理系统**，部署于 Vercel Serverless，数据与鉴权由 Supabase 承载。
 
