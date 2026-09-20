@@ -38,7 +38,10 @@
   /* 近黑墨色文字 */
   --color-ink-900: #141a16;
   --color-ink-600: #4a554e;
-  --color-ink-400: #7d877f;
+  /* 弱化文字色：原为 #7d877f，在白底上只有 3.72:1，11-12px 小字不满足
+     WCAG 2.2 AA（要求 4.5:1）。调深到 #6b746d 后为 4.83:1，既达标
+     又与 ink-600（7.77:1）保持可见的层级差。 */
+  --color-ink-400: #6b746d;
 
   /* ---------- 年轻化基底：高亮白 + 近黑重音 ---------- */
 
@@ -166,11 +169,6 @@ body {
   @apply bg-ink-950 text-white;
 }
 
-/* 黑色胶囊横条：压在大图底部的全宽标签行（双拼 Banner 下方） */
-.banner-strip {
-  @apply bg-ink-950 py-3.5 text-center text-[11px] font-medium uppercase tracking-[0.28em] text-white;
-}
-
 /* 大图上叠印的小标签 */
 .overlay-eyebrow {
   @apply text-xs font-medium tracking-[0.14em] text-white/85;
@@ -182,19 +180,19 @@ body {
   line-height: 1;
 }
 
-/* 实心方角小按钮：栏内 CTA */
-.btn-solid-sm {
-  @apply inline-flex items-center justify-center px-7 py-2.5 text-xs font-medium tracking-wide text-white transition-colors duration-300;
-}
-
 /* 等宽卡片网格（品类 / 产品） */
 .card-grid-3 {
   @apply grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3;
 }
 
-/* 卡片内的图片容器：固定比例、无边框、极简 */
+/* 卡片内的图片容器：固定比例、无边框、极简。
+   比例由 4/3（横）改为 4/5（竖）：4:3 是横幅与 PDF 产品目录的比例，
+   横向裁切会把服装的下摆与腿部切掉，读者第一眼会读成"目录缩略图"。
+   竖构图才能看到完整廓形，这是全站最省力、收益最高的一处改动。
+   列表视图（ProductCard list variant）仍有显式的 4/3 覆盖——那是密集
+   浏览模式，需要一屏扫更多行，属于有意的差异。 */
 .card-media {
-  @apply relative aspect-[4/3] overflow-hidden bg-sand-100;
+  @apply relative aspect-[4/5] overflow-hidden bg-sand-100;
 }
 
 /* 大号排印段落：把能力清单当图形使用 */
@@ -295,6 +293,31 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---------- 第二种动效：缓慢推近 ---------- */
+/* 用法见 SlowZoom.tsx：进入视口后加上 .is-visible，图片从 1.06 缓慢回到 1。
+   刻意与 .reveal 的"淡入 + 上移"区分开——全站只有一种动效会显得像模板，
+   而图片推近是编辑式影像里最常用的一种"呼吸"。
+   刻意不做逐帧跟随滚动的视差：那需要滚动监听，在移动端有掉帧风险，
+   收益不抵复杂度。 */
+.slow-zoom {
+  transform: scale(1.06);
+  transition: transform 1400ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.slow-zoom.is-visible {
+  transform: scale(1);
+}
+
+/* 与 .reveal 同理：这里降级是安全的——图片只是不做推近，仍然完整可见。 */
+@media (prefers-reduced-motion: reduce) {
+  .slow-zoom,
+  .slow-zoom.is-visible {
     transform: none;
     transition: none;
   }

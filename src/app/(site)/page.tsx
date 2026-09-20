@@ -3,13 +3,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SplitBanner from "@/components/site/SplitBanner";
 import DarkBand from "@/components/site/DarkBand";
+import FullBleedBand from "@/components/site/FullBleedBand";
 import ProductCard from "@/components/site/ProductCard";
 import VideoWall from "@/components/site/VideoWall";
 import Reveal from "@/components/site/Reveal";
 import {
-  CERTIFICATIONS,
   HOME_BANNERS,
   HOME_CATEGORIES,
+  HOME_EDITORIAL,
   HOME_STYLE_FILM,
   HOME_WELCOME,
   getProducts,
@@ -27,7 +28,7 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* ① 双拼 Banner + 近黑横条（首屏不做入场动画） */}
+      {/* ① 主视觉：满幅单图 + 文字贴左下（首屏不做入场动画） */}
       <SplitBanner items={HOME_BANNERS} />
 
       {/* ② Welcome 近黑带：左窄右宽，右栏把能力清单当图形 */}
@@ -84,7 +85,19 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ⑤ 精选产品 */}
+      {/* ⑤ 满幅节奏块：品类与精选是两个结构相同的三列网格，连排会让注意力
+          曲线变平，中间插一个满幅大块形成「大—小—大」的呼吸。
+          同时也是给客户留的独立槽位——拿到真实 campaign 图直接换 image 即可。 */}
+      <FullBleedBand
+        eyebrow={HOME_EDITORIAL.eyebrow}
+        title={HOME_EDITORIAL.title}
+        body={HOME_EDITORIAL.body}
+        cta={HOME_EDITORIAL.cta}
+        image={HOME_EDITORIAL.image}
+        alt={HOME_EDITORIAL.alt}
+      />
+
+      {/* ⑥ 精选产品 */}
       <section className="border-t hairline bg-sand-50">
         <div className="container-site section-pad">
           <Reveal>
@@ -112,19 +125,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ⑥ 资质条 */}
-      <section className="border-y hairline">
-        <div className="container-site flex flex-wrap items-center justify-center gap-x-12 gap-y-4 py-8">
-          {CERTIFICATIONS.map((c) => (
-            <span
-              key={c}
-              className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400"
-            >
-              {c}
-            </span>
-          ))}
-        </div>
-      </section>
+      {/* 资质条（GOTS / Oeko-Tex / BSCI / WRAP / GRS）已从首页移走。
+          它是首页最"工厂"的元素——回答的是"你合规吗"，而首页要回答的是
+          "你好看吗"。/factory 页已有一模一样的一条，无需重复建设。 */}
 
       {/* ⑦ 近黑 CTA 带：全站唯一的超大排印收束点 */}
       <section className="band-dark w-full">

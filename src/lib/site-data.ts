@@ -331,6 +331,25 @@ export const HOME_BANNERS = [
   },
 ] as const;
 
+/**
+ * 首页中段满幅节奏块。
+ *
+ * 存在的意义有两个：
+ * 1) 打断节奏。品类与精选是两个结构完全相同的三列网格，连排会让注意力曲线变平，
+ *    中间需要一个"大块"形成「大—小—大」的呼吸。
+ * 2) 给客户留一个**独立的槽位**：日后拿到真实 campaign 图，直接换 image 即可，
+ *    不必再动版面结构。
+ */
+export const HOME_EDITORIAL = {
+  eyebrow: "AW26 — In Development",
+  title: "Built with your brand in mind.",
+  body: "From first sketch to final shipment, one team owns the whole program — fabric, fit, quality and lead time.",
+  cta: { label: "Start a Program", href: "/contact" },
+  image:
+    "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2400&auto=format",
+  alt: "Model wearing a finished garment from the collection",
+} as const;
+
 /** 首页 Welcome 深色带 */
 export const HOME_WELCOME = {
   heading: "Welcome",
