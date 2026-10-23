@@ -26,7 +26,7 @@ const STATION_ID =
 
 const EMBED_TOKEN =
   process.env.NEXT_PUBLIC_DIGI_EMPLOYEE_TOKEN ??
-  "stn_eisgaXZB-SxiS3YqZOSjLkDzJuXywlUuSHDqIwH8J6I";
+  "stn_e8se7QddhNGX_HUmsD0gwuywAbx1i4X8NDQw-bVGWJo";
 
 /**
  * 取 embed token。**这是将来唯一需要替换的地方。**
