@@ -168,7 +168,7 @@ export default function InquiryList({
 
         <button
           type="submit"
-          className="border border-ink-950 bg-ink-950 px-5 py-2.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-volt-400 hover:text-ink-950"
+          className="border border-ink-950 bg-ink-950 px-5 py-2.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-accent-500 hover:text-white"
         >
           筛选
         </button>

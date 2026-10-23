@@ -1,4 +1,3 @@
-import type { FilmClip } from "@/components/site/VideoWall";
 import type { MarqueeRow, MarqueeTile } from "@/components/site/ImageMarquee";
 import type { Page, Product } from "./supabase/types";
 
@@ -305,161 +304,310 @@ export const SITE = {
   address: "Ho Chi Minh City, Vietnam · Phnom Penh, Cambodia",
 } as const;
 
-/* =============================================================
-   静态展示内容（不进数据库）
-   与 Primesource 式版式配套：Welcome 带、能力清单、品类卡片、
-   工厂工艺步骤、资质条。后台不可编辑，改文案直接改本文件。
-   ============================================================= */
+/* -------------------------------------------------------------
+   首页视频墙：九段视频铺满整屏（2026-10-22 客户要求）
+   ------------------------------------------------------------- */
 
-/** 首页双拼 Banner 两栏 */
-export const HOME_BANNERS = [
-  {
-    eyebrow: "Officially Licensed Manufacturing",
-    title: "PRIVATE LABEL",
-    cta: { label: "Explore", href: "/products" },
-    image:
-      "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1600&auto=format",
-    strip: "Full Package Service",
-  },
-  {
-    eyebrow: "AW26 Program Open",
-    title: "SEASONAL",
-    cta: { label: "Explore", href: "/contact" },
-    image:
-      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1600&auto=format",
-    strip: "AW26 Launching Soon",
-  },
-] as const;
+/** 视频墙的一段素材 */
+export interface ReelClip {
+  id: string;
+  /** 格内左上角编号 01–09 */
+  no: string;
+  /** 悬停时左下角的标注 */
+  label: string;
+  /** 主题，悬停时显示在右侧。四类：设计 / 版房 / 车间 / 成衣 / 人文 */
+  theme: "Design" | "Pattern room" | "Production floor" | "Collection" | "People";
+  src: string;
+  /** 封面静帧。必须与视频内容同一画面（Mixkit 官方缩略图），不能用同主题杂图 */
+  poster: string;
+  alt: string;
+}
 
 /**
- * 首页中段满幅节奏块。
+ * 首页视频墙（九宫格改版）。
  *
- * 存在的意义有两个：
- * 1) 打断节奏。品类与精选是两个结构完全相同的三列网格，连排会让注意力曲线变平，
- *    中间需要一个"大块"形成「大—小—大」的呼吸。
- * 2) 给客户留一个**独立的槽位**：日后拿到真实 campaign 图，直接换 image 即可，
- *    不必再动版面结构。
- */
-export const HOME_EDITORIAL = {
-  eyebrow: "AW26 — In Development",
-  title: "Built with your brand in mind.",
-  body: "From first sketch to final shipment, one team owns the whole program — fabric, fit, quality and lead time.",
-  cta: { label: "Start a Program", href: "/contact" },
-  image:
-    "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2400&auto=format",
-  alt: "Model wearing a finished garment from the collection",
-} as const;
-
-/** 首页 Welcome 深色带 */
-export const HOME_WELCOME = {
-  heading: "Welcome",
-  body: "TEM APPAREL PTE. LTD. is a Southeast Asia based apparel group offering complete manufacturing solutions — from concept, design and fabric sourcing through production, quality assurance and final shipment. We operate our own factories, which means no trading middlemen between your brand and the sewing floor.",
-  /** 右侧大号排印：直接把能力清单当图形 */
-  lead: [
-    "Sourcing and Manufacturing /",
-    "Design Support /",
-    "Performance Sportswear /",
-    "Outerwear / Denim & Twill /",
-    "Knitwear and Intimates",
-  ],
-} as const;
-
-/**
- * 首页风格影片墙：四列竖版循环短片（对齐 Primesource 首页的做法）。
- * - 素材已本地化到 public/media/，不再依赖外链
- * - 规格：竖版 3:4（832×1088 / 536×720 等）、静音 H.264、可无缝循环
- * - poster 为各条视频的首帧，视频 canplay 之前显示这张静态图
- * - 替换素材：直接覆盖 public/media/style-film-0X.mp4 与同名 .jpg，不用改代码
+ * 【素材】Mixkit 免费商用（Free License，无需署名），已本地化到
+ * `public/media/home/mosaic/`，文件名就是 Mixkit 的片段 id。
+ * poster 用的是 Mixkit 官方缩略图（同一段视频的同一帧），
+ * 不会出现"静帧淡出后画面硬跳"的老问题。
  *
- * ⚠️ 当前四条素材取自参考站 Primesource，仅用于开发期看效果，
- *    属于他人资产，正式上线前必须替换为自有或已授权素材。
+ * 主题覆盖客户要求的四类：
+ * - 成衣设计：development（设计工作室里打样）、sketch（纸样与面料）
+ * - 版房：    measuring（软尺与布卷）、cutting（裁剪刀）
+ * - 成衣工厂：stitching（机针细节）、sewing（缝制）、corridor（车间走廊）
+ * - 人文关怀：team（团队的手）、corridor（一线工人）
+ *
+ * 【体积】九段 720p 合计约 55MB，现在都是占位素材。上线前应用 ffmpeg
+ * 压到 1.5Mbps 上下（预计每段 1.5–2MB）再替换同名文件，代码不用动。
+ * 页面本身 preload="metadata"，不会在进页面时把 55MB 全拉下来。
  */
-export const HOME_STYLE_FILM: readonly FilmClip[] = [
+export const HOME_REEL: readonly ReelClip[] = [
   {
-    label: "Jersey tee and chino look on the model",
-    video: "/media/style-film-01.mp4",
-    poster: "/media/style-film-01.jpg",
+    id: "development",
+    no: "01",
+    label: "Sampling studio",
+    theme: "Design",
+    src: "/media/home/mosaic/45750.mp4",
+    poster: "/media/home/mosaic/45750.webp",
+    alt: "Designer working at a sewing machine in a bright sampling studio",
   },
   {
-    label: "Camo jacket and jogger look on the model",
-    video: "/media/style-film-02.mp4",
-    poster: "/media/style-film-02.jpg",
+    id: "measuring",
+    no: "02",
+    label: "Measuring",
+    theme: "Pattern room",
+    src: "/media/home/mosaic/35388.mp4",
+    poster: "/media/home/mosaic/35388.webp",
+    alt: "Measuring tape resting on rolls of fabric in a pattern room",
   },
   {
-    label: "Seamless activewear set on the model",
-    video: "/media/style-film-03.mp4",
-    poster: "/media/style-film-03.jpg",
+    id: "collection",
+    no: "03",
+    label: "Finished goods",
+    theme: "Collection",
+    src: "/media/home/mosaic/33167.mp4",
+    poster: "/media/home/mosaic/33167.webp",
+    alt: "Knitwear hanging in a row on a garment rail",
   },
   {
-    label: "Printed sleepwear set on the model",
-    video: "/media/style-film-04.mp4",
-    poster: "/media/style-film-04.jpg",
+    id: "sketch",
+    no: "04",
+    label: "Fabric selection",
+    theme: "Design",
+    src: "/media/home/mosaic/21538.mp4",
+    poster: "/media/home/mosaic/21538.webp",
+    alt: "Hands comparing fabric swatches over a technical sketch",
+  },
+  {
+    id: "stitching",
+    no: "05",
+    label: "Stitching",
+    theme: "Production floor",
+    src: "/media/home/mosaic/45527.mp4",
+    poster: "/media/home/mosaic/45527.webp",
+    alt: "Close-up of an industrial sewing machine needle stitching fabric",
+  },
+  {
+    id: "corridor",
+    no: "06",
+    label: "On the floor",
+    theme: "People",
+    src: "/media/home/mosaic/23378.mp4",
+    poster: "/media/home/mosaic/23378.webp",
+    alt: "Worker in overalls walking down a factory corridor",
+  },
+  {
+    id: "team",
+    no: "07",
+    label: "Our team",
+    theme: "People",
+    src: "/media/home/mosaic/35959.mp4",
+    poster: "/media/home/mosaic/35959.webp",
+    alt: "Team members joining hands in a circle",
+  },
+  {
+    id: "cutting",
+    no: "08",
+    label: "Cutting",
+    theme: "Pattern room",
+    src: "/media/home/mosaic/14776.mp4",
+    poster: "/media/home/mosaic/14776.webp",
+    alt: "Scissors cutting through blue fabric on a cutting table",
+  },
+  {
+    id: "sewing",
+    no: "09",
+    label: "Sewing line",
+    theme: "Production floor",
+    src: "/media/home/mosaic/12525.mp4",
+    poster: "/media/home/mosaic/12525.webp",
+    alt: "Hands guiding a shirt under a sewing machine needle",
   },
 ];
 
-/** 首页品类卡片（等宽三列，两行共六项） */
-export const HOME_CATEGORIES = [
-  {
-    name: "Activewear & Sportswear",
-    body: "As a leading manufacturing partner, we build performance programs with top-tier fabric mills and in-house bonding lines.",
-    image:
-      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format",
-  },
-  {
-    name: "Streetwear & Casualwear",
-    body: "Unlock the potential of urban fashion with heavyweight jersey, garment dyeing and drop-shoulder constructions.",
-    image:
-      "https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=1200&auto=format",
-  },
-  {
-    name: "Outerwear",
-    body: "Versatile outerwear designed to withstand all weather conditions — bonded shells, taped seams and insulated liners.",
-    image:
-      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1200&auto=format",
-  },
-  {
-    name: "Denim & Twill",
-    body: "Innovative techniques and high-quality materials, ensuring each piece combines style and comfort for the modern consumer.",
-    image:
-      "https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=1200&auto=format",
-  },
-  {
-    name: "Loungewear & Intimates",
-    body: "Elevate your offerings with soft-touch knits, seamless constructions and considered finishing.",
-    image:
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1200&auto=format",
-  },
-  {
-    name: "Babies & Childrenswear",
-    body: "Products designed with comfort and practicality in mind, meeting the compliance standards of every target market.",
-    image:
-      "https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=1200&auto=format",
-  },
-] as const;
+/**
+ * 视频墙正中那格的白底主介绍（2026-10-23）。
+ *
+ * 客户要求：把最中间那格视频换成"主要介绍"，白底黑字。
+ * 这里放的是**全页唯一的 h1**——所以文案要能独立回答问题"你是谁、做什么"，
+ * 不要写成口号。lead 那句（A Southeast Asia based apparel group…）
+ * 仍然留在下面的公司介绍里做详述，这里只给最短的一版。
+ */
+/** 视频墙正中主介绍的结构 */
+export interface ReelIntro {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  links: readonly { readonly href: string; readonly label: string }[];
+}
 
-/** 工厂页：四步工艺流程 */
-export const FACTORY_PROCESS = [
-  {
-    step: "01",
-    title: "Fabric Sourcing & Dyeing",
-    body: "Direct relationships with mills across Vietnam, China and Taiwan. In-house dye houses running closed-loop water recycling.",
-  },
-  {
-    step: "02",
-    title: "Cutting & Spreading",
-    body: "Automated cutting lines with CAD nesting, marker efficiency tracking and full fabric consumption reporting per order.",
-  },
-  {
-    step: "03",
-    title: "Sewing & Assembly",
-    body: "Six production lines, 1,200 operators, modular workstations for knit, woven and bonded constructions.",
-  },
-  {
-    step: "04",
-    title: "QC, Finishing & Logistics",
-    body: "AQL 2.5 inspection, in-line and final audits, third-party lab testing, pressing, packing and export documentation.",
-  },
-] as const;
+export const HOME_REEL_INTRO: ReelIntro = {
+  eyebrow: "Vertically integrated",
+  headline: "From your sketch to a shipped container.",
+  body: "Own factories across China, Cambodia, Laos, Myanmar and Egypt — design, fabric, fit and logistics in one team.",
+  links: [
+    { href: "/products", label: "See what we make" },
+    { href: "/factory", label: "Inside our factories" },
+  ],
+};
+
+/* -------------------------------------------------------------
+   案例图墙：三列流式图片 + 钉在中屏的大字（2026-10-23）
+   ------------------------------------------------------------- */
+
+export interface ShowcaseShot {
+  src: string;
+  alt: string;
+  /** CSS aspect-ratio，如 "4 / 5"。三列流式靠它拉开高低错落 */
+  ratio: string;
+}
+
+/**
+ * 案例图墙的图。
+ *
+ * 【素材来源】全部复用已经本地化的现有图片（拼贴静帧 / 视频海报 / 首屏帧），
+ * 不额外下载——它们本来就是同一批占位素材。客户拿到真实素材后，
+ * 换掉 src 即可，组件不用动。
+ *
+ * 【为什么每张都写 ratio】三列流式（CSS columns）里，图片必须有确定高度，
+ * 否则图片未加载完时列高会跳，正在滚动的文字会跟着抖。
+ */
+export const HOME_SHOWCASE: readonly ShowcaseShot[] = [
+  { src: "/media/home/mosaic/45750.jpg", alt: "Designer working at a sewing machine in the sampling studio", ratio: "4 / 5" },
+  { src: "/media/home/tile-production.jpg", alt: "Operators sewing garments on the production floor", ratio: "3 / 4" },
+  { src: "/media/home/mosaic/33167.jpg", alt: "Knitwear hanging in a row on a garment rail", ratio: "3 / 4" },
+  { src: "/media/home/mosaic/35388.jpg", alt: "Measuring tape resting on rolls of fabric", ratio: "1 / 1" },
+  { src: "/media/home/tile-campaign.jpg", alt: "Finished shirts hanging against a plain wall", ratio: "4 / 5" },
+  { src: "/media/home/mosaic/45527.jpg", alt: "Close-up of an industrial sewing machine needle", ratio: "16 / 11" },
+  { src: "/media/home/mosaic/21538.jpg", alt: "Hands comparing fabric swatches over a technical sketch", ratio: "4 / 5" },
+  { src: "/media/home/tile-materials.jpg", alt: "Rolls of fabric stacked on mill shelves", ratio: "4 / 3" },
+  { src: "/media/home/mosaic/23378.jpg", alt: "Worker in overalls walking down a factory corridor", ratio: "4 / 5" },
+  { src: "/media/home/tile-quality.jpg", alt: "Workers inspecting garments across an inspection table", ratio: "4 / 3" },
+  { src: "/media/home/mosaic/35959.jpg", alt: "Team members joining hands in a circle", ratio: "1 / 1" },
+  { src: "/media/home/tile-finishing.jpg", alt: "Pressed shirts hanging in a row before packing", ratio: "3 / 4" },
+  { src: "/media/home/mosaic/14776.jpg", alt: "Scissors cutting through blue fabric", ratio: "4 / 3" },
+  { src: "/media/home/tile-pattern.jpg", alt: "Paper pattern pieces laid out on a cutting table", ratio: "4 / 5" },
+  { src: "/media/home/mosaic/12525.jpg", alt: "Hands guiding a shirt under a sewing machine needle", ratio: "3 / 4" },
+  { src: "/media/home/mosaic/45750.jpg", alt: "Sampling studio seen from the cutting table", ratio: "3 / 2" },
+  { src: "/media/home/hero-campaign.jpg", alt: "Campaign image shot for an international brand", ratio: "16 / 9" },
+];
+
+/**
+ * 图墙中间那句话。
+ *
+ * **按行写死**，不交给自动换行：白色副本被裁在图墙的框里，黑色副本铺满整幅，
+ * 只有当某一行比图墙更宽时，行尾行首才会露到图墙外面变成黑色。
+ * 自动换行会随视口宽度变来变去，黑白分界就时有时无；写死行宽才能稳定出现。
+ */
+export const HOME_SHOWCASE_HEADLINE: readonly string[] = [
+  "Every piece here was patterned,",
+  "cut and sewn in our own",
+  "factories.",
+];
+
+/** 首页 Welcome 深色带 */
+export const HOME_WELCOME = {
+  eyebrow: "Welcome",
+  /** 一句话主张：先说"我们是谁"，不要一上来就报业务范围 */
+  lead: "A vertically integrated apparel group — 16+ own factories, four design centres, one chain from yarn to shipment.",
+  /** 正文拆成两段，比原来一整段更易读 */
+  body: [
+    "We develop and manufacture apparel for international brands: fabric development, design and sampling, bulk production, quality assurance and shipment — all inside the group.",
+    "Own factories across China, Cambodia, Laos, Myanmar and Egypt mean no trading middlemen between your brand and the sewing floor: one team owns the fabric, the fit, the audit and the lead time.",
+  ],
+  /** 能力清单：右侧排成编号索引，口径取自公司介绍册的产品分类 */
+  capabilities: [
+    "Down & padded outerwear",
+    "Trench & bomber",
+    "Shirts & jackets",
+    "PU & faux leather",
+    "Knitwear & cashmere",
+    "Yarn & fabric R&D",
+  ],
+  /** 关键数字：册子里有明确事实的三个（不编产能） */
+  stats: [
+    { label: "Own factories", value: "16+" },
+    { label: "Production countries", value: "5" },
+    { label: "Design centres", value: "4" },
+  ],
+} as const;
+
+/** 清单分组顺序：总部 → 设计 → 销售 → 生产 */
+export const OFFICE_GROUPS: readonly { role: OfficeRole; label: string }[] = [
+  { role: "hq", label: "Headquarters" },
+  { role: "design", label: "Design studio" },
+  { role: "sales", label: "Sales centres" },
+  { role: "production", label: "Production" },
+];
+
+/** 地图区块的标题与汇总口径 */
+export const GLOBAL_FOOTPRINT = {
+  eyebrow: "Global footprint",
+  title: "Where we work.",
+  summary: "2 continents · 5 countries · 16+ factories",
+} as const;
+
+/* =============================================================
+   合作品牌
+   ============================================================= */
+
+export interface PartnerBrand {
+  name: string;
+  /** 品牌标识文件，放 public/media/brands/ */
+  logo: string;
+}
+
+/**
+ * 合作品牌清单。
+ *
+ * 素材来源：
+ * - 矢量（nike / zara / underarmour / jordan）：Simple Icons，CC0，单色
+ * - converse / lacoste / abercrombie：Wikimedia Commons / Wikipedia 的官方 SVG
+ * - 其余 13 个：从客户 PPT 截图裁切、去红框、透明底处理
+ *
+ * ⚠ 品牌标识是商标，展示需在合作合同里有授权约定。
+ */
+export const PARTNER_BRANDS: readonly PartnerBrand[] = [
+  { name: "Nike", logo: "/media/brands/nike.svg" },
+  { name: "Zara", logo: "/media/brands/zara.svg" },
+  { name: "Costco", logo: "/media/brands/costco.png" },
+  { name: "Levi's", logo: "/media/brands/levis.png" },
+  { name: "Under Armour", logo: "/media/brands/underarmour.svg" },
+  { name: "Mango", logo: "/media/brands/mango.png" },
+  { name: "Lacoste", logo: "/media/brands/lacoste.svg" },
+  { name: "Abercrombie & Fitch", logo: "/media/brands/abercrombie.svg" },
+  { name: "Jordan", logo: "/media/brands/jordan.svg" },
+  { name: "Converse", logo: "/media/brands/converse.svg" },
+  { name: "Max&Co.", logo: "/media/brands/maxco.png" },
+  { name: "Weekend MaxMara", logo: "/media/brands/weekend-maxmara.png" },
+  { name: "Marella", logo: "/media/brands/marella.png" },
+  { name: "Pennyblack", logo: "/media/brands/pennyblack.png" },
+  { name: "iBlues", logo: "/media/brands/iblues.png" },
+  { name: "Gaudì", logo: "/media/brands/gaudi.png" },
+  { name: "Ellesse", logo: "/media/brands/ellesse.png" },
+  { name: "U.S. Polo Assn.", logo: "/media/brands/us-polo.png" },
+  { name: "Springfield", logo: "/media/brands/springfield.png" },
+  { name: "Stanley", logo: "/media/brands/stanley.png" },
+];
+
+export const PARTNERS_INTRO = {
+  eyebrow: "Clients & partners",
+  title: "Brands we sew for.",
+  /**
+   * 合作品牌区块的两段说明（2026-10-22 参考 Primesource 的 Global Brands 改版）。
+   * 左侧文案栏 + 右侧标识墙的版式需要两段正文，比原来一句 note 更像"能力介绍"。
+   * 内容只写已经在前台别处出现过的口径，不新增承诺。
+   */
+  /* 不写死数量：标识增减时文案会立刻变错。牌子数量在上方信任带的
+     "Brands served" 里已经有统计，这里不必重复。 */
+  lead: "Italian, French and American labels — Weekend Max Mara, Max&Co., GAUDI, U.S. Polo Assn., Lacoste, Nike — from high-street volume programmes to technically difficult small runs.",
+  body: "Four design centres in Hangzhou, Spain, Paris and New York keep the range close to the market; 16+ own factories keep lead time in our hands.",
+  cta: { label: "Inside our factories", href: "/factory" },
+} as const;
+
+/* =============================================================
+   产品页：品类说明 / 跑马灯 / 产能
+   ============================================================= */
 
 /** 产品页：生产品类说明（等宽三列，作为目录的延伸） */
 export const PRODUCT_CAPABILITIES = [
@@ -497,11 +645,7 @@ export const PRODUCT_CAPABILITIES = [
 
 /**
  * 产品页：图片跑马灯两行。
- * 图源直接取自产品数据（cover_image + images 去重），不再维护独立的静态图集：
- * 后台新增/替换产品图片后，图墙自动跟着变。
- * - 每格携带 href 指向该产品详情页，整格可点
- * - 按奇偶交替分到两行，避免同一产品的多图挤在一行
- * - 两行给不同时长，避免节奏整齐划一
+ * 图源直接取自产品数据（cover_image + images 去重），不维护独立的静态图集。
  */
 export function buildProductMarquee(products: Product[]): MarqueeRow[] {
   const tiles: MarqueeTile[] = [];
@@ -535,15 +679,20 @@ export function buildProductMarquee(products: Product[]): MarqueeRow[] {
     .filter((row) => row.images.length > 0);
 }
 
-/** 工厂页：产能与资质数据 */
+/**
+ * 产能数据（产品页顶部数据条仍在使用）。
+ *
+ * 口径来自两家柬埔寨工厂的资料：S-YOLO 7 万件/月 + SHCA 100 万件/年（≈8.3 万/月），
+ * 合计约 15 万件/月，取整写 150k。工厂页有自己的 FACTS 常量，两处口径保持一致。
+ */
 export const FACTORY_STATS = [
-  { label: "Monthly Capacity", value: "1.2M+ pcs" },
-  { label: "Production Lines", value: "6 lines" },
-  { label: "Workforce", value: "3,800+ staff" },
-  { label: "Facility Area", value: "42,000 m²" },
+  { label: "Monthly capacity", value: "150k pcs" },
+  { label: "Production lines", value: "21" },
+  { label: "Workforce", value: "1,400+" },
+  { label: "Factory floor", value: "25,044 m²" },
 ] as const;
 
-/** 资质条（首页与工厂页共用） */
+/** 资质条（产品页在用；完整认证墙见 CERTIFICATION_WALL） */
 export const CERTIFICATIONS = [
   "GOTS",
   "Oeko-Tex Standard 100",
@@ -551,3 +700,136 @@ export const CERTIFICATIONS = [
   "WRAP Certified",
   "GRS Recycled",
 ] as const;
+
+/* =============================================================
+   全球布局（首页地图区块）
+   ============================================================= */
+
+export type OfficeRole = "hq" | "design" | "sales" | "production";
+
+export interface OfficeNode {
+  id: string;
+  label: string;
+  name: string;
+  roles: readonly OfficeRole[];
+  lon: number;
+  lat: number;
+  labelDx?: number;
+  labelDy?: number;
+  labelAnchor?: "start" | "middle" | "end";
+  clusterRadius?: number;
+  note?: string;
+}
+
+/** 全球站点（口径来自 2026-02 公司介绍册） */
+export const GLOBAL_OFFICES: readonly OfficeNode[] = [
+  { id: "hangzhou", label: "Hangzhou", name: "Hangzhou", roles: ["hq", "design"],
+    lon: 120.2, lat: 30.3, labelDx: 16, labelDy: 4, labelAnchor: "start" },
+  { id: "spain", label: "Spain", name: "Spain", roles: ["design"],
+    lon: -3.7, lat: 40.4, labelDx: -10, labelDy: 5, labelAnchor: "end" },
+  { id: "paris", label: "Paris", name: "Paris", roles: ["design", "sales"],
+    lon: 2.35, lat: 48.86, labelDx: 0, labelDy: -26, labelAnchor: "middle" },
+  { id: "new-york", label: "New York", name: "New York", roles: ["design", "sales"],
+    lon: -74.0, lat: 40.7, labelDx: 12, labelDy: 4, labelAnchor: "start" },
+  { id: "china-production", label: "China · 4 provinces", name: "China", roles: ["production"],
+    lon: 117, lat: 33, clusterRadius: 30, labelDx: 0, labelDy: -42, labelAnchor: "middle",
+    note: "Zhejiang · Jiangsu · Anhui · Jiangxi" },
+  { id: "cambodia", label: "Cambodia", name: "Cambodia", roles: ["production"],
+    lon: 104.9, lat: 12.6, labelDx: 8, labelDy: 14, labelAnchor: "start" },
+  { id: "laos", label: "Laos", name: "Laos", roles: ["production"],
+    lon: 102.5, lat: 19.9, labelDx: 8, labelDy: -8, labelAnchor: "start" },
+  { id: "myanmar", label: "Myanmar", name: "Myanmar", roles: ["production"],
+    lon: 96, lat: 19.8, labelDx: -9, labelDy: 12, labelAnchor: "end" },
+  { id: "egypt", label: "Egypt", name: "Egypt", roles: ["production"],
+    lon: 30.8, lat: 26.8, labelDx: 9, labelDy: 5, labelAnchor: "start" },
+];
+
+/* =============================================================
+   认证墙
+   ============================================================= */
+
+export interface CertificationItem {
+  /** 简称，列表主行 */
+  name: string;
+  /** 全称或说明，主行下方的小字 */
+  note?: string;
+  /**
+   * 官方标识文件路径，例如 "/media/certifications/gots.svg"。
+   *
+   * 留空时渲染为文字条目。填充后自动改为「标识 + 名称」的排布，
+   * 无需改组件。**标识是商标**，务必使用各认证机构品牌包里的原始文件，
+   * 不要用网络上的截图或二次处理的版本。
+   */
+  logo?: string;
+}
+
+export interface CertificationGroup {
+  label: string;
+  items: readonly CertificationItem[];
+}
+
+/**
+ * 首页认证墙。
+ *
+ * 标识文件来自客户 PPT 截图（902×513）的裁切：按连通域定位、逐个裁切，
+ * 并把接近背景色的外围像素做透明处理，输出到 public/media/certifications/。
+ *
+ * ⚠ 这批 PNG 受原图分辨率限制（每个约 70–120px）。用于 56px 高的展示够用，
+ * 但客户从 PPT 或认证机构品牌包导出原始文件后替换同名文件即可变清晰，
+ * 不需要改代码。
+ *
+ * ⚠ 只放真实持有的认证。
+ */
+export const CERTIFICATION_WALL: {
+  eyebrow: string;
+  title: string;
+  note: string;
+  groups: readonly CertificationGroup[];
+} = {
+  eyebrow: "Certifications",
+  title: "Audited, tested, traceable.",
+  note: "Certificate numbers and audit reports are available on request.",
+  groups: [
+    {
+      label: "Plant fibre",
+      items: [
+        { name: "GOTS", note: "Global Organic Textile Standard", logo: "/media/certifications/gots.png" },
+        { name: "OEKO-TEX®", note: "Standard 100 by OEKO-TEX", logo: "/media/certifications/oeko-tex.png" },
+        { name: "BCI", note: "Better Cotton Initiative", logo: "/media/certifications/bci.png" },
+        { name: "OCS 100", note: "Organic Content Standard", logo: "/media/certifications/organic-100.png" },
+        { name: "OCS Blended", note: "Organic Content Standard", logo: "/media/certifications/organic-blended.png" },
+      ],
+    },
+    {
+      label: "Animal fibre",
+      items: [
+        { name: "RWS", note: "Responsible Wool Standard", logo: "/media/certifications/rws.png" },
+        { name: "RMS", note: "Responsible Mohair Standard", logo: "/media/certifications/rms.png" },
+        { name: "RAS", note: "Responsible Alpaca Standard", logo: "/media/certifications/ras.png" },
+        { name: "Good Cashmere", note: "The Good Cashmere Standard", logo: "/media/certifications/good-cashmere.png" },
+        { name: "ICCAW", note: "Animal welfare standard", logo: "/media/certifications/iccaw.png" },
+        { name: "SYS Group", note: "Sustainability certification", logo: "/media/certifications/sys-group.png" },
+      ],
+    },
+    {
+      label: "Recycled & chemical",
+      items: [
+        { name: "GRS", note: "Global Recycled Standard", logo: "/media/certifications/grs.png" },
+        { name: "RCS 100", note: "Recycled Claim Standard", logo: "/media/certifications/recycled-100.png" },
+        { name: "RCS Blended", note: "Recycled Claim Standard", logo: "/media/certifications/recycled-blended.png" },
+        { name: "Higg Index", note: "Cascale (formerly SAC)", logo: "/media/certifications/higg-index.png" },
+        { name: "ICS", note: "Initiative for Compliance & Sustainability", logo: "/media/certifications/ics.png" },
+      ],
+    },
+    {
+      label: "Social responsibility",
+      items: [
+        { name: "amfori BSCI", note: "Business Social Compliance Initiative", logo: "/media/certifications/amfori-bsci.png" },
+        { name: "SMETA", note: "Sedex Members Ethical Trade Audit", logo: "/media/certifications/smeta.png" },
+        { name: "WRAP", note: "Worldwide Responsible Accredited Production", logo: "/media/certifications/wrap.png" },
+        { name: "TÜV SÜD", note: "Independent inspection body", logo: "/media/certifications/tuv-sud.png" },
+        { name: "ISO 14001", note: "Environmental management", logo: "/media/certifications/iso-14001.png" },
+      ],
+    },
+  ],
+};

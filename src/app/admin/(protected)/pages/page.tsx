@@ -40,7 +40,7 @@ export default async function AdminPagesPage() {
             >
               <span
                 aria-hidden
-                className="absolute inset-y-0 left-0 w-[3px] origin-top scale-y-0 bg-volt-400 transition-transform duration-300 ease-out group-hover:scale-y-100"
+                className="absolute inset-y-0 left-0 w-[3px] origin-top scale-y-0 bg-accent-500 transition-transform duration-300 ease-out group-hover:scale-y-100"
               />
               <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
                 /{p.slug}

@@ -22,7 +22,7 @@ function MissingEnvNotice({ missing }: { missing: readonly string[] }) {
     <div className="flex min-h-screen items-center justify-center bg-paper px-6 py-16">
       <div className="w-full max-w-2xl">
         <p className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.3em] text-ink-400">
-          <span aria-hidden className="h-[3px] w-6 bg-volt-400" />
+          <span aria-hidden className="h-[3px] w-6 bg-accent-500" />
           管理后台
         </p>
 

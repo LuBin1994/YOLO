@@ -1,9 +1,23 @@
 @import "tailwindcss";
 
 /* =============================================================
-   设计系统 · 年轻时尚编辑部质感
-   基底：高亮白 paper · 重音：近黑 ink-950 · 品牌：森林绿 forest
-   活力强调：电光青柠 volt（仅小剂量点缀）
+   设计系统 · 珍珠白 + 暖炭 + 森林绿
+   基底：珍珠白 paper（暖调偏米，不再用纯白打底）
+   重音：暖炭 ink-950（替代原来的死黑，保留分量但去掉冷硬）
+   强调：森林绿 accent（**品牌原色**，克制使用）
+   =============================================================
+
+   【关于被换掉的那一版强调色】
+   上一版是电光青柠 volt-300/400/500（#e6ff85 / #d6f94b / #c4ed2b）。
+   它是 2026-09「要有活力一些」那轮引入的，但它的色相又酸又跳：
+   大面积使用时会和珍珠白打架，小面积使用又像高亮笔痕迹。
+   品牌自己原有的主色是森林绿，这次把强调色换回它。
+
+   【森林绿的用法约束】
+   - 只用于**小剂量**：细线、小方块、hover 下划线、色块底配白字、地图节点环。
+   - 不要大面积铺，也不要在珍珠白上做正文色（accent-500 上白字 5.64:1，
+     上暖炭字只有 3.07:1，**森林绿底一律配白字**）。
+   - 深色调页面（首屏、暖炭带）上，强调色让位给白色——深底上再叠深绿看不清。
    ============================================================= */
 
 @theme {
@@ -30,35 +44,41 @@
   --color-moss-500: #6d974a;
   --color-moss-600: #557a3a;
 
-  /* 米白背景（用于区块轻微交替，不再是页面主底色） */
-  --color-sand-50: #faf9f6;
-  --color-sand-100: #f4f2ec;
-  --color-sand-200: #e9e5da;
+  /* 珍珠灰阶：图片占位、分隔线与 hover 底。
+     sand-50 恒比 paper 深一档，保证 hover 能看出来。
+     注：2026-10-22 起首页各区块不再深浅交替（统一 paper），
+     sand-50 目前只用于页脚与内页的区块划分。 */
+  --color-sand-50: #f2eee5;
+  --color-sand-100: #ece6da;
+  --color-sand-200: #ded6c6;
 
-  /* 近黑墨色文字 */
-  --color-ink-900: #141a16;
-  --color-ink-600: #4a554e;
-  /* 弱化文字色：原为 #7d877f，在白底上只有 3.72:1，11-12px 小字不满足
-     WCAG 2.2 AA（要求 4.5:1）。调深到 #6b746d 后为 4.83:1，既达标
-     又与 ink-600（7.77:1）保持可见的层级差。 */
-  --color-ink-400: #6b746d;
+  /* 暖调墨色：上一版是偏绿的冷灰（#141a16 / #4a554e），
+     压在珍珠白上会显脏；改为暖中性，与米白底保持同一色温。 */
+  --color-ink-900: #26241f;
+  --color-ink-600: #57534a;
+  /* 弱化文字色：在 paper 上 4.95:1、在 sand-50 上 4.66:1，
+     均满足 WCAG 2.2 AA 对 11-12px 小字 4.5:1 的要求。 */
+  --color-ink-400: #6e6a60;
 
-  /* ---------- 年轻化基底：高亮白 + 近黑重音 ---------- */
+  /* ---------- 珍珠白基底 ---------- */
 
-  /* 页面主底色改为纯白，替代原来的米白：
-     白底 + 黑块对撞是时尚品牌最常用的高对比底子，比米白更干净利落。 */
-  --color-paper: #ffffff;
+  /* 页面主底色：珍珠白 #f8f6f0（2026-10-22 由 #f7f5f0 校准到此值，
+     首页所有浅色区块统一用它，区块之间不再靠深浅交替划分）。
+     比纯白暖一档，观感更像纸/布，长时间看不刺眼；
+     纯白仍保留给需要"浮起来"的面（卡片、浮层、图片占位）。 */
+  --color-paper: #f8f6f0;
 
-  /* 重音色块改近黑，替代原来的 forest-950：
-     同样是"大面积深色块"，深绿读作沉稳工业，近黑读作时尚编辑部。 */
-  --color-ink-950: #0a0a0a;
+  /* 重音色块：由死黑 #0a0a0a 改为暖炭 #1b1a17。
+     仍是深色块，但去掉了纯黑的冷硬感，与珍珠白同色温。 */
+  --color-ink-950: #1b1a17;
 
-  /* 活力强调色（volt 电光青柠）：仅小剂量点缀
-     【约束】不可用作白底上的正文/标题色，对比度不足；
-     只用于色块底（配黑字）、下划线、hover 填充、细线、角标。 */
-  --color-volt-300: #e6ff85;
-  --color-volt-400: #d6f94b;
-  --color-volt-500: #c4ed2b;
+  /* ---------- 强调色：森林绿（品牌原色）---------- */
+  /* 取值与上方 forest-400/500/600 一致，单独命名是为了留一个"换强调色
+     只改这里"的开关：将来品牌色调整时，全站强调用法不需要逐个找。
+     用法约束见文件头。 */
+  --color-accent-400: #5f9378;
+  --color-accent-500: #3f735d;
+  --color-accent-600: #2f5c4a;
 
   /* 留白节奏 */
   --spacing-section: clamp(4rem, 10vw, 8rem);
@@ -103,6 +123,17 @@ body {
   letter-spacing: -0.03em;
 }
 
+/* 区块级标题。全站**只有一个** display-xl 级别的尺寸（首屏主张），
+   其余区块一律用这一档——靠落差制造层次，不靠每块都喊得一样响。
+   上一版每个区块都用 display-lg，结果是"七个区块同一个音量"，
+   读者滚完记不住哪一块更重要。 */
+.display-md {
+  font-size: clamp(1.45rem, 2.55vw, 2.45rem);
+  @apply font-medium;
+  line-height: 1.12;
+  letter-spacing: -0.028em;
+}
+
 /* 与之配对的小标签：制造"超大标题 vs 极小标签"的落差感 */
 .eyebrow {
   @apply text-[11px] font-medium uppercase tracking-[0.3em] text-ink-400;
@@ -131,17 +162,34 @@ body {
 }
 
 /* ---------- 按钮 ---------- */
-/* 主按钮改用近黑，hover 反色为青柠（配黑字），形成明确的"想点"反馈 */
+/* 主按钮：森林绿底 + **白字**（5.64:1）。
+   注意不能配暖炭字——森林绿上暖炭字只有 3.07:1，过不了 AA。
+   hover 反转为暖炭底白字。 */
 .btn-primary {
-  @apply inline-flex items-center justify-center gap-2 bg-ink-950 px-7 py-3.5 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:bg-volt-400 hover:text-ink-950;
+  @apply inline-flex items-center justify-center gap-2 bg-accent-500 px-7 py-3.5 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:bg-ink-950 hover:text-white;
+}
+
+/* 深底上的主按钮（首屏、深色带）。
+   深绿按钮压在深色照片上会整块沉掉，深底上最醒目的永远是白——
+   所以这里翻成白底暖炭字，hover 再回到品牌绿。 */
+.btn-light {
+  @apply inline-flex items-center justify-center gap-2 bg-white px-7 py-3.5 text-sm font-medium tracking-wide text-ink-950 transition-colors duration-300 hover:bg-accent-500 hover:text-white;
 }
 
 .btn-outline {
   @apply inline-flex items-center justify-center gap-2 border border-ink-900/20 px-7 py-3.5 text-sm font-medium tracking-wide transition-colors duration-300 hover:border-ink-950 hover:bg-ink-950 hover:text-white;
 }
 
+/* 首屏切块面板里的按钮：参考 amersports.com 的紧凑白色方块。
+   比 .btn-light 更小、全大写、字距更开——这一块整体是深底 + 白字，
+   两个并排的大按钮会显得笨重，小而紧的白块才有"标签"感。
+   hover 仍回到品牌绿（白字，5.64:1）。 */
+.btn-hero {
+  @apply inline-flex items-center justify-center bg-white px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-950 transition-colors duration-300 hover:bg-accent-500 hover:text-white;
+}
+
 .btn-ghost {
-  @apply inline-flex items-center justify-center gap-2 text-ink-900 underline decoration-volt-500 decoration-2 underline-offset-8 transition-colors duration-300 hover:decoration-ink-950;
+  @apply inline-flex items-center justify-center gap-2 text-ink-900 underline decoration-accent-500 decoration-2 underline-offset-8 transition-colors duration-300 hover:decoration-ink-950;
 }
 
 /* ---------- 表单 ---------- */
@@ -155,16 +203,22 @@ body {
   @apply border-ink-900/10;
 }
 
-/* 强调细线：用于区块标题下方的短横，小剂量注入活力 */
-.rule-volt {
-  @apply block h-[3px] w-12 bg-volt-400;
+/* 强调细线：区块标题下方的短横。
+   小剂量，是强调色在页面上的主要露脸方式之一。 */
+.rule-accent {
+  @apply block h-[3px] w-12 bg-accent-500;
 }
 
 /* =============================================================
    版面工具类（Primesource 式结构骨架，配色已切换为白底黑块）
    ============================================================= */
 
-/* 深色带：满宽容器，内部左窄右宽文案栏 */
+/* 深色带：暖炭底 + 白字（15.97:1）。
+   【谁在用】
+   只剩 factory 页的中段在用。首页没有任何一条整幅暖炭带了——
+   首屏是"左侧面板 + 右侧视频"的切块，品牌墙是整屏黑底，都不走这个类。
+   整站"一条整幅深色带"的用法依然成立，但不要连着来两条：
+   两块深色之间的接缝是看不见的。 */
 .band-dark {
   @apply bg-ink-950 text-white;
 }
@@ -180,6 +234,20 @@ body {
   line-height: 1;
 }
 
+/* 透明头部压在图片上时，给里面所有白字加一层轻投影。
+   拼贴格的某些格子是浅色图，单靠顶部渐隐不足以稳定可读。 */
+.text-on-image {
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.45);
+}
+
+/* ---------- 影像统一影调 ---------- */
+/* 首页影像来自多个来源（外链 Pexels、客户 PPT 裁切、日后真实拍摄），
+   饱和度和色温天然不一致，拼在一起会散。
+   这里用一层极轻的滤镜把整页照片"洗"到同一调子上：
+   - 饱和度 −10%：压掉 Pexels 里偏艳的橙/青，向珍珠白的暖中性靠
+   - 对比 +3%：避免降饱和后显得发灰
+   刻意做得很轻——重了会像加了滤镜的相册，反而不高级。
+   不改变布局与图片体积，替换素材时自动继承。 */
 /* 等宽卡片网格（品类 / 产品） */
 .card-grid-3 {
   @apply grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3;
@@ -193,14 +261,6 @@ body {
    浏览模式，需要一屏扫更多行，属于有意的差异。 */
 .card-media {
   @apply relative aspect-[4/5] overflow-hidden bg-sand-100;
-}
-
-/* 大号排印段落：把能力清单当图形使用 */
-.typo-lead {
-  @apply font-medium;
-  font-size: clamp(1.6rem, 3.6vw, 2.9rem);
-  line-height: 1.24;
-  letter-spacing: -0.025em;
 }
 
 /* 强调色文字（用于标签、链接 hover） */
@@ -293,31 +353,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
-
-/* ---------- 第二种动效：缓慢推近 ---------- */
-/* 用法见 SlowZoom.tsx：进入视口后加上 .is-visible，图片从 1.06 缓慢回到 1。
-   刻意与 .reveal 的"淡入 + 上移"区分开——全站只有一种动效会显得像模板，
-   而图片推近是编辑式影像里最常用的一种"呼吸"。
-   刻意不做逐帧跟随滚动的视差：那需要滚动监听，在移动端有掉帧风险，
-   收益不抵复杂度。 */
-.slow-zoom {
-  transform: scale(1.06);
-  transition: transform 1400ms cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
-}
-
-.slow-zoom.is-visible {
-  transform: scale(1);
-}
-
-/* 与 .reveal 同理：这里降级是安全的——图片只是不做推近，仍然完整可见。 */
-@media (prefers-reduced-motion: reduce) {
-  .slow-zoom,
-  .slow-zoom.is-visible {
     transform: none;
     transition: none;
   }

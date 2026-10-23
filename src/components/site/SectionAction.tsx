@@ -19,7 +19,7 @@ export default function SectionAction({
       </h2>
       <Link
         href={href}
-        className="shrink-0 text-xs tracking-[0.12em] text-ink-600 underline decoration-transparent decoration-2 underline-offset-8 transition-colors duration-300 hover:text-ink-950 hover:decoration-volt-500"
+        className="shrink-0 text-xs tracking-[0.12em] text-ink-600 underline decoration-transparent decoration-2 underline-offset-8 transition-colors duration-300 hover:text-ink-950 hover:decoration-accent-500"
       >
         {label}
       </Link>

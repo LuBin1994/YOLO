@@ -145,7 +145,7 @@ export default function AdminLoginPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
         <div className="relative z-10 flex h-full flex-col justify-end p-14">
           <p className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.3em] text-white/70">
-            <span aria-hidden className="h-[3px] w-6 bg-volt-400" />
+            <span aria-hidden className="h-[3px] w-6 bg-white/70" />
             管理后台
           </p>
           <p className="display-xl mt-6 text-white">TEM APPAREL PTE. LTD.</p>
@@ -157,7 +157,7 @@ export default function AdminLoginPage() {
         <div className="w-full max-w-sm">
           <Link
             href="/"
-            className="text-xs tracking-wide text-ink-400 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:text-ink-950 hover:decoration-volt-500"
+            className="text-xs tracking-wide text-ink-400 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:text-ink-950 hover:decoration-accent-500"
           >
             ← 返回官网
           </Link>

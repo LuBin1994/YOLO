@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/site/PageHero";
-import ImageMarquee from "@/components/site/ImageMarquee";
 import ProductBrowser from "@/components/site/ProductBrowser";
 import SectionAction from "@/components/site/SectionAction";
 import Reveal from "@/components/site/Reveal";
+import JsonLd from "@/components/site/JsonLd";
+import { breadcrumb } from "@/lib/seo";
 import {
   CERTIFICATIONS,
   FACTORY_STATS,
   PRODUCT_CAPABILITIES,
-  buildProductMarquee,
   getPage,
   getProducts,
 } from "@/lib/site-data";
@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   title: "Products",
   description:
     "Explore our apparel styles — organic cotton basics, knitwear, denim, woven shirts and performance outerwear. Customization and private label available.",
+  alternates: { canonical: "/products" },
 };
 
 const HERO_IMAGE =
@@ -29,11 +30,14 @@ export default async function ProductsPage() {
     getPage("products"),
   ]);
 
-  // 图墙图源即产品图片，每格点击进入对应产品详情页
-  const marqueeRows = buildProductMarquee(products);
-
   return (
     <>
+      <JsonLd
+        data={breadcrumb([
+          { name: "Home", path: "/" },
+          { name: "Products", path: "/products" },
+        ])}
+      />
       {/* ① 全宽首屏头图，与首页和工厂页共用同一版式语言 */}
       <PageHero
         eyebrow="Product Catalog"
@@ -58,17 +62,12 @@ export default async function ProductsPage() {
         </div>
       </section>
 
-      {/* ③ 图片跑马灯：两行滚动，悬停暂停；图源=产品图片，悬停放大、点击进详情页 */}
-      {marqueeRows.length > 0 ? (
-        <ImageMarquee rows={marqueeRows} label="TEM Apparel style" />
-      ) : null}
-
-      {/* ④ 目录主体：分类筛选 + 网格/列表切换 */}
+      {/* ③ 目录主体：分类筛选 + 网格/列表切换 */}
       <section className="container-site pt-16 pb-24 md:pt-20 md:pb-32">
         <ProductBrowser products={products} />
       </section>
 
-      {/* ⑤ 生产品类：等宽三列，作为目录的延伸说明 */}
+      {/* ④ 生产品类：等宽三列，作为目录的延伸说明 */}
       <section className="border-t hairline bg-sand-50">
         <div className="container-site section-pad">
           <SectionAction
@@ -97,7 +96,7 @@ export default async function ProductsPage() {
         </div>
       </section>
 
-      {/* ⑥ 资质条 */}
+      {/* ⑤ 资质条 */}
       <section className="border-y hairline">
         <div className="container-site flex flex-wrap items-center justify-center gap-x-12 gap-y-4 py-8">
           {CERTIFICATIONS.map((c) => (
@@ -111,27 +110,27 @@ export default async function ProductsPage() {
         </div>
       </section>
 
-      {/* ⑦ 近黑 CTA 带 */}
-      <section className="band-dark w-full">
+      {/* ⑥ 活力 CTA 带（与首页 / 工厂页一致） */}
+      <section className="band-accent w-full">
         <div className="container-site py-24 text-center md:py-28">
           <Reveal>
-            <h2 className="display-lg mx-auto max-w-3xl text-white">
+            <h2 className="display-lg mx-auto max-w-3xl text-ink-950">
               Have a style in mind?
             </h2>
-            <p className="mx-auto mt-7 max-w-xl text-sm leading-relaxed text-white/55">
+            <p className="mx-auto mt-7 max-w-xl text-sm leading-relaxed text-ink-600">
               Send us your tech pack, reference sample or a sketch. We will come
               back with fabric options, counter samples and a costed quotation.
             </p>
             <div className="mt-11 flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center bg-volt-400 px-8 py-4 text-sm font-medium tracking-wide text-ink-950 transition-colors duration-300 hover:bg-white"
+                className="inline-flex items-center justify-center bg-ink-950 px-8 py-4 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:bg-white hover:text-ink-950"
               >
                 Request a Quote
               </Link>
               <Link
                 href="/sustainability"
-                className="inline-flex items-center justify-center border border-white/30 px-8 py-4 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:border-white hover:bg-white hover:text-ink-950"
+                className="inline-flex items-center justify-center border border-ink-950/35 px-8 py-4 text-sm font-medium tracking-wide text-ink-950 transition-colors duration-300 hover:border-ink-950 hover:bg-ink-950 hover:text-white"
               >
                 Our Materials
               </Link>

@@ -123,7 +123,7 @@ export default function AnalyticsPanel({
               <div
                 key={i}
                 title={`${d.key}: ${d.pageviews} 次浏览 / ${d.visitors} 位访客`}
-                className="flex-1 bg-ink-950/85 transition-colors duration-200 hover:bg-volt-400"
+                className="flex-1 bg-ink-950/85 transition-colors duration-200 hover:bg-accent-500"
                 style={{ height: `${Math.max((d.pageviews / maxDaily) * 100, 2)}%` }}
               />
             ))}

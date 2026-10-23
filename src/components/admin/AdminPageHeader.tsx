@@ -22,7 +22,7 @@ export default function AdminPageHeader({
       <div className="min-w-0">
         {eyebrow ? (
           <p className="flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
-            <span aria-hidden className="h-[3px] w-5 bg-volt-400" />
+            <span aria-hidden className="h-[3px] w-5 bg-accent-500" />
             {eyebrow}
           </p>
         ) : null}

@@ -9,22 +9,31 @@ const NAV_LINKS = [
   { href: "/factory", label: "Factory" },
   { href: "/sustainability", label: "Sustainability" },
   { href: "/responsibility", label: "Responsibility" },
+  { href: "/rnd", label: "R&D" },
   { href: "/contact", label: "Contact" },
 ];
 
 /**
  * 极简导航：Logo 左、导航右。
- * 滚动后叠加白色毛玻璃背景；首页首屏透明悬浮于 Hero 之上。
- * 当前项与 hover 用青柠细线滑入标示，制造轻量微交互。
+ *
+ * 【透明态（2026-10-23 恢复）】
+ * 首页第一屏是满幅视频墙，导航压在它上面、不占位：滚动条在顶部时完全透明
+ * + 文字反白，滚过 8px 才变成珍珠白毛玻璃。可读性由**影像侧的顶部压暗**
+ * 兜底（VideoMosaic 顶部那道 scrim），不给导航加实底——
+ * 加了实底首屏就不再是满幅沉浸的。内页保持实底（PageHero 自带 pt-24）。
+ *
+ * 注意：透明态要求首屏的影像必须铺到 y=0。若哪天视频墙又改成"从纸底起头"，
+ * 白字就会压在纸上读不出来，必须同步改这里。
  */
 export default function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
   const isHome = pathname === "/";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -40,18 +49,17 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
-  /* 菜单展开时也铺底色，否则首屏透明 header 上的下拉面板会与 Hero 糊在一起 */
+  /* 只有「首页 + 到顶 + 菜单未展开」才是透明态 */
   const solid = scrolled || !isHome || menuOpen;
-  /* 透明态只出现在首页首屏，此时 header 悬浮在深色大图上，文字必须反白 */
   const onImage = !solid;
   const barColor = onImage ? "bg-white" : "bg-ink-950";
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
         solid
-          ? "bg-white/90 backdrop-blur-md border-b border-ink-900/5"
-          : "bg-transparent"
+          ? "bg-paper/90 backdrop-blur-md border-b border-ink-900/8"
+          : "border-b border-transparent bg-transparent text-on-image"
       }`}
     >
       <div className="container-site flex h-16 items-center justify-between md:h-20">
@@ -80,19 +88,20 @@ export default function Header() {
                   onImage
                     ? active
                       ? "font-medium text-white"
-                      : "text-white/70 hover:text-white"
+                      : "text-white/75 hover:text-white"
                     : active
                       ? "font-medium text-ink-950"
                       : "text-ink-600 hover:text-ink-950"
                 }`}
               >
                 {link.label}
-                {/* 青柠细线：当前项常驻，其余 hover 时滑入 */}
+                {/* 下划线：当前项常驻，其余 hover 时滑入。
+                    透明态压在影像上，强调色会沉进暗部，所以那一段改用白色。 */}
                 <span
                   aria-hidden
-                  className={`absolute -bottom-1.5 left-0 h-[2px] bg-volt-400 transition-[width] duration-300 ease-out ${
-                    active ? "w-full" : "w-0 group-hover:w-full"
-                  }`}
+                  className={`absolute -bottom-1.5 left-0 h-[2px] transition-[width] duration-300 ease-out ${
+                    onImage ? "bg-white/80" : "bg-accent-500"
+                  } ${active ? "w-full" : "w-0 group-hover:w-full"}`}
                 />
               </Link>
             );
@@ -132,7 +141,7 @@ export default function Header() {
       <nav
         id="mobile-nav"
         aria-label="Mobile"
-        className={`overflow-hidden bg-white/95 backdrop-blur-md transition-[max-height,opacity,visibility] duration-300 ease-out md:hidden ${
+        className={`overflow-hidden bg-paper/95 backdrop-blur-md transition-[max-height,opacity,visibility] duration-300 ease-out md:hidden ${
           menuOpen
             ? "visible max-h-[24rem] opacity-100"
             : "invisible max-h-0 opacity-0"
@@ -154,7 +163,7 @@ export default function Header() {
                   {link.label}
                   <span
                     aria-hidden
-                    className={active ? "text-volt-500" : "text-ink-400"}
+                    className={active ? "text-accent-500" : "text-ink-400"}
                   >
                     →
                   </span>

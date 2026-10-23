@@ -51,7 +51,7 @@ export default function AdminSidebar({ admin }: AdminSidebarProps) {
       {/* 品牌 */}
       <div className="flex h-20 items-center gap-3 border-b border-white/10 px-4 md:px-6">
         <span className="text-xl font-medium tracking-tight text-white">
-          Y<span className="text-volt-400">.</span>
+          Y<span className="text-accent-400">.</span>
         </span>
         <div className="hidden min-w-0 md:block">
           <p className="truncate text-sm font-medium text-white">
@@ -86,7 +86,7 @@ export default function AdminSidebar({ admin }: AdminSidebarProps) {
                     {/* 激活青柠竖条 */}
                     <span
                       aria-hidden
-                      className={`absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-volt-400 transition-opacity duration-200 ${
+                      className={`absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-accent-400 transition-opacity duration-200 ${
                         active ? "opacity-100" : "opacity-0"
                       }`}
                     />

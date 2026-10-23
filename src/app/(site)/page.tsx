@@ -1,103 +1,121 @@
-import Image from "next/image";
 import type { Metadata } from "next";
-import Link from "next/link";
-import SplitBanner from "@/components/site/SplitBanner";
-import DarkBand from "@/components/site/DarkBand";
-import FullBleedBand from "@/components/site/FullBleedBand";
-import ProductCard from "@/components/site/ProductCard";
-import VideoWall from "@/components/site/VideoWall";
-import Reveal from "@/components/site/Reveal";
+import VideoMosaic from "@/components/site/VideoMosaic";
+import WelcomeBand from "@/components/site/WelcomeBand";
+import ImageMarquee from "@/components/site/ImageMarquee";
+import TrustBand from "@/components/site/TrustBand";
+import ShowcaseWall from "@/components/site/ShowcaseWall";
+import ContactSection from "@/components/site/ContactSection";
+import GlobalBrands from "@/components/site/GlobalBrands";
+/* 首页目前不渲染「精选产品」，相关导入一并注释，恢复时放开 */
+// import Link from "next/link";
+// import Reveal from "@/components/site/Reveal";
+// import ProductCard from "@/components/site/ProductCard";
+/*
+ * 首屏的「斜切面板 + 单段视频」（Hero.tsx / HOME_HERO）已于 2026-10-22 撤出首页，
+ * 客户要求改用九宫格视频墙当第一屏。
+ * 2026-10-23 清理死代码时，Hero.tsx、HOME_HERO 常量与 hero-loop 素材一并删除；
+ * 如需回滚，先从 .workbuddy/backups/ 恢复组件与 public/media/home/hero-loop.*。
+ */
 import {
-  HOME_BANNERS,
-  HOME_CATEGORIES,
-  HOME_EDITORIAL,
-  HOME_STYLE_FILM,
+  HOME_REEL,
+  HOME_REEL_INTRO,
+  HOME_SHOWCASE,
+  HOME_SHOWCASE_HEADLINE,
   HOME_WELCOME,
+  buildProductMarquee,
   getProducts,
 } from "@/lib/site-data";
 
 export const metadata: Metadata = {
-  title: "Apparel Manufacturing in Southeast Asia",
+  title: "Vertically integrated apparel manufacturing",
   description:
-    "Vertically integrated apparel manufacturer with own factories in Southeast Asia. Sustainable materials, full supply chain control, B2B programs.",
+    "Apparel manufacturing with 16+ own factories across China, Cambodia, Laos, Myanmar and Egypt. Fabric development, design centres, production and shipment inside one group.",
 };
 
+/**
+ * 首页节奏（2026-10 改版）
+ *
+ *   ① 视频墙        九段视频铺满整屏，不规则分格 —— 首屏就是"我们在做什么"
+ *   ② 公司介绍      左叙述 / 右能力索引 + 三个数字（首屏之后进门）
+ *   ③ 商品跑马灯    动态，紧跟着"我们是谁"亮出"我们做什么"
+ *   ④ 信任带        地图 + 认证，合并为一个区块（原本是三块）
+ *   ⑤ 合作品牌      整屏黑底 + 四列标识墙 —— 证据区的收尾重音
+ *   ⑥ 联系表单      看完信任证据正好可以询盘
+ *
+ * 2026-10-22 晚间：客户要求把视频墙提到首页第一个板块，
+ * 原先的「斜切面板 + 单段视频」首屏（Hero）整个撤掉。
+ * 于是页面从"一句主张 + 一张大图"改成"九段工序同时开场"——
+ * 首屏不再有 display-xl 的文案，唯一的"大"变成这面墙本身。
+ * 代价要说清楚：**首屏没有可读的主张句了**，文案入口退到第二块。
+ *
+ * 上一版是「九宫格 → 介绍 → 跑马灯 → 地图 → 认证 → 品牌 → 表单」，
+ * 七块同构、音量一致。这一版做的是：
+ *   - 首屏从"九份注意力"收回成"一份"
+ *   - 全站只有一个 display-xl 尺寸，其余降档
+ *   - 中段三块合并，去掉两次重复的区块头部
+ *   - 品牌墙改成整屏黑底，和黑底首屏前后呼应，页面首尾各有一次重音
+ *
+ * 2026-10-22 又去掉了一条「主张带」（Most brands need four vendors…），
+ * 公司介绍从第三位顶到第二位。那条带原本承担"给首屏后面留一口气"的
+ * 作用，现在这口气交给公司介绍自己的 section-pad 和左栏的留白。
+ */
 export default async function HomePage() {
   const products = await getProducts();
-  const featured = products.filter((p) => p.featured).slice(0, 6);
+  // 精选区暂停，一并注释；恢复时放开
+  // const featured = products.filter((p) => p.featured).slice(0, 6);
+  /* 横向滚动带的图源就是产品图，与 /products 页同源，点击进对应详情页 */
+  const marqueeRows = buildProductMarquee(products);
 
   return (
     <>
-      {/* ① 主视觉：满幅单图 + 文字贴左下（首屏不做入场动画） */}
-      <SplitBanner items={HOME_BANNERS} />
+      {/* 首屏的 LCP 是视频墙的 poster（<video> 元素本身无法设 fetchPriority）。
+          这里预加载面积最大的那两格的 WebP 海报，让它们先占带宽；
+          其余七张按正常优先级并发。React 19 会把 <link> 提到 <head>。 */}
+      <link rel="preload" as="image" href="/media/home/mosaic/45750.webp" />
+      <link rel="preload" as="image" href="/media/home/mosaic/33167.webp" />
 
-      {/* ② Welcome 近黑带：左窄右宽，右栏把能力清单当图形 */}
-      <DarkBand
-        heading={HOME_WELCOME.heading}
-        body={HOME_WELCOME.body}
+      {/* ① 视频墙：九段视频铺满整屏，不规则分格，占住首页第一屏。
+          悬停单格即播、其余暂停；点击从原位滑到中央播放，
+          原位留灰、点 mask 原路滑回（见 VideoMosaic.tsx）。
+          2026-10-22 晚间从第四块提到第一块，顶掉原来的斜切面板首屏。 */}
+      <VideoMosaic clips={HOME_REEL} intro={HOME_REEL_INTRO} />
+
+      {/* ② 公司介绍：珍珠白底，左叙述 / 右能力索引。 */}
+      <WelcomeBand
+        eyebrow={HOME_WELCOME.eyebrow}
         lead={HOME_WELCOME.lead}
+        body={HOME_WELCOME.body}
+        capabilities={HOME_WELCOME.capabilities}
+        stats={HOME_WELCOME.stats}
       />
 
-      {/* ③ 风格影片墙：四列竖版循环短片，满宽贴边 */}
-      <VideoWall clips={HOME_STYLE_FILM} />
+      {/* ③ 商品图横向滚动带：两行错峰，悬停暂停；点击整格进产品详情。
+          2026-10-22 从拼贴后面提到公司介绍正下方——客户要求
+          "商品跑马灯移在公司介绍下面"。 */}
+      {marqueeRows.length > 0 ? (
+        <ImageMarquee rows={marqueeRows} label="TEM Apparel style" />
+      ) : null}
 
-      {/* ④ 品类卡片组：等宽三列，两行共六项 */}
+      {/* ④ 信任带：全球布局 + 认证，合并为一个区块 */}
+      <TrustBand />
+
+      {/* ⑤ 案例图墙：三列流式图片，标题钉在中屏；字压图上是白的、落在纸面是黑的 */}
+      <ShowcaseWall
+        shots={HOME_SHOWCASE}
+        headline={HOME_SHOWCASE_HEADLINE}
+      />
+
+      {/* ⑥ 合作品牌：整屏黑底，左栏说明 + 四列标识墙 */}
+      <GlobalBrands />
+
+      {/* ⑦ 联系我们：与 /contact 页共用同一份实现，首页用 h2 避免两个 h1，
+          标题降一档避免和首屏抢"全站最大的那一处" */}
       <section className="container-site section-pad">
-        <Reveal>
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="eyebrow">Categories</p>
-              <h2 className="display-lg mt-5 max-w-2xl">
-                What we manufacture.
-              </h2>
-            </div>
-            <Link
-              href="/products"
-              className="btn-ghost shrink-0 text-sm md:pb-2"
-            >
-              View full catalog
-            </Link>
-          </div>
-        </Reveal>
-
-        <div className="card-grid-3 mt-16">
-          {HOME_CATEGORIES.map((c, i) => (
-            <Reveal key={c.name} delay={i * 70}>
-              <article className="group">
-                <div className="card-media">
-                  <Image
-                    src={c.image}
-                    alt={c.name}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05]"
-                  />
-                </div>
-                <h3 className="mt-5 text-lg font-medium tracking-tight text-ink-950 underline decoration-transparent decoration-2 underline-offset-[5px] transition-colors duration-300 group-hover:decoration-volt-500">
-                  {c.name}
-                </h3>
-                <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink-600">
-                  {c.body}
-                </p>
-              </article>
-            </Reveal>
-          ))}
-        </div>
+        <ContactSection headingClassName="display-md" />
       </section>
 
-      {/* ⑤ 满幅节奏块：品类与精选是两个结构相同的三列网格，连排会让注意力
-          曲线变平，中间插一个满幅大块形成「大—小—大」的呼吸。
-          同时也是给客户留的独立槽位——拿到真实 campaign 图直接换 image 即可。 */}
-      <FullBleedBand
-        eyebrow={HOME_EDITORIAL.eyebrow}
-        title={HOME_EDITORIAL.title}
-        body={HOME_EDITORIAL.body}
-        cta={HOME_EDITORIAL.cta}
-        image={HOME_EDITORIAL.image}
-        alt={HOME_EDITORIAL.alt}
-      />
-
-      {/* ⑥ 精选产品 */}
+      {/* ⑦ 精选产品 —— 商品图暂时从首页撤下（2026-10-21）。
+          恢复时删掉这层注释包裹即可，内部代码没有改动。
       <section className="border-t hairline bg-sand-50">
         <div className="container-site section-pad">
           <Reveal>
@@ -124,42 +142,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* 资质条（GOTS / Oeko-Tex / BSCI / WRAP / GRS）已从首页移走。
-          它是首页最"工厂"的元素——回答的是"你合规吗"，而首页要回答的是
-          "你好看吗"。/factory 页已有一模一样的一条，无需重复建设。 */}
-
-      {/* ⑦ 近黑 CTA 带：全站唯一的超大排印收束点 */}
-      <section className="band-dark w-full">
-        <div className="container-site py-24 text-center md:py-32">
-          <Reveal>
-            <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-volt-400">
-              Start a Program
-            </p>
-            <h2 className="display-xl mx-auto mt-7 max-w-4xl text-white">
-              Your next collection, manufactured with care.
-            </h2>
-            <p className="mx-auto mt-7 max-w-xl text-sm leading-relaxed text-white/55">
-              Tell us your product type, target quantity and market. Our export
-              sales team responds within 24 hours on business days.
-            </p>
-            <div className="mt-11 flex flex-wrap items-center justify-center gap-4">
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center bg-volt-400 px-8 py-4 text-sm font-medium tracking-wide text-ink-950 transition-colors duration-300 hover:bg-white"
-              >
-                Request a Quote
-              </Link>
-              <Link
-                href="/factory"
-                className="inline-flex items-center justify-center border border-white/30 px-8 py-4 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:border-white hover:bg-white hover:text-ink-950"
-              >
-                Visit Our Factory
-              </Link>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      */}
     </>
   );
 }

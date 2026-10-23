@@ -39,7 +39,7 @@ export default function ProductCard({
           <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-ink-400">
             {product.category}
           </p>
-          <h3 className="text-2xl font-medium tracking-tight text-ink-950 underline decoration-transparent decoration-2 underline-offset-[6px] transition-colors duration-300 group-hover:decoration-volt-500 md:text-3xl">
+          <h3 className="text-2xl font-medium tracking-tight text-ink-950 underline decoration-transparent decoration-2 underline-offset-[6px] transition-colors duration-300 group-hover:decoration-accent-500 md:text-3xl">
             {product.title}
           </h3>
           <p className="max-w-xl text-sm leading-relaxed text-ink-600">
@@ -75,7 +75,7 @@ export default function ProductCard({
         ) : null}
       </div>
       <div className="mt-5">
-        <h3 className="text-lg font-medium tracking-tight text-ink-950 underline decoration-transparent decoration-2 underline-offset-[5px] transition-colors duration-300 group-hover:decoration-volt-500">
+        <h3 className="text-lg font-medium tracking-tight text-ink-950 underline decoration-transparent decoration-2 underline-offset-[5px] transition-colors duration-300 group-hover:decoration-accent-500">
           {product.title}
         </h3>
         <p className="mt-2 flex flex-wrap items-center gap-x-3 text-xs uppercase tracking-[0.16em] text-ink-400">

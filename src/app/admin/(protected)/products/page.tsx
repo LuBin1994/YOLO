@@ -208,7 +208,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                   <div className="flex items-center justify-end gap-5">
                     <Link
                       href={`/admin/products/${p.id}/edit`}
-                      className="text-xs text-ink-950 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:decoration-volt-500"
+                      className="text-xs text-ink-950 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:decoration-accent-500"
                     >
                       编辑
                     </Link>
@@ -230,7 +230,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                       暂无产品。{" "}
                       <Link
                         href="/admin/products/new"
-                        className="text-ink-950 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:decoration-volt-500"
+                        className="text-ink-950 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:decoration-accent-500"
                       >
                         立即创建第一个产品 →
                       </Link>

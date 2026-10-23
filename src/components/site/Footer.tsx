@@ -6,6 +6,7 @@ const FOOTER_LINKS = [
   { href: "/factory", label: "Our Factory" },
   { href: "/sustainability", label: "Sustainability" },
   { href: "/responsibility", label: "Social Responsibility" },
+  { href: "/rnd", label: "R&D" },
 ];
 
 /**
@@ -35,7 +36,7 @@ export default function Footer() {
                 <li key={l.href}>
                   <Link
                     href={l.href}
-                    className="text-sm text-ink-600 underline decoration-transparent underline-offset-4 transition-colors duration-300 hover:text-ink-950 hover:decoration-volt-500"
+                    className="text-sm text-ink-600 underline decoration-transparent underline-offset-4 transition-colors duration-300 hover:text-ink-950 hover:decoration-accent-500"
                   >
                     {l.label}
                   </Link>
@@ -50,7 +51,7 @@ export default function Footer() {
               <li>
                 <a
                   href={`mailto:${SITE.email}`}
-                  className="underline decoration-transparent underline-offset-4 transition-colors duration-300 hover:text-ink-950 hover:decoration-volt-500"
+                  className="underline decoration-transparent underline-offset-4 transition-colors duration-300 hover:text-ink-950 hover:decoration-accent-500"
                 >
                   {SITE.email}
                 </a>

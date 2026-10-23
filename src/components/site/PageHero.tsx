@@ -35,7 +35,8 @@ export default function PageHero({
       <div className="container-site relative z-10 pb-16 md:pb-24">
         {eyebrow ? (
           <p className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.3em] text-white/80">
-            <span aria-hidden className="h-[3px] w-6 bg-volt-400" />
+            {/* 这一层是深底大幅图：强调色在这里会沉掉，按设计系统约定让位给白色 */}
+            <span aria-hidden className="h-[3px] w-6 bg-white/70" />
             {eyebrow}
           </p>
         ) : null}

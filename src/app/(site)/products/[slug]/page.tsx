@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import JsonLd from "@/components/site/JsonLd";
+import { breadcrumb } from "@/lib/seo";
 import { getProductBySlug } from "@/lib/site-data";
+import { absoluteUrl } from "@/lib/site-url";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -15,6 +18,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: product.title,
     description: product.description ?? undefined,
+    alternates: { canonical: `/products/${product.slug}` },
+    openGraph: {
+      type: "article",
+      title: product.title,
+      description: product.description ?? undefined,
+      url: `/products/${product.slug}`,
+      images: product.cover_image
+        ? [{ url: product.cover_image, alt: product.title }]
+        : undefined,
+    },
   };
 }
 
@@ -26,8 +39,31 @@ export default async function ProductDetailPage({ params }: Props) {
 
   const gallery = product.images.length > 0 ? product.images : [product.cover_image];
 
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.description ?? undefined,
+    image: gallery
+      .filter((src): src is string => Boolean(src))
+      .map((src) => absoluteUrl(src)),
+    category: "Apparel",
+    url: absoluteUrl(`/products/${product.slug}`),
+    manufacturer: { "@id": `${absoluteUrl("/")}#organization` },
+  };
+
   return (
     <div className="pt-24 md:pt-28">
+      <JsonLd
+        data={[
+          productJsonLd,
+          breadcrumb([
+            { name: "Home", path: "/" },
+            { name: "Products", path: "/products" },
+            { name: product.title, path: `/products/${product.slug}` },
+          ]),
+        ]}
+      />
       <div className="container-site grid gap-14 pb-24 lg:grid-cols-[1.2fr_1fr] lg:gap-20 md:pt-8">
         {/* 图片画廊 */}
         <div className="space-y-6">

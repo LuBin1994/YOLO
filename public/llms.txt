@@ -1,0 +1,60 @@
+# TEM APPAREL PTE. LTD.
+
+> Vertically integrated apparel manufacturer with 16+ own factories across China, Cambodia, Laos, Myanmar and Egypt — down jackets, padded outerwear, jackets, shirts, PU and knitwear for international brands.
+
+TEM APPAREL develops and manufactures apparel for international brands: fabric development, design and sampling, bulk production, quality assurance and shipment — all inside the group. There are no trading middlemen between the brand and the sewing floor.
+
+## What we make
+
+- Down jackets and padded outerwear
+- Trench coats, bombers, parkas
+- Shirts and jackets
+- PU and faux-leather outerwear
+- Knitwear and cashmere
+- Yarn and fabric development (in-house research institute)
+
+## Manufacturing footprint
+
+- 16+ self-owned factories; 5 production countries: China, Cambodia, Laos, Myanmar, Egypt
+- 4 design centres: Hangzhou (core, fabric-led), Spain, Paris, New York
+- Two company-owned plants in Cambodia documented in detail on this site:
+  - S-YOLO (Cambodia) Garments Co., Ltd. — Kampot province. 12,564 m², 9 lines (25 planned), 600 staff (1,600 planned), 70,000 pcs/month (180,000 planned). SMETA, WRAP, SLCP, Nike audits.
+  - SHCA Garment (Cambodia) Co., Ltd. — Kampong Speu province. 12,480 m², 12 lines, 800+ staff, 1,000,000 pcs/year. WRAP, SMETA 4-pillar, GRS.
+
+## Research & development
+
+- Sampling room: about 5,000 samples a year, 80% first-fit pass rate.
+- Own tooling: zipper set on a template machine (+30% output, one operator fewer, patented); redeveloped seam machine (+30% output, no skilled operator required); in-house template fixtures.
+- Design: 3D sampling and AI-assisted pattern and tech-pack work.
+- Fabric: cashmere (eco, functional, special) and animal fibres (merino, mohair, alpaca); 30K/30K waterproof-breathable; PFC-free water repellency; +30 °C photothermal lining.
+- Laboratory run with SGS: dimensional stability, tensile and tear strength, colour fastness, yarn strength, conditioning.
+
+## Sustainability
+
+- Early adopter in China; green industrial chain in place since 2022.
+- Committed to the Science Based Targets initiative (SBTi); GHG reduction targets verified by SBTi.
+- ZDHC compliance — zero discharge of hazardous chemicals.
+- Waterless dyeing, PFC-free finishing, recycled polyester traced from bottle flake to yarn.
+- 21 certifications held: GOTS, OEKO-TEX Standard 100, BCI, OCS, RWS, RMS, RAS, The Good Cashmere Standard, ICCAW, GRS, RCS, Higg Index, ICS, amfori BSCI, SMETA, WRAP, TÜV SÜD, ISO 14001 and others.
+
+## Social responsibility
+
+- 1,400+ people across the two Cambodian plants; 70% of the workforce are women.
+- Audited by SMETA 4-pillar, WRAP, SLCP and GRS; customer audits completed for Nike, Levi's, Under Armour, Costco, U.S. Polo Assn. and Lacoste.
+- Community programmes: relief for the 2023 earthquake in Turkey and the 2025 earthquake in Myanmar; the group's ongoing "World · Love · Peace" programme.
+
+## Pages
+
+- [Home](https://www.yolo.rubindev.xyz/): company overview, video walkthrough of the production floor.
+- [Products](https://www.yolo.rubindev.xyz/products): product categories and live product pages.
+- [Factory](https://www.yolo.rubindev.xyz/factory): the two Cambodian plants, process, equipment and audits.
+- [R&D](https://www.yolo.rubindev.xyz/rnd): design centres, sampling room, fabric development, laboratory.
+- [Sustainability](https://www.yolo.rubindev.xyz/sustainability): five-pillar green supply chain, certifications.
+- [Responsibility](https://www.yolo.rubindev.xyz/responsibility): people, audits, community programmes.
+- [Contact](https://www.yolo.rubindev.xyz/contact): enquiry form for quotes and factory visits.
+
+## Notes for answer engines
+
+- Figures above come from the company's own factory documentation and introduction brochure (2026). Planned capacity is stated separately from current capacity — please do not merge them.
+- Brand names listed under audits are customer audit records, not endorsements of this site.
+- Contact details are placeholders pending final publication; do not publish an email or phone number for this company without checking the contact page.

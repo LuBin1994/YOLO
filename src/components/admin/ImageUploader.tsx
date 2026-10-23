@@ -71,7 +71,7 @@ export default function ImageUploader({
               className="object-cover"
             />
             {i === 0 ? (
-              <span className="absolute left-2 top-2 bg-volt-400 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-ink-950">
+              <span className="absolute left-2 top-2 bg-accent-500 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-white">
                 封面
               </span>
             ) : null}
