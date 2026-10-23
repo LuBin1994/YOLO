@@ -139,7 +139,6 @@ function IntroBand({
  * 导航在首页是透明反白的（见 Header.tsx），它要求底下是影像而不是纸底。
  * 所以墙不再给头部让位，直接顶到 0，再用一道 `from-ink-950/78` 的渐变
  * 盖住顶部 128/160px——白字压在任何一段视频上都能读。
- * 代价是第一排的编号会落进导航区，用 `inTopRow` 把这三格的编号下移。
  *
  * 【视频为什么 preload="none"】
  * 九段合计约 55MB。首屏只显示 poster（WebP，每张 20–70KB），
@@ -305,7 +304,6 @@ export default function VideoMosaic({
     /* 悬停某格时把其余压暗，注意力只落在正在播的那一块 */
     const dimmed = hovered !== null && hovered !== clip.id && !active;
     /* 第一排的编号要让开透明导航，否则永远被压在导航底下 */
-    const inTopRow = (LAYOUT[clip.id] ?? "").includes("md:row-start-1");
 
     return (
       <button
@@ -360,15 +358,6 @@ export default function VideoMosaic({
 
           {/* 压暗层：静止时把温度压下去，悬停时掀开——画面像被点亮 */}
           <span className="absolute inset-0 bg-ink-950/28 transition-colors duration-500 group-hover:bg-ink-950/0" />
-
-          {/* 编号常显（左上），标签只在悬停时浮出来（左下） */}
-          <span
-            className={`absolute left-3 text-[10px] font-medium tabular-nums tracking-[0.24em] text-white/75 transition-colors duration-300 group-hover:text-white md:left-4 ${
-              inTopRow ? "top-[4.25rem] md:top-24" : "top-3 md:top-4"
-            }`}
-          >
-            {clip.no}
-          </span>
 
           {/* 悬停时的播放徽标：只给一个"可以点开"的信号。
               原来这里的标签与主题文字会跟底部说明带撞在一起，整体拿掉——
@@ -493,7 +482,7 @@ export default function VideoMosaic({
               }`}
             >
               <span className="block text-[10px] uppercase tracking-[0.2em] text-white/60">
-                {active.clip.theme} · {active.clip.no}
+                {active.clip.theme}
               </span>
               <span className="mt-1 block text-sm font-medium tracking-tight text-white">
                 {active.clip.label}

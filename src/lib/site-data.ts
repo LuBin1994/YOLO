@@ -311,8 +311,6 @@ export const SITE = {
 /** 视频墙的一段素材 */
 export interface ReelClip {
   id: string;
-  /** 格内左上角编号 01–09 */
-  no: string;
   /** 悬停时左下角的标注 */
   label: string;
   /** 主题，悬停时显示在右侧。四类：设计 / 版房 / 车间 / 成衣 / 人文 */
@@ -326,10 +324,12 @@ export interface ReelClip {
 /**
  * 首页视频墙（九宫格改版）。
  *
- * 【素材】Mixkit 免费商用（Free License，无需署名），已本地化到
- * `public/media/home/mosaic/`，文件名就是 Mixkit 的片段 id。
- * poster 用的是 Mixkit 官方缩略图（同一段视频的同一帧），
- * 不会出现"静帧淡出后画面硬跳"的老问题。
+ * 【素材】Mixkit 免费商用（Free License，无需署名）。2026-10-23 起改为
+ * **远程直链**（客户要求），不再放 public 里占仓库体积：
+ * - 视频：https://assets.mixkit.co/videos/<id>/<id>-720.mp4
+ * - 封面：https://assets.mixkit.co/videos/<id>/<id>-thumb-720-2.jpg（官方同帧缩略图）
+ * ⚠️ 依赖第三方 CDN：Mixkit 改版或国内访问受阻时首屏只剩压暗的空格。
+ *   本地旧素材仍在 public/media/home/mosaic/（未删），回滚把 URL 换回本地路径即可。
  *
  * 主题覆盖客户要求的四类：
  * - 成衣设计：development（设计工作室里打样）、sketch（纸样与面料）
@@ -337,90 +337,80 @@ export interface ReelClip {
  * - 成衣工厂：stitching（机针细节）、sewing（缝制）、corridor（车间走廊）
  * - 人文关怀：team（团队的手）、corridor（一线工人）
  *
- * 【体积】九段 720p 合计约 55MB，现在都是占位素材。上线前应用 ffmpeg
- * 压到 1.5Mbps 上下（预计每段 1.5–2MB）再替换同名文件，代码不用动。
- * 页面本身 preload="metadata"，不会在进页面时把 55MB 全拉下来。
+ * 【体积】远程模式下体积压力转移到 CDN 侧；页面 preload="none"，
+ * 进站只拉九张封面 jpg（合计约 700KB），视频首次悬停才加载。
  */
 export const HOME_REEL: readonly ReelClip[] = [
   {
     id: "development",
-    no: "01",
     label: "Sampling studio",
     theme: "Design",
-    src: "/media/home/mosaic/45750.mp4",
-    poster: "/media/home/mosaic/45750.webp",
+    src: "https://assets.mixkit.co/videos/45750/45750-720.mp4",
+    poster: "https://assets.mixkit.co/videos/45750/45750-thumb-720-2.jpg",
     alt: "Designer working at a sewing machine in a bright sampling studio",
   },
   {
     id: "measuring",
-    no: "02",
     label: "Measuring",
     theme: "Pattern room",
-    src: "/media/home/mosaic/35388.mp4",
-    poster: "/media/home/mosaic/35388.webp",
+    src: "https://assets.mixkit.co/videos/35388/35388-720.mp4",
+    poster: "https://assets.mixkit.co/videos/35388/35388-thumb-720-2.jpg",
     alt: "Measuring tape resting on rolls of fabric in a pattern room",
   },
   {
     id: "collection",
-    no: "03",
     label: "Finished goods",
     theme: "Collection",
-    src: "/media/home/mosaic/33167.mp4",
-    poster: "/media/home/mosaic/33167.webp",
+    src: "https://assets.mixkit.co/videos/33167/33167-720.mp4",
+    poster: "https://assets.mixkit.co/videos/33167/33167-thumb-720-2.jpg",
     alt: "Knitwear hanging in a row on a garment rail",
   },
   {
     id: "sketch",
-    no: "04",
     label: "Fabric selection",
     theme: "Design",
-    src: "/media/home/mosaic/21538.mp4",
-    poster: "/media/home/mosaic/21538.webp",
+    src: "https://assets.mixkit.co/videos/21538/21538-720.mp4",
+    poster: "https://assets.mixkit.co/videos/21538/21538-thumb-720-2.jpg",
     alt: "Hands comparing fabric swatches over a technical sketch",
   },
   {
     id: "stitching",
-    no: "05",
     label: "Stitching",
     theme: "Production floor",
-    src: "/media/home/mosaic/45527.mp4",
-    poster: "/media/home/mosaic/45527.webp",
+    src: "https://assets.mixkit.co/videos/45527/45527-720.mp4",
+    poster: "https://assets.mixkit.co/videos/45527/45527-thumb-720-2.jpg",
     alt: "Close-up of an industrial sewing machine needle stitching fabric",
   },
   {
     id: "corridor",
-    no: "06",
     label: "On the floor",
     theme: "People",
-    src: "/media/home/mosaic/23378.mp4",
-    poster: "/media/home/mosaic/23378.webp",
+    src: "https://assets.mixkit.co/videos/23378/23378-720.mp4",
+    poster: "https://assets.mixkit.co/videos/23378/23378-thumb-720-2.jpg",
     alt: "Worker in overalls walking down a factory corridor",
   },
   {
     id: "team",
-    no: "07",
     label: "Our team",
     theme: "People",
-    src: "/media/home/mosaic/35959.mp4",
-    poster: "/media/home/mosaic/35959.webp",
+    src: "https://assets.mixkit.co/videos/35959/35959-720.mp4",
+    poster: "https://assets.mixkit.co/videos/35959/35959-thumb-720-2.jpg",
     alt: "Team members joining hands in a circle",
   },
   {
     id: "cutting",
-    no: "08",
     label: "Cutting",
     theme: "Pattern room",
-    src: "/media/home/mosaic/14776.mp4",
-    poster: "/media/home/mosaic/14776.webp",
+    src: "https://assets.mixkit.co/videos/14776/14776-720.mp4",
+    poster: "https://assets.mixkit.co/videos/14776/14776-thumb-720-2.jpg",
     alt: "Scissors cutting through blue fabric on a cutting table",
   },
   {
     id: "sewing",
-    no: "09",
     label: "Sewing line",
     theme: "Production floor",
-    src: "/media/home/mosaic/12525.mp4",
-    poster: "/media/home/mosaic/12525.webp",
+    src: "https://assets.mixkit.co/videos/12525/12525-720.mp4",
+    poster: "https://assets.mixkit.co/videos/12525/12525-thumb-720-2.jpg",
     alt: "Hands guiding a shirt under a sewing machine needle",
   },
 ];
