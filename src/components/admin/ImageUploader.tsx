@@ -71,7 +71,7 @@ export default function ImageUploader({
               className="object-cover"
             />
             {i === 0 ? (
-              <span className="absolute left-2 top-2 bg-accent-500 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-white">
+              <span className="absolute left-2 top-2 bg-accent-500 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wider text-white">
                 封面
               </span>
             ) : null}
@@ -80,7 +80,7 @@ export default function ImageUploader({
                 <button
                   type="button"
                   onClick={() => makeCover(i)}
-                  className="text-[11px] text-white hover:underline"
+                  className="text-[12px] text-white hover:underline"
                 >
                   设为封面
                 </button>
@@ -90,7 +90,7 @@ export default function ImageUploader({
               <button
                 type="button"
                 onClick={() => removeImage(i)}
-                className="text-[11px] text-white hover:underline"
+                className="text-[12px] text-white hover:underline"
               >
                 删除
               </button>
@@ -116,8 +116,8 @@ export default function ImageUploader({
         {uploading ? "上传中..." : `+ 上传${multiple ? "图片" : "图片"}`}
       </button>
 
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      <p className="text-xs text-ink-400">
+      {error ? <p className="text-[15px] text-red-600">{error}</p> : null}
+      <p className="text-[13px] text-ink-400">
         已上传至 Supabase 存储（media/{folder}）。第一张为封面，单张最大
         10MB。
       </p>

@@ -33,7 +33,7 @@ export default function ContactSection({
     <div className="grid gap-16 lg:grid-cols-[1fr_1.4fr] lg:gap-24">
       {/* 左侧信息 */}
       <div>
-        <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-ink-400">
+        <p className="text-[12px] font-medium uppercase tracking-[0.3em] text-ink-400">
           Get in Touch
         </p>
         <Heading className={`${headingClassName} mt-5`}>
@@ -46,7 +46,7 @@ export default function ContactSection({
 
         <dl className="mt-12 space-y-8">
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.22em] text-ink-400">
+            <dt className="text-[12px] uppercase tracking-[0.22em] text-ink-400">
               Email
             </dt>
             <dd className="mt-2">
@@ -59,13 +59,13 @@ export default function ContactSection({
             </dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.22em] text-ink-400">
+            <dt className="text-[12px] uppercase tracking-[0.22em] text-ink-400">
               Phone / WhatsApp
             </dt>
             <dd className="mt-2 text-lg text-ink-950">{SITE.phone}</dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.22em] text-ink-400">
+            <dt className="text-[12px] uppercase tracking-[0.22em] text-ink-400">
               Offices
             </dt>
             <dd className="mt-2 leading-relaxed text-ink-950">
@@ -78,7 +78,7 @@ export default function ContactSection({
       {/* 右侧表单 */}
       <div className="border-t hairline pt-12 lg:border-t-0 lg:border-l lg:pl-16 lg:pt-0">
         {product ? (
-          <p className="mb-10 inline-flex items-center gap-2 bg-ink-950 px-4 py-2 text-sm text-white">
+          <p className="mb-10 inline-flex items-center gap-2 bg-ink-950 px-4 py-2 text-[15px] text-white">
             {/* 这个点在暖炭底上，用亮一档的 accent-400 才看得见 */}
             <span className="h-1.5 w-1.5 rounded-full bg-accent-400" />
             You are inquiring about:{" "}

@@ -106,7 +106,7 @@ export default async function HomePage() {
           2026-10-22 从拼贴后面提到公司介绍正下方——客户要求
           "商品跑马灯移在公司介绍下面"。 */}
       {marqueeRows.length > 0 ? (
-        <ImageMarquee rows={marqueeRows} label="TEM Apparel style" />
+        <ImageMarquee rows={marqueeRows} label="YOLO Apparel style" />
       ) : null}
 
       {/* ④ 信任带：全球布局 + 认证，合并为一个区块 */}
@@ -139,7 +139,7 @@ export default async function HomePage() {
               </div>
               <Link
                 href="/products"
-                className="btn-ghost shrink-0 text-sm md:pb-2"
+                className="btn-ghost shrink-0 text-[15px] md:pb-2"
               >
                 View all products
               </Link>

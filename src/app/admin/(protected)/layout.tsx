@@ -21,7 +21,7 @@ function MissingEnvNotice({ missing }: { missing: readonly string[] }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-paper px-6 py-16">
       <div className="w-full max-w-2xl">
-        <p className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.3em] text-ink-400">
+        <p className="flex items-center gap-3 text-[12px] font-medium uppercase tracking-[0.3em] text-ink-400">
           <span aria-hidden className="h-[3px] w-6 bg-accent-500" />
           管理后台
         </p>
@@ -30,14 +30,14 @@ function MissingEnvNotice({ missing }: { missing: readonly string[] }) {
           缺少环境变量，后台无法启动
         </h1>
 
-        <p className="mt-4 text-sm leading-relaxed text-ink-600">
+        <p className="mt-4 text-[15px] leading-relaxed text-ink-600">
           当前运行环境没有读到下列变量：
         </p>
 
         <ul className="mt-4 flex flex-wrap gap-2">
           {missing.map((key) => (
             <li key={key}>
-              <code className="block rounded bg-sand-100 px-2 py-1 text-xs text-ink-950">
+              <code className="block rounded bg-sand-100 px-2 py-1 text-[13px] text-ink-950">
                 {key}
               </code>
             </li>
@@ -45,14 +45,14 @@ function MissingEnvNotice({ missing }: { missing: readonly string[] }) {
         </ul>
 
         <div className="mt-8 border border-ink-900/8 bg-white p-6">
-          <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
+          <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-ink-400">
             怎么修
           </p>
-          <ol className="mt-4 space-y-2.5 text-sm leading-relaxed text-ink-600">
+          <ol className="mt-4 space-y-2.5 text-[15px] leading-relaxed text-ink-600">
             <li>
               1.{" "}
-              <code className="rounded bg-sand-100 px-1.5 py-0.5 text-xs">.env.local</code>{" "}
-              已被 <code className="rounded bg-sand-100 px-1.5 py-0.5 text-xs">.gitignore</code>{" "}
+              <code className="rounded bg-sand-100 px-1.5 py-0.5 text-[13px]">.env.local</code>{" "}
+              已被 <code className="rounded bg-sand-100 px-1.5 py-0.5 text-[13px]">.gitignore</code>{" "}
               排除，不会随代码部署到 Vercel，必须在平台上单独配置。
             </li>
             <li>

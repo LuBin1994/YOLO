@@ -128,7 +128,11 @@ body {
    上一版每个区块都用 display-lg，结果是"七个区块同一个音量"，
    读者滚完记不住哪一块更重要。 */
 .display-md {
-  font-size: clamp(1.45rem, 2.55vw, 2.45rem);
+  /* 2026-10-29：上限从 2.45rem 收到 2.15rem。
+     39px 的区块标题配 15px 正文是 2.6 倍，一页五六个 section 连着下来
+     每块都在"喊"；收到 34px 后与正文是 2.3 倍，与 display-lg(60px) 拉开
+     到 1.74 倍——大声明和普通区块的差别才真正读得出来。 */
+  font-size: clamp(1.35rem, 2.3vw, 2.15rem);
   @apply font-medium;
   line-height: 1.12;
   letter-spacing: -0.028em;
@@ -136,7 +140,7 @@ body {
 
 /* 与之配对的小标签：制造"超大标题 vs 极小标签"的落差感 */
 .eyebrow {
-  @apply text-[11px] font-medium uppercase tracking-[0.3em] text-ink-400;
+  @apply text-[12px] font-medium uppercase tracking-[0.28em] text-ink-400;
 }
 
 /* ---------- 布局工具 ---------- */
@@ -314,6 +318,46 @@ body {
   @apply outline-2 outline-ink-950 outline-offset-[-3px];
 }
 
+/*
+ * 认证条（TrustBand）：悬停、键盘聚焦时暂停滚动。
+ *
+ * 必须写成不进入 utilities 层的规则：`animate-[marquee-left_80s_...]` 是
+ * animation 简写，会把 animation-play-state 重置为 running，而 Tailwind 的
+ * `hover:[animation-play-state:paused]` 生成的同样是一条 utility，谁覆盖谁
+ * 取决于内部排序（实测被简写覆盖，悬停不停）。放在这一层就稳定生效。
+ */
+.cert-marquee:hover,
+.cert-marquee:focus-within {
+  animation-play-state: paused;
+}
+
+/*
+ * 认证卡片：尺寸写死在这里，不用 `w-[168px]` 这类任意值 utility。
+ *
+ * 原因：任意值类要靠 Tailwind 扫描源码生成，新增类名时 dev 偶发来不及编译，
+ * 宽度就会整条失效 —— flex 子项退回 min-content，**卡片宽度随 logo 的宽高比
+ * 变化**（方形标变窄、OEKO-TEX 那种超宽标变成一条）。写进 CSS 不受扫描时序影响。
+ *
+ * 尺寸与比例参照客户给的同业站：白底、10px 圆角、1px 极浅描边，
+ * 176×200（md 186×200），logo 区与文字区各占固定高度，卡片永远等大。
+ */
+.cert-card {
+  width: 168px;
+  height: 192px;
+}
+
+@media (min-width: 768px) {
+  .cert-card {
+    width: 186px;
+  }
+}
+
+/* logo 区固定高度：不同宽高比的标识都在这条带子里居中，
+   视觉大小才一致（否则方标显得小、宽标显得大） */
+.cert-card-logo {
+  height: 72px;
+}
+
 @keyframes marquee-left {
   from {
     transform: translate3d(0, 0, 0);
@@ -322,6 +366,31 @@ body {
     /* 内容重复两遍，位移 -50% 即完成一次无缝循环 */
     transform: translate3d(-50%, 0, 0);
   }
+}
+
+/* ---------- 首页世界地图的站点标签 ---------- */
+/*
+ * 为什么用 HTML 而不是 SVG <text>：SVG 里的 fontSize 是用户单位，
+ * 会随容器宽度整体缩放。地图在 md 断点只有约 690px 宽时，
+ * 10 单位算下来不到 7px，字直接糊掉。这里字号锁死，不跟着地图缩放。
+ *
+ * 白描边（-webkit-text-stroke 的替代做法）：标签会压到点阵陆地和经纬网上，
+ * 靠四向 text-shadow 在字周围撑出一圈纸色，字才立得住。
+ * 不能用 SVG 的 paint-order，那是 SVG 专有属性。
+ */
+.map-label {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--color-ink-950);
+  white-space: nowrap;
+  text-shadow:
+    0 0 3px var(--color-paper),
+    0 0 3px var(--color-paper),
+    0 0 2px var(--color-paper),
+    0 0 2px var(--color-paper);
+  transition: opacity 200ms ease;
 }
 
 /*

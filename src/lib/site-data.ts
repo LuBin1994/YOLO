@@ -297,7 +297,7 @@ export async function getPage(slug: string): Promise<Page | null> {
 
 /** 站点品牌信息 */
 export const SITE = {
-  name: "TEM APPAREL PTE. LTD.",
+  name: "YOLO APPAREL PTE. LTD.",
   tagline: "Apparel Manufacturing in Southeast Asia",
   email: "sales@meridianapparel.com",
   phone: "+84 28 3xxx xxxx",
@@ -329,7 +329,9 @@ export interface ReelClip {
  * - 视频：https://assets.mixkit.co/videos/<id>/<id>-720.mp4
  * - 封面：https://assets.mixkit.co/videos/<id>/<id>-thumb-720-2.jpg（官方同帧缩略图）
  * ⚠️ 依赖第三方 CDN：Mixkit 改版或国内访问受阻时首屏只剩压暗的空格。
- *   本地旧素材仍在 public/media/home/mosaic/（未删），回滚把 URL 换回本地路径即可。
+ *   2026-10-29 已按"未被引用的素材"清理删除本地旧 mp4/webp（合计 47MB）。
+ *   若要回滚到本地播放，素材仍在 git 提交 30f2113 里，`git checkout 30f2113 -- public/media/home/mosaic`
+ *   取回后把 src/poster 换成本地路径即可。
  *
  * 主题覆盖客户要求的四类：
  * - 成衣设计：development（设计工作室里打样）、sketch（纸样与面料）
@@ -682,15 +684,6 @@ export const FACTORY_STATS = [
   { label: "Factory floor", value: "25,044 m²" },
 ] as const;
 
-/** 资质条（产品页在用；完整认证墙见 CERTIFICATION_WALL） */
-export const CERTIFICATIONS = [
-  "GOTS",
-  "Oeko-Tex Standard 100",
-  "BSCI Audited",
-  "WRAP Certified",
-  "GRS Recycled",
-] as const;
-
 /* =============================================================
    全球布局（首页地图区块）
    ============================================================= */
@@ -709,29 +702,41 @@ export interface OfficeNode {
   labelAnchor?: "start" | "middle" | "end";
   clusterRadius?: number;
   note?: string;
+  /** 地理分区，给地图读数条用（不写国家名——name 已经是城市/国家了） */
+  region?: string;
 }
 
 /** 全球站点（口径来自 2026-02 公司介绍册） */
 export const GLOBAL_OFFICES: readonly OfficeNode[] = [
+  /* 标签偏移是量出来的：准星臂长约 13 单位，标签必须让开准星本体，
+     同时避开相邻站点。改准星尺寸要重新核对这组值（会撞字）。 */
   { id: "hangzhou", label: "Hangzhou", name: "Hangzhou", roles: ["hq", "design"],
-    lon: 120.2, lat: 30.3, labelDx: 16, labelDy: 4, labelAnchor: "start" },
+    lon: 120.2, lat: 30.3, labelDx: 13, labelDy: 15, labelAnchor: "start",
+    region: "East Asia" },
   { id: "spain", label: "Spain", name: "Spain", roles: ["design"],
-    lon: -3.7, lat: 40.4, labelDx: -10, labelDy: 5, labelAnchor: "end" },
+    lon: -3.7, lat: 40.4, labelDx: -11, labelDy: 13, labelAnchor: "end",
+    region: "Western Europe" },
   { id: "paris", label: "Paris", name: "Paris", roles: ["design", "sales"],
-    lon: 2.35, lat: 48.86, labelDx: 0, labelDy: -26, labelAnchor: "middle" },
+    lon: 2.35, lat: 48.86, labelDx: -9, labelDy: -11, labelAnchor: "end",
+    region: "Western Europe" },
   { id: "new-york", label: "New York", name: "New York", roles: ["design", "sales"],
-    lon: -74.0, lat: 40.7, labelDx: 12, labelDy: 4, labelAnchor: "start" },
+    lon: -74.0, lat: 40.7, labelDx: -11, labelDy: 13, labelAnchor: "end",
+    region: "North America" },
   { id: "china-production", label: "China · 4 provinces", name: "China", roles: ["production"],
     lon: 117, lat: 33, clusterRadius: 30, labelDx: 0, labelDy: -42, labelAnchor: "middle",
-    note: "Zhejiang · Jiangsu · Anhui · Jiangxi" },
+    note: "Zhejiang · Jiangsu · Anhui · Jiangxi", region: "East Asia" },
   { id: "cambodia", label: "Cambodia", name: "Cambodia", roles: ["production"],
-    lon: 104.9, lat: 12.6, labelDx: 8, labelDy: 14, labelAnchor: "start" },
+    lon: 104.9, lat: 12.6, labelDx: 11, labelDy: 15, labelAnchor: "start",
+    region: "Southeast Asia" },
   { id: "laos", label: "Laos", name: "Laos", roles: ["production"],
-    lon: 102.5, lat: 19.9, labelDx: 8, labelDy: -8, labelAnchor: "start" },
+    lon: 102.5, lat: 19.9, labelDx: 11, labelDy: -9, labelAnchor: "start",
+    region: "Southeast Asia" },
   { id: "myanmar", label: "Myanmar", name: "Myanmar", roles: ["production"],
-    lon: 96, lat: 19.8, labelDx: -9, labelDy: 12, labelAnchor: "end" },
+    lon: 96, lat: 19.8, labelDx: -11, labelDy: -9, labelAnchor: "end",
+    region: "Southeast Asia" },
   { id: "egypt", label: "Egypt", name: "Egypt", roles: ["production"],
-    lon: 30.8, lat: 26.8, labelDx: 9, labelDy: 5, labelAnchor: "start" },
+    lon: 30.8, lat: 26.8, labelDx: 11, labelDy: 13, labelAnchor: "start",
+    region: "North Africa" },
 ];
 
 /* =============================================================
@@ -744,7 +749,7 @@ export interface CertificationItem {
   /** 全称或说明，主行下方的小字 */
   note?: string;
   /**
-   * 官方标识文件路径，例如 "/media/certifications/gots.svg"。
+   * 官方标识文件路径，例如 "/media/certifications/gots.png"。
    *
    * 留空时渲染为文字条目。填充后自动改为「标识 + 名称」的排布，
    * 无需改组件。**标识是商标**，务必使用各认证机构品牌包里的原始文件，
@@ -778,7 +783,7 @@ export const CERTIFICATION_WALL: {
 } = {
   eyebrow: "Certifications",
   title: "Audited, tested, traceable.",
-  note: "Certificate numbers and audit reports are available on request.",
+  note: "Material and product certifications — factory audits are on the Factory page.",
   groups: [
     {
       label: "Plant fibre",
@@ -798,7 +803,6 @@ export const CERTIFICATION_WALL: {
         { name: "RAS", note: "Responsible Alpaca Standard", logo: "/media/certifications/ras.png" },
         { name: "Good Cashmere", note: "The Good Cashmere Standard", logo: "/media/certifications/good-cashmere.png" },
         { name: "ICCAW", note: "Animal welfare standard", logo: "/media/certifications/iccaw.png" },
-        { name: "SYS Group", note: "Sustainability certification", logo: "/media/certifications/sys-group.png" },
       ],
     },
     {
@@ -823,3 +827,41 @@ export const CERTIFICATION_WALL: {
     },
   ],
 };
+
+/* =============================================================
+   资质条（产品页与页脚共用）
+   ============================================================= */
+
+/**
+ * **名字从认证墙里取，不另写一套。**
+ *
+ * 这三处原先各写各的：产品页 "BSCI Audited"、页脚 "BSCI Certified Partners"、
+ * 认证墙 "amfori BSCI"——同一个认证三种叫法，买家会当成三件不同的事。
+ * 现在只在这里点名，名字一律回 CERTIFICATION_WALL 查；写错名字直接抛错，
+ * 不会静默降级成第三种说法。
+ *
+ * 必须定义在 CERTIFICATION_WALL 之后：模块顶层是顺序求值的，
+ * 提前引用会撞上暂时性死区（TDZ）。
+ */
+const HIGHLIGHT_CERT_NAMES = [
+  "GOTS",
+  "OEKO-TEX®",
+  "amfori BSCI",
+  "WRAP",
+  "GRS",
+] as const;
+
+const ALL_CERT_NAMES = CERTIFICATION_WALL.groups.flatMap((group) =>
+  group.items.map((item) => item.name)
+);
+
+export const CERT_HIGHLIGHTS: readonly string[] = HIGHLIGHT_CERT_NAMES.map(
+  (name) => {
+    if (!ALL_CERT_NAMES.includes(name)) {
+      throw new Error(
+        `CERT_HIGHLIGHTS: "${name}" 不在 CERTIFICATION_WALL 里——资质条与认证墙的名字必须一致。`
+      );
+    }
+    return name;
+  }
+);

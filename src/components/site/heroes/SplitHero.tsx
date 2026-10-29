@@ -36,7 +36,7 @@ export default function SplitHero({
       </div>
 
       <div className="relative order-2 flex flex-col justify-center px-6 pb-16 pt-10 md:px-10 lg:order-1 lg:pb-24 lg:pt-32 lg:pl-16 lg:pr-12">
-        <p className="flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.3em] text-white/55">
+        <p className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.3em] text-white/55">
           <span aria-hidden className="h-[2px] w-6 bg-accent-400" />
           {eyebrow}
         </p>
@@ -57,7 +57,7 @@ export default function SplitHero({
               <dd className="text-xl font-medium tabular-nums tracking-tight text-white md:text-2xl">
                 {s.value}
               </dd>
-              <dt className="mt-1 text-[10px] uppercase tracking-[0.14em] text-white/40">
+              <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/40">
                 {s.label}
               </dt>
             </div>

@@ -11,8 +11,8 @@ import AiConcierge from "@/components/site/AiConcierge";
  */
 export const metadata: Metadata = {
   title: {
-    default: "TEM APPAREL PTE. LTD.",
-    template: "%s | TEM APPAREL PTE. LTD.",
+    default: "YOLO APPAREL PTE. LTD.",
+    template: "%s | YOLO APPAREL PTE. LTD.",
   },
 };
 

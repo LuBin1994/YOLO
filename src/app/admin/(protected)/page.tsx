@@ -70,13 +70,13 @@ export default async function AdminDashboardPage() {
               aria-hidden
               className="absolute inset-y-0 left-0 w-[3px] origin-top scale-y-0 bg-accent-500 transition-transform duration-300 ease-out group-hover:scale-y-100"
             />
-            <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
+            <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-ink-400">
               {c.label}
             </p>
             <p className="mt-4 text-5xl font-medium tracking-tight text-ink-950">
               {c.value}
             </p>
-            <p className="mt-4 text-xs text-ink-400 transition-colors duration-300 group-hover:text-ink-950">
+            <p className="mt-4 text-[13px] text-ink-400 transition-colors duration-300 group-hover:text-ink-950">
               {c.hint} →
             </p>
           </Link>

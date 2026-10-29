@@ -60,7 +60,7 @@ export default function WelcomeBand({
             <dl className="mt-12 grid grid-cols-3 gap-6 border-t border-ink-900/12 pt-8">
               {stats.map((stat) => (
                 <div key={stat.label} className="flex flex-col-reverse">
-                  <dt className="mt-2.5 text-[11px] uppercase tracking-[0.14em] text-ink-400">
+                  <dt className="mt-2.5 text-[12px] uppercase tracking-[0.14em] text-ink-400">
                     {stat.label}
                   </dt>
                   <dd className="text-3xl font-medium tracking-tight text-ink-950 md:text-4xl">
@@ -73,7 +73,7 @@ export default function WelcomeBand({
 
           {/* 右：能力索引 */}
           <div>
-            <p className="text-[11px] uppercase tracking-[0.24em] text-ink-400">
+            <p className="text-[12px] uppercase tracking-[0.24em] text-ink-400">
               Capabilities
             </p>
             <ul className="mt-6 border-t border-ink-900/12">
@@ -82,7 +82,7 @@ export default function WelcomeBand({
                   key={item}
                   className="group flex items-baseline gap-5 border-b border-ink-900/12 py-5 md:py-6"
                 >
-                  <span className="w-6 shrink-0 text-[11px] tabular-nums tracking-[0.1em] text-ink-400 transition-colors duration-300 group-hover:text-ink-950">
+                  <span className="w-6 shrink-0 text-[12px] tabular-nums tracking-[0.1em] text-ink-400 transition-colors duration-300 group-hover:text-ink-950">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <span className="text-2xl font-medium tracking-tight text-ink-950 md:text-3xl">

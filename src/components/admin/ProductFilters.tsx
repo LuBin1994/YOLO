@@ -14,7 +14,7 @@ export interface ProductFilterValues {
 }
 
 const SELECT_CLASS =
-  "rounded-md border border-ink-900/15 bg-white px-3 py-2.5 text-xs text-ink-600 outline-none transition-colors focus:border-ink-950";
+  "rounded-md border border-ink-900/15 bg-white px-3 py-2.5 text-[13px] text-ink-600 outline-none transition-colors focus:border-ink-950";
 
 /**
  * 产品筛选栏：关键词 + 分类 + 发布状态 + 精选，全部通过 URL 参数驱动服务端查询。
@@ -64,7 +64,7 @@ export default function ProductFilters({
         type="search"
         defaultValue={keyword}
         placeholder="搜索产品名称、slug 或描述…"
-        className="min-w-[220px] flex-1 rounded-md border border-ink-900/15 bg-white px-3 py-2.5 text-sm outline-none transition-colors placeholder:text-ink-400 focus:border-ink-950"
+        className="min-w-[220px] flex-1 rounded-md border border-ink-900/15 bg-white px-3 py-2.5 text-[15px] outline-none transition-colors placeholder:text-ink-400 focus:border-ink-950"
       />
 
       <select
@@ -108,14 +108,14 @@ export default function ProductFilters({
 
       <button
         type="submit"
-        className="rounded-md border border-ink-950 bg-ink-950 px-5 py-2.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-accent-500 hover:text-white"
+        className="rounded-md border border-ink-950 bg-ink-950 px-5 py-2.5 text-[13px] font-medium text-white transition-colors duration-200 hover:bg-accent-500 hover:text-white"
       >
         筛选
       </button>
       {hasFilter ? (
         <Link
           href="/admin/products"
-          className="text-xs text-ink-400 transition-colors duration-200 hover:text-ink-950"
+          className="text-[13px] text-ink-400 transition-colors duration-200 hover:text-ink-950"
         >
           清除
         </Link>

@@ -36,24 +36,24 @@ export default function ProductCard({
           ) : null}
         </div>
         <div className="flex flex-col items-start gap-3 md:px-6">
-          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-ink-400">
+          <p className="text-[12px] font-medium uppercase tracking-[0.3em] text-ink-400">
             {product.category}
           </p>
           <h3 className="text-2xl font-medium tracking-tight text-ink-950 underline decoration-transparent decoration-2 underline-offset-[6px] transition-colors duration-300 group-hover:decoration-accent-500 md:text-3xl">
             {product.title}
           </h3>
-          <p className="max-w-xl text-sm leading-relaxed text-ink-600">
+          <p className="max-w-xl text-[15px] leading-relaxed text-ink-600">
             {product.description}
           </p>
-          <p className="text-sm text-ink-600">
+          <p className="text-[15px] text-ink-600">
             {product.materials.join(" · ")}
           </p>
           {product.moq ? (
-            <p className="text-xs uppercase tracking-[0.18em] text-ink-400">
+            <p className="text-[13px] uppercase tracking-[0.18em] text-ink-400">
               MOQ {product.moq.toLocaleString()} pcs
             </p>
           ) : null}
-          <p className="text-sm font-medium text-ink-950">
+          <p className="text-[15px] font-medium text-ink-950">
             {product.price_range}
           </p>
         </div>
@@ -78,12 +78,12 @@ export default function ProductCard({
         <h3 className="text-lg font-medium tracking-tight text-ink-950 underline decoration-transparent decoration-2 underline-offset-[5px] transition-colors duration-300 group-hover:decoration-accent-500">
           {product.title}
         </h3>
-        <p className="mt-2 flex flex-wrap items-center gap-x-3 text-xs uppercase tracking-[0.16em] text-ink-400">
+        <p className="mt-2 flex flex-wrap items-center gap-x-3 text-[13px] uppercase tracking-[0.16em] text-ink-400">
           <span>{product.category}</span>
           {product.moq ? <span>MOQ {product.moq.toLocaleString()}</span> : null}
         </p>
         {product.price_range ? (
-          <p className="mt-2 text-sm font-medium text-ink-950">
+          <p className="mt-2 text-[15px] font-medium text-ink-950">
             {product.price_range}
           </p>
         ) : null}

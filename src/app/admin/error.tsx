@@ -26,7 +26,7 @@ export default function AdminError({
   return (
     <div className="flex min-h-screen items-center justify-center bg-paper px-6 py-16">
       <div className="w-full max-w-2xl">
-        <p className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.3em] text-ink-400">
+        <p className="flex items-center gap-3 text-[12px] font-medium uppercase tracking-[0.3em] text-ink-400">
           <span aria-hidden className="h-[3px] w-6 bg-accent-500" />
           管理后台
         </p>
@@ -35,7 +35,7 @@ export default function AdminError({
           后台加载失败
         </h1>
 
-        <p className="mt-4 text-sm leading-relaxed text-ink-600">
+        <p className="mt-4 text-[15px] leading-relaxed text-ink-600">
           服务端组件渲染时抛出了异常。生产构建下 React 不会下发具体文案，只给一个错误摘要。
           拿下面的 digest 到{" "}
           <strong className="font-medium text-ink-950">
@@ -46,31 +46,31 @@ export default function AdminError({
 
         {error.digest ? (
           <div className="mt-6">
-            <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-ink-400">
+            <p className="text-[12px] font-medium uppercase tracking-[0.22em] text-ink-400">
               错误摘要 digest
             </p>
-            <code className="mt-2 block break-all rounded bg-sand-100 px-3 py-2 text-xs text-ink-950">
+            <code className="mt-2 block break-all rounded bg-sand-100 px-3 py-2 text-[13px] text-ink-950">
               {error.digest}
             </code>
           </div>
         ) : null}
 
         <div className="mt-8 border border-ink-900/8 bg-white p-6">
-          <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
+          <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-ink-400">
             按顺序排查
           </p>
-          <ol className="mt-4 space-y-2.5 text-sm leading-relaxed text-ink-600">
+          <ol className="mt-4 space-y-2.5 text-[15px] leading-relaxed text-ink-600">
             <li>
               1. Vercel 项目是否配置了{" "}
-              <code className="rounded bg-sand-100 px-1.5 py-0.5 text-xs">
+              <code className="rounded bg-sand-100 px-1.5 py-0.5 text-[13px]">
                 NEXT_PUBLIC_SUPABASE_URL
               </code>{" "}
               与{" "}
-              <code className="rounded bg-sand-100 px-1.5 py-0.5 text-xs">
+              <code className="rounded bg-sand-100 px-1.5 py-0.5 text-[13px]">
                 NEXT_PUBLIC_SUPABASE_ANON_KEY
               </code>
               ——{" "}
-              <code className="rounded bg-sand-100 px-1.5 py-0.5 text-xs">.env.local</code>{" "}
+              <code className="rounded bg-sand-100 px-1.5 py-0.5 text-[13px]">.env.local</code>{" "}
               不会随代码部署上去
             </li>
             <li>2. 勾选的环境是否覆盖当前部署（Production / Preview 是分开的）</li>
@@ -89,7 +89,7 @@ export default function AdminError({
           </button>
           <Link
             href="/"
-            className="text-xs tracking-wide text-ink-400 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:text-ink-950 hover:decoration-accent-500"
+            className="text-[13px] tracking-wide text-ink-400 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:text-ink-950 hover:decoration-accent-500"
           >
             ← 返回官网
           </Link>

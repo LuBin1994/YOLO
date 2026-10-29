@@ -136,13 +136,13 @@ export default function InquiryList({
           type="search"
           defaultValue={keyword}
           placeholder="搜索姓名、邮箱、电话或询盘内容…"
-          className="min-w-[200px] flex-1 border-b border-ink-900/15 bg-transparent px-1 py-1.5 text-sm outline-none transition-colors placeholder:text-ink-400 focus:border-ink-950"
+          className="min-w-[200px] flex-1 border-b border-ink-900/15 bg-transparent px-1 py-1.5 text-[15px] outline-none transition-colors placeholder:text-ink-400 focus:border-ink-950"
         />
 
         <div className="flex items-center gap-2">
           <label
             htmlFor="inquiry-from"
-            className="whitespace-nowrap text-xs text-ink-400"
+            className="whitespace-nowrap text-[13px] text-ink-400"
           >
             提交时间
           </label>
@@ -153,29 +153,29 @@ export default function InquiryList({
             type="date"
             defaultValue={fromDate}
             aria-label="起始日期"
-            className="border-b border-ink-900/15 bg-transparent px-1 py-1 text-xs tabular-nums text-ink-600 outline-none transition-colors focus:border-ink-950"
+            className="border-b border-ink-900/15 bg-transparent px-1 py-1 text-[13px] tabular-nums text-ink-600 outline-none transition-colors focus:border-ink-950"
           />
-          <span className="text-xs text-ink-400">—</span>
+          <span className="text-[13px] text-ink-400">—</span>
           <input
             key={`to-${toDate}`}
             name="to"
             type="date"
             defaultValue={toDate}
             aria-label="结束日期"
-            className="border-b border-ink-900/15 bg-transparent px-1 py-1 text-xs tabular-nums text-ink-600 outline-none transition-colors focus:border-ink-950"
+            className="border-b border-ink-900/15 bg-transparent px-1 py-1 text-[13px] tabular-nums text-ink-600 outline-none transition-colors focus:border-ink-950"
           />
         </div>
 
         <button
           type="submit"
-          className="border border-ink-950 bg-ink-950 px-5 py-2.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-accent-500 hover:text-white"
+          className="border border-ink-950 bg-ink-950 px-5 py-2.5 text-[13px] font-medium text-white transition-colors duration-200 hover:bg-accent-500 hover:text-white"
         >
           筛选
         </button>
         {hasFilter ? (
           <Link
             href="/admin/inquiries"
-            className="text-xs text-ink-400 transition-colors hover:text-ink-950"
+            className="text-[13px] text-ink-400 transition-colors hover:text-ink-950"
           >
             清除
           </Link>
@@ -183,7 +183,7 @@ export default function InquiryList({
       </form>
 
       {/* ---------- 快捷时段 ---------- */}
-      <div className="mt-2.5 flex flex-wrap items-center gap-2 text-xs">
+      <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[13px]">
         <span className="text-ink-400">快捷时段：</span>
         {QUICK_RANGES.map((range) => (
           <button
@@ -198,7 +198,7 @@ export default function InquiryList({
       </div>
 
       {/* ---------- 结果概览 ---------- */}
-      <p className="mt-4 text-xs text-ink-400">
+      <p className="mt-4 text-[13px] text-ink-400">
         {total === 0
           ? hasFilter
             ? "当前筛选条件下没有询盘"
@@ -220,7 +220,7 @@ export default function InquiryList({
       {/* ---------- 列表 ---------- */}
       {inquiries.length === 0 ? (
         <div className="mt-3 border border-ink-900/8 bg-white px-6 py-16 text-center">
-          <p className="text-sm text-ink-400">
+          <p className="text-[15px] text-ink-400">
             {hasFilter
               ? "放宽或清除筛选条件后再看看。"
               : "访客提交联系表单后会显示在这里。"}
@@ -228,9 +228,9 @@ export default function InquiryList({
         </div>
       ) : (
         <div className="mt-3 overflow-x-auto border border-ink-900/8 bg-white">
-          <table className="w-full min-w-[640px] text-sm">
+          <table className="w-full min-w-[640px] text-[15px]">
             <thead>
-              <tr className="border-b hairline text-left text-[11px] uppercase tracking-[0.14em] text-ink-400">
+              <tr className="border-b hairline text-left text-[12px] uppercase tracking-[0.14em] text-ink-400">
                 <th className="w-[88px] px-4 py-3 font-medium">状态</th>
                 <th className="px-4 py-3 font-medium">联系人</th>
                 <th className="hidden px-4 py-3 font-medium lg:table-cell">电话</th>
@@ -254,14 +254,14 @@ export default function InquiryList({
                     >
                       <td className="px-4 py-3.5">
                         <span
-                          className={`inline-block whitespace-nowrap rounded px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${meta.cls}`}
+                          className={`inline-block whitespace-nowrap rounded px-2 py-0.5 text-[11px] font-medium uppercase tracking-wider ${meta.cls}`}
                         >
                           {meta.label}
                         </span>
                       </td>
                       <td className="px-4 py-3.5">
                         <span className="block font-medium text-ink-950">{inq.name}</span>
-                        <span className="block text-xs text-ink-400">{inq.email}</span>
+                        <span className="block text-[13px] text-ink-400">{inq.email}</span>
                       </td>
                       <td className="hidden whitespace-nowrap px-4 py-3.5 text-ink-600 lg:table-cell">
                         {inq.phone || "—"}
@@ -280,33 +280,33 @@ export default function InquiryList({
                     {isOpen ? (
                       <tr className="border-b hairline bg-sand-50 last:border-b-0">
                         <td colSpan={6} className="px-4 pb-6 pt-1">
-                          <div className="grid gap-x-8 gap-y-3 text-sm sm:grid-cols-3">
+                          <div className="grid gap-x-8 gap-y-3 text-[15px] sm:grid-cols-3">
                             <p className="text-ink-600">
-                              <span className="block text-[11px] uppercase tracking-wider text-ink-400">
+                              <span className="block text-[12px] uppercase tracking-wider text-ink-400">
                                 电话
                               </span>
                               {inq.phone || "—"}
                             </p>
                             <p className="text-ink-600">
-                              <span className="block text-[11px] uppercase tracking-wider text-ink-400">
+                              <span className="block text-[12px] uppercase tracking-wider text-ink-400">
                                 来源
                               </span>
                               {inq.source || "contact-form"}
                             </p>
                             <p className="text-ink-600">
-                              <span className="block text-[11px] uppercase tracking-wider text-ink-400">
+                              <span className="block text-[12px] uppercase tracking-wider text-ink-400">
                                 提交时间
                               </span>
                               {formatDateTime(inq.created_at)}
                             </p>
                           </div>
 
-                          <p className="mt-4 whitespace-pre-wrap rounded bg-white/80 p-4 text-sm leading-relaxed text-ink-950">
+                          <p className="mt-4 whitespace-pre-wrap rounded bg-white/80 p-4 text-[15px] leading-relaxed text-ink-950">
                             {inq.message}
                           </p>
 
                           <div className="mt-5 flex flex-wrap items-center gap-3">
-                            <span className="text-[11px] uppercase tracking-wider text-ink-400">
+                            <span className="text-[12px] uppercase tracking-wider text-ink-400">
                               标记为：
                             </span>
                             {(
@@ -321,7 +321,7 @@ export default function InquiryList({
                                 type="button"
                                 disabled={updating === inq.id || inq.status === status}
                                 onClick={() => updateStatus(inq.id, status)}
-                                className={`border px-3 py-1.5 text-xs transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                                className={`border px-3 py-1.5 text-[13px] transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                                   inq.status === status
                                     ? "border-ink-950 bg-ink-950 text-white"
                                     : "border-ink-900/15 bg-white text-ink-600 hover:border-ink-950 hover:text-ink-950"

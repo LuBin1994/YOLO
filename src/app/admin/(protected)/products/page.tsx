@@ -118,7 +118,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
         />
       </div>
 
-      <p className="mt-4 text-xs text-ink-400">
+      <p className="mt-4 text-[13px] text-ink-400">
         {total === 0
           ? hasFilter
             ? "当前筛选条件下没有产品"
@@ -144,9 +144,9 @@ export default async function AdminProductsPage({ searchParams }: Props) {
       </p>
 
       <div className="mt-6 overflow-x-auto border border-ink-900/8 bg-white">
-        <table className="w-full min-w-[720px] text-left text-sm">
+        <table className="w-full min-w-[720px] text-left text-[15px]">
           <thead>
-            <tr className="border-b border-ink-900/8 bg-sand-50 text-[11px] uppercase tracking-[0.18em] text-ink-400">
+            <tr className="border-b border-ink-900/8 bg-sand-50 text-[12px] uppercase tracking-[0.18em] text-ink-400">
               <th className="px-5 py-4 font-medium">产品</th>
               <th className="px-5 py-4 font-medium">分类</th>
               <th className="px-5 py-4 font-medium">价格</th>
@@ -178,7 +178,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                       <p className="truncate font-medium text-ink-950">
                         {p.title}
                       </p>
-                      <p className="truncate text-xs text-ink-400">/{p.slug}</p>
+                      <p className="truncate text-[13px] text-ink-400">/{p.slug}</p>
                     </div>
                   </div>
                 </td>
@@ -198,7 +198,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                         p.published ? "bg-moss-500" : "bg-ink-400"
                       }`}
                     />
-                    <span className="text-xs text-ink-600">
+                    <span className="text-[13px] text-ink-600">
                       {p.published ? "已发布" : "草稿"}
                       {p.featured ? " · 精选" : ""}
                     </span>
@@ -208,7 +208,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                   <div className="flex items-center justify-end gap-5">
                     <Link
                       href={`/admin/products/${p.id}/edit`}
-                      className="text-xs text-ink-950 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:decoration-accent-500"
+                      className="text-[13px] text-ink-950 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:decoration-accent-500"
                     >
                       编辑
                     </Link>
@@ -222,7 +222,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
             ))}
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-5 py-20 text-center text-sm text-ink-400">
+                <td colSpan={6} className="px-5 py-20 text-center text-[15px] text-ink-400">
                   {hasFilter ? (
                     "放宽或清除筛选条件后再看看。"
                   ) : (

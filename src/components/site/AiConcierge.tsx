@@ -223,7 +223,7 @@ export default function AiConcierge() {
             aria-expanded={open}
             aria-controls={PANEL_ID}
             aria-label="打开在线客服"
-            className={`fixed bottom-5 right-5 z-50 inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-4 py-3.5 text-sm font-medium text-white transition-[opacity,transform] duration-300 hover:bg-ink-900 motion-reduce:transition-none md:bottom-6 md:right-6 md:px-5 ${
+            className={`fixed bottom-5 right-5 z-50 inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-4 py-3.5 text-[15px] font-medium text-white transition-[opacity,transform] duration-300 hover:bg-ink-900 motion-reduce:transition-none md:bottom-6 md:right-6 md:px-5 ${
               open
                 ? "pointer-events-none translate-y-2 opacity-0"
                 : "translate-y-0 opacity-100"
@@ -260,7 +260,7 @@ export default function AiConcierge() {
             }`}
           >
             <div className="flex h-11 shrink-0 items-center justify-between border-b border-ink-900/10 px-4">
-              <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-ink-600">
+              <p className="text-[12px] font-medium uppercase tracking-[0.22em] text-ink-600">
                 Talk to our team
               </p>
               <button

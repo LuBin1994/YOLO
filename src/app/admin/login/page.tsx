@@ -69,7 +69,7 @@ function LoginForm() {
       <div>
         <label
           htmlFor="email"
-          className="text-[11px] uppercase tracking-[0.22em] text-ink-400"
+          className="text-[12px] uppercase tracking-[0.22em] text-ink-400"
         >
           Email
         </label>
@@ -88,7 +88,7 @@ function LoginForm() {
       <div>
         <label
           htmlFor="password"
-          className="text-[11px] uppercase tracking-[0.22em] text-ink-400"
+          className="text-[12px] uppercase tracking-[0.22em] text-ink-400"
         >
           密码
         </label>
@@ -105,7 +105,7 @@ function LoginForm() {
       </div>
 
       {error ? (
-        <p className="text-sm font-medium text-red-600">{error}</p>
+        <p className="text-[15px] font-medium text-red-600">{error}</p>
       ) : null}
 
       <button
@@ -121,7 +121,7 @@ function LoginForm() {
       </button>
 
       {lockLeft > 0 ? (
-        <p className="text-xs leading-relaxed text-ink-400">
+        <p className="text-[13px] leading-relaxed text-ink-400">
           连续登录失败已触发保护，请稍后重试。
         </p>
       ) : null}
@@ -144,11 +144,11 @@ export default function AdminLoginPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
         <div className="relative z-10 flex h-full flex-col justify-end p-14">
-          <p className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.3em] text-white/70">
+          <p className="flex items-center gap-3 text-[12px] font-medium uppercase tracking-[0.3em] text-white/70">
             <span aria-hidden className="h-[3px] w-6 bg-white/70" />
             管理后台
           </p>
-          <p className="display-xl mt-6 text-white">TEM APPAREL PTE. LTD.</p>
+          <p className="display-xl mt-6 text-white">YOLO APPAREL PTE. LTD.</p>
         </div>
       </div>
 
@@ -157,14 +157,14 @@ export default function AdminLoginPage() {
         <div className="w-full max-w-sm">
           <Link
             href="/"
-            className="text-xs tracking-wide text-ink-400 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:text-ink-950 hover:decoration-accent-500"
+            className="text-[13px] tracking-wide text-ink-400 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 hover:text-ink-950 hover:decoration-accent-500"
           >
             ← 返回官网
           </Link>
           <h1 className="mt-8 text-3xl font-medium tracking-tight text-ink-950 md:text-4xl">
             登录管理后台
           </h1>
-          <p className="mt-3 text-sm leading-relaxed text-ink-600">
+          <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             仅限授权管理员。管理产品、内容、询盘与访客数据。
           </p>
 

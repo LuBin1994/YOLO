@@ -21,7 +21,7 @@ export default function AdminPageHeader({
     <header className="flex flex-col gap-6 border-b border-ink-900/8 pb-8 md:flex-row md:items-end md:justify-between">
       <div className="min-w-0">
         {eyebrow ? (
-          <p className="flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
+          <p className="flex items-center gap-2.5 text-[12px] font-medium uppercase tracking-[0.24em] text-ink-400">
             <span aria-hidden className="h-[3px] w-5 bg-accent-500" />
             {eyebrow}
           </p>
@@ -30,7 +30,7 @@ export default function AdminPageHeader({
           {title}
         </h1>
         {description ? (
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-600">
+          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-600">
             {description}
           </p>
         ) : null}

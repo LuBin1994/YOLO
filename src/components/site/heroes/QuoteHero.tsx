@@ -39,7 +39,7 @@ export default function QuoteHero({
       <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/45 to-ink-950/15" />
 
       <div className="container-site relative z-10 pb-12 pt-40 md:pb-16">
-        <p className="flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.3em] text-white/60">
+        <p className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.3em] text-white/60">
           <span aria-hidden className="h-[2px] w-6 bg-accent-400" />
           {eyebrow}
         </p>
@@ -58,14 +58,14 @@ export default function QuoteHero({
                   suffix={s.suffix}
                 />
               </dd>
-              <dt className="mt-1 text-[9px] uppercase leading-tight tracking-[0.12em] text-white/45 md:text-[10px]">
+              <dt className="mt-1 text-[11px] uppercase leading-tight tracking-[0.12em] text-white/45 md:text-[11px]">
                 {s.label}
               </dt>
             </div>
           ))}
         </dl>
 
-        <p className="mt-8 flex flex-wrap gap-x-5 gap-y-1 text-[10px] uppercase tracking-[0.18em] text-white/40">
+        <p className="mt-8 flex flex-wrap gap-x-5 gap-y-1 text-[11px] uppercase tracking-[0.18em] text-white/40">
           {meta.map((m) => (
             <span key={m}>{m}</span>
           ))}

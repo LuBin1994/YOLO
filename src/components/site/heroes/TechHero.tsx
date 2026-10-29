@@ -39,7 +39,7 @@ export default function TechHero({
 
       <div className="container-site relative z-10 grid gap-12 pb-14 pt-28 md:pt-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,38%)] lg:items-end lg:gap-16 lg:pb-20">
         <div>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[10px] uppercase tracking-[0.24em] text-white/40">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.24em] text-white/40">
             <span className="text-accent-400">{fileNo}</span>
             <span aria-hidden className="h-px w-8 bg-white/25" />
             <span>{eyebrow}</span>
@@ -61,7 +61,7 @@ export default function TechHero({
                 <dd className="text-lg font-medium tabular-nums tracking-tight text-white md:text-xl">
                   {f.value}
                 </dd>
-                <dt className="mt-1 text-[9px] uppercase tracking-[0.14em] text-white/40">
+                <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/40">
                   {f.label}
                 </dt>
               </div>
@@ -72,15 +72,15 @@ export default function TechHero({
         <figure className="relative aspect-[4/5] overflow-hidden bg-white/5 lg:aspect-[3/4]">
           <Image
             src={image}
-            alt=""
+            alt="Vintage sewing machines displayed on a workshop wall above a pile of coloured cushions"
             fill
             priority
             sizes="(min-width: 1024px) 38vw, 100vw"
             className="object-cover opacity-90"
           />
           {/* 图上压一行小字，像样张背面的标注 */}
-          <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-ink-950/85 to-transparent px-4 pb-3 pt-10 font-mono text-[9px] uppercase tracking-[0.18em] text-white/55">
-            <span>Sampling studio</span>
+          <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-ink-950/85 to-transparent px-4 pb-3 pt-10 font-mono text-[11px] uppercase tracking-[0.18em] text-white/55">
+            <span>Studio wall</span>
             <span>Hangzhou</span>
           </figcaption>
         </figure>

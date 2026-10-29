@@ -54,10 +54,10 @@ export default function AdminSidebar({ admin }: AdminSidebarProps) {
           Y<span className="text-accent-400">.</span>
         </span>
         <div className="hidden min-w-0 md:block">
-          <p className="truncate text-sm font-medium text-white">
-            TEM APPAREL
+          <p className="truncate text-[15px] font-medium text-white">
+            YOLO APPAREL
           </p>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-white/40">
             管理后台
           </p>
         </div>
@@ -67,7 +67,7 @@ export default function AdminSidebar({ admin }: AdminSidebarProps) {
       <nav className="flex-1 overflow-y-auto px-2 py-6 md:px-3" aria-label="Admin">
         {NAV_GROUPS.map((group) => (
           <div key={group.label} className="mb-7 last:mb-0">
-            <p className="mb-2 hidden px-3 text-[10px] uppercase tracking-[0.24em] text-white/25 md:block">
+            <p className="mb-2 hidden px-3 text-[11px] uppercase tracking-[0.24em] text-white/25 md:block">
               {group.label}
             </p>
             <div className="space-y-1">
@@ -77,7 +77,7 @@ export default function AdminSidebar({ admin }: AdminSidebarProps) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`relative flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition-colors duration-200 ${
+                    className={`relative flex items-center gap-3 rounded-lg px-3 py-3 text-[15px] transition-colors duration-200 ${
                       active
                         ? "bg-white/10 font-medium text-white"
                         : "text-white/55 hover:bg-white/5 hover:text-white"
@@ -90,7 +90,7 @@ export default function AdminSidebar({ admin }: AdminSidebarProps) {
                         active ? "opacity-100" : "opacity-0"
                       }`}
                     />
-                    <span className="w-5 shrink-0 text-center text-sm" aria-hidden>
+                    <span className="w-5 shrink-0 text-center text-[15px]" aria-hidden>
                       {item.icon}
                     </span>
                     <span className="hidden truncate md:inline">{item.label}</span>
@@ -106,21 +106,21 @@ export default function AdminSidebar({ admin }: AdminSidebarProps) {
       <div className="border-t border-white/10 p-3 md:p-4">
         <Link
           href="/"
-          className="mb-3 hidden items-center gap-2 rounded-lg px-3 py-2 text-xs text-white/50 transition-colors duration-200 hover:bg-white/5 hover:text-white md:flex"
+          className="mb-3 hidden items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-white/50 transition-colors duration-200 hover:bg-white/5 hover:text-white md:flex"
         >
           <span aria-hidden>↗</span>
           查看官网
         </Link>
         <div className="hidden truncate md:block">
-          <p className="truncate text-sm font-medium text-white">
+          <p className="truncate text-[15px] font-medium text-white">
             {admin.displayName}
           </p>
-          <p className="truncate text-[11px] text-white/40">{admin.email}</p>
+          <p className="truncate text-[12px] text-white/40">{admin.email}</p>
         </div>
         <button
           type="button"
           onClick={handleSignOut}
-          className="mt-3 w-full rounded-lg border border-white/15 px-3 py-2.5 text-xs tracking-wide text-white/70 transition-colors duration-200 hover:border-white/40 hover:text-white"
+          className="mt-3 w-full rounded-lg border border-white/15 px-3 py-2.5 text-[13px] tracking-wide text-white/70 transition-colors duration-200 hover:border-white/40 hover:text-white"
         >
           <span className="hidden md:inline">退出登录</span>
           <span className="md:hidden">⏻</span>

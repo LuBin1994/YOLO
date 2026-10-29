@@ -7,7 +7,7 @@ import Reveal from "@/components/site/Reveal";
 import JsonLd from "@/components/site/JsonLd";
 import { breadcrumb } from "@/lib/seo";
 import {
-  CERTIFICATIONS,
+  CERT_HIGHLIGHTS,
   FACTORY_STATS,
   PRODUCT_CAPABILITIES,
   getPage,
@@ -51,7 +51,7 @@ export default async function ProductsPage() {
         <div className="container-site grid grid-cols-2 gap-y-8 py-10 md:grid-cols-4">
           {FACTORY_STATS.map((s) => (
             <div key={s.label}>
-              <p className="text-[11px] uppercase tracking-[0.24em] text-ink-400">
+              <p className="text-[12px] uppercase tracking-[0.24em] text-ink-400">
                 {s.label}
               </p>
               <p className="mt-2 text-3xl font-medium tracking-tight text-ink-950 md:text-4xl">
@@ -86,7 +86,7 @@ export default async function ProductsPage() {
                   <h3 className="mt-3 text-xl font-medium tracking-tight text-ink-950 md:text-2xl">
                     {c.name}
                   </h3>
-                  <p className="mt-3 max-w-sm text-sm leading-relaxed text-ink-600">
+                  <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-ink-600">
                     {c.body}
                   </p>
                 </article>
@@ -99,10 +99,10 @@ export default async function ProductsPage() {
       {/* ⑤ 资质条 */}
       <section className="border-y hairline">
         <div className="container-site flex flex-wrap items-center justify-center gap-x-12 gap-y-4 py-8">
-          {CERTIFICATIONS.map((c) => (
+          {CERT_HIGHLIGHTS.map((c) => (
             <span
               key={c}
-              className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400"
+              className="text-[12px] font-medium uppercase tracking-[0.24em] text-ink-400"
             >
               {c}
             </span>
@@ -117,20 +117,20 @@ export default async function ProductsPage() {
             <h2 className="display-lg mx-auto max-w-3xl text-ink-950">
               Have a style in mind?
             </h2>
-            <p className="mx-auto mt-7 max-w-xl text-sm leading-relaxed text-ink-600">
+            <p className="mx-auto mt-7 max-w-xl text-[15px] leading-relaxed text-ink-600">
               Send us your tech pack, reference sample or a sketch. We will come
               back with fabric options, counter samples and a costed quotation.
             </p>
             <div className="mt-11 flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center bg-ink-950 px-8 py-4 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:bg-white hover:text-ink-950"
+                className="inline-flex items-center justify-center bg-ink-950 px-8 py-4 text-[15px] font-medium tracking-wide text-white transition-colors duration-300 hover:bg-white hover:text-ink-950"
               >
                 Request a Quote
               </Link>
               <Link
                 href="/sustainability"
-                className="inline-flex items-center justify-center border border-ink-950/35 px-8 py-4 text-sm font-medium tracking-wide text-ink-950 transition-colors duration-300 hover:border-ink-950 hover:bg-ink-950 hover:text-white"
+                className="inline-flex items-center justify-center border border-ink-950/35 px-8 py-4 text-[15px] font-medium tracking-wide text-ink-950 transition-colors duration-300 hover:border-ink-950 hover:bg-ink-950 hover:text-white"
               >
                 Our Materials
               </Link>

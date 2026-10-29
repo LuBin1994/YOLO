@@ -86,7 +86,7 @@ export default function ContactForm({ product }: ContactFormProps) {
 
       <div className="grid gap-10 md:grid-cols-2">
         <div>
-          <label htmlFor="name" className="text-[11px] uppercase tracking-[0.22em] text-ink-400">
+          <label htmlFor="name" className="text-[12px] uppercase tracking-[0.22em] text-ink-400">
             Name *
           </label>
           <input
@@ -100,7 +100,7 @@ export default function ContactForm({ product }: ContactFormProps) {
           />
         </div>
         <div>
-          <label htmlFor="email" className="text-[11px] uppercase tracking-[0.22em] text-ink-400">
+          <label htmlFor="email" className="text-[12px] uppercase tracking-[0.22em] text-ink-400">
             Email *
           </label>
           <input
@@ -116,7 +116,7 @@ export default function ContactForm({ product }: ContactFormProps) {
       </div>
 
       <div>
-        <label htmlFor="phone" className="text-[11px] uppercase tracking-[0.22em] text-ink-400">
+        <label htmlFor="phone" className="text-[12px] uppercase tracking-[0.22em] text-ink-400">
           Tel
         </label>
         <input
@@ -130,7 +130,7 @@ export default function ContactForm({ product }: ContactFormProps) {
       </div>
 
       <div>
-        <label htmlFor="message" className="text-[11px] uppercase tracking-[0.22em] text-ink-400">
+        <label htmlFor="message" className="text-[12px] uppercase tracking-[0.22em] text-ink-400">
           Message *
         </label>
         <textarea
@@ -153,10 +153,10 @@ export default function ContactForm({ product }: ContactFormProps) {
         </button>
 
         {state.status === "success" ? (
-          <p className="text-sm font-medium text-emerald-700">{state.message}</p>
+          <p className="text-[15px] font-medium text-emerald-700">{state.message}</p>
         ) : null}
         {state.status === "error" ? (
-          <p className="text-sm font-medium text-red-600">{state.message}</p>
+          <p className="text-[15px] font-medium text-red-600">{state.message}</p>
         ) : null}
       </div>
     </form>

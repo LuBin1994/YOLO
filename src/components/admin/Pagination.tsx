@@ -22,7 +22,7 @@ export default function Pagination({
       aria-label="分页"
       className="mt-8 flex flex-wrap items-center justify-between gap-4"
     >
-      <p className="text-xs text-ink-400">
+      <p className="text-[13px] text-ink-400">
         第 {page} / {totalPages} 页
       </p>
 
@@ -33,7 +33,7 @@ export default function Pagination({
 
         {paginationItems(page, totalPages).map((item, index) =>
           item === "gap" ? (
-            <span key={`gap-${index}`} className="px-2 text-xs text-ink-400">
+            <span key={`gap-${index}`} className="px-2 text-[13px] text-ink-400">
               …
             </span>
           ) : (
@@ -88,7 +88,7 @@ function PageLink({
   children: React.ReactNode;
 } & React.AriaAttributes) {
   const base =
-    "inline-flex h-9 min-w-9 items-center justify-center rounded-md border px-3 text-xs transition-colors duration-200";
+    "inline-flex h-9 min-w-9 items-center justify-center rounded-md border px-3 text-[13px] transition-colors duration-200";
 
   if (disabled) {
     return (

@@ -105,7 +105,7 @@ export default async function AdminInquiriesPage({ searchParams }: Props) {
             key={s.label}
             className="flex items-center justify-between border border-ink-900/8 bg-white px-6 py-5"
           >
-            <span className="flex items-center gap-2.5 text-sm text-ink-600">
+            <span className="flex items-center gap-2.5 text-[15px] text-ink-600">
               <span className={`inline-block h-2 w-2 rounded-full ${s.dot}`} />
               {s.label}
             </span>

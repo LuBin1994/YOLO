@@ -41,7 +41,7 @@ export default function ProductBrowser({
               key={c}
               type="button"
               onClick={() => setActiveCategory(c)}
-              className={`rounded-full px-4 py-1.5 text-xs capitalize tracking-wide transition-colors duration-200 ${
+              className={`rounded-full px-4 py-1.5 text-[13px] capitalize tracking-wide transition-colors duration-200 ${
                 activeCategory === c
                   ? "bg-ink-950 font-medium text-white"
                   : "border border-ink-900/15 text-ink-600 hover:border-ink-950 hover:text-ink-950"
@@ -64,7 +64,7 @@ export default function ProductBrowser({
               key={mode}
               type="button"
               onClick={() => setView(mode)}
-              className={`px-4 py-2 text-xs tracking-wide transition-colors duration-200 ${
+              className={`px-4 py-2 text-[13px] tracking-wide transition-colors duration-200 ${
                 view === mode
                   ? "bg-ink-950 font-medium text-white"
                   : "text-ink-600 hover:bg-sand-100"
@@ -77,7 +77,7 @@ export default function ProductBrowser({
         </div>
       </div>
 
-      <p className="pt-8 text-xs tracking-[0.2em] text-ink-400">
+      <p className="pt-8 text-[13px] tracking-[0.2em] text-ink-400">
         {filtered.length} {filtered.length === 1 ? "STYLE" : "STYLES"}
       </p>
 
@@ -98,7 +98,7 @@ export default function ProductBrowser({
       )}
 
       {filtered.length === 0 ? (
-        <p className="py-24 text-center text-sm text-ink-400">
+        <p className="py-24 text-center text-[15px] text-ink-400">
           No styles in this category yet.
         </p>
       ) : null}

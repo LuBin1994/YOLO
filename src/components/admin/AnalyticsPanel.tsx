@@ -16,39 +16,39 @@ export default function AnalyticsPanel({
   if (result.status === "unconfigured") {
     return (
       <div className="border border-ink-900/8 bg-white p-8">
-        <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
+        <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-ink-400">
           访客数据
         </p>
-        <p className="mt-4 text-sm font-medium text-ink-950">
+        <p className="mt-4 text-[15px] font-medium text-ink-950">
           尚未配置：缺少{" "}
           {result.missing.map((k, i) => (
             <span key={k}>
               {i > 0 ? "、" : ""}
-              <code className="rounded bg-sand-100 px-1.5 py-0.5 text-xs">{k}</code>
+              <code className="rounded bg-sand-100 px-1.5 py-0.5 text-[13px]">{k}</code>
             </span>
           ))}
         </p>
-        <p className="mt-4 text-sm leading-relaxed text-ink-600">
-          注意：<code className="rounded bg-sand-100 px-1.5 py-0.5 text-xs">VERCEL_PROJECT_ID</code>{" "}
+        <p className="mt-4 text-[15px] leading-relaxed text-ink-600">
+          注意：<code className="rounded bg-sand-100 px-1.5 py-0.5 text-[13px]">VERCEL_PROJECT_ID</code>{" "}
           属于 Vercel 的<strong className="font-medium text-ink-950">系统环境变量</strong>
           ，只在 Vercel 平台上的构建与运行时注入。
           <strong className="font-medium text-ink-950">
-            本地 <code className="rounded bg-sand-100 px-1.5 py-0.5 text-xs">next dev</code> 不会自动带上它
+            本地 <code className="rounded bg-sand-100 px-1.5 py-0.5 text-[13px]">next dev</code> 不会自动带上它
           </strong>
-          ，需要在 <code className="rounded bg-sand-100 px-1.5 py-0.5 text-xs">.env.local</code> 手动填写。
+          ，需要在 <code className="rounded bg-sand-100 px-1.5 py-0.5 text-[13px]">.env.local</code> 手动填写。
         </p>
-        <ul className="mt-4 space-y-1.5 text-sm leading-relaxed text-ink-600">
+        <ul className="mt-4 space-y-1.5 text-[15px] leading-relaxed text-ink-600">
           <li>
             · 取值位置：Vercel Dashboard → 项目 → Settings → General → Project ID（
-            <code className="rounded bg-sand-100 px-1.5 py-0.5 text-xs">prj_</code> 开头）
+            <code className="rounded bg-sand-100 px-1.5 py-0.5 text-[13px]">prj_</code> 开头）
           </li>
           <li>
             · 团队（Team）项目还需填{" "}
-            <code className="rounded bg-sand-100 px-1.5 py-0.5 text-xs">VERCEL_TEAM_ID</code>
-            （<code className="rounded bg-sand-100 px-1.5 py-0.5 text-xs">team_</code> 开头）；个人账号留空
+            <code className="rounded bg-sand-100 px-1.5 py-0.5 text-[13px]">VERCEL_TEAM_ID</code>
+            （<code className="rounded bg-sand-100 px-1.5 py-0.5 text-[13px]">team_</code> 开头）；个人账号留空
           </li>
           <li>
-            · <code className="rounded bg-sand-100 px-1.5 py-0.5 text-xs">.env.local</code>{" "}
+            · <code className="rounded bg-sand-100 px-1.5 py-0.5 text-[13px]">.env.local</code>{" "}
             不会上传到 Vercel，线上需在 Project → Settings → Environment Variables 单独配置
           </li>
         </ul>
@@ -60,16 +60,16 @@ export default function AnalyticsPanel({
   if (result.status === "error") {
     return (
       <div className="border border-ink-900/8 bg-white p-8">
-        <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
+        <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-ink-400">
           访客数据
         </p>
-        <p className="mt-4 text-sm font-medium text-ink-950">
+        <p className="mt-4 text-[15px] font-medium text-ink-950">
           已配置，但调用 Vercel Web Analytics API 失败
         </p>
-        <pre className="mt-4 overflow-x-auto whitespace-pre-wrap break-all rounded bg-sand-100 p-4 text-xs leading-relaxed text-ink-600">
+        <pre className="mt-4 overflow-x-auto whitespace-pre-wrap break-all rounded bg-sand-100 p-4 text-[13px] leading-relaxed text-ink-600">
           {result.message}
         </pre>
-        <ul className="mt-4 space-y-1.5 text-sm leading-relaxed text-ink-600">
+        <ul className="mt-4 space-y-1.5 text-[15px] leading-relaxed text-ink-600">
           <li>· 401/403：token 无效、已过期，或不属于该项目所属账号/团队</li>
           <li>· 404：projectId 写错，或该项目尚未开启 Web Analytics</li>
           <li>· 项目属于团队时，必须同时提供 VERCEL_TEAM_ID</li>
@@ -88,7 +88,7 @@ export default function AnalyticsPanel({
       {/* 顶部指标 */}
       <div className="grid grid-cols-2 gap-6">
         <div className="border border-ink-900/8 bg-white p-8">
-          <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
+          <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-ink-400">
             独立访客（UV）
           </p>
           <p className="mt-4 text-5xl font-medium tracking-tight text-ink-950">
@@ -96,7 +96,7 @@ export default function AnalyticsPanel({
           </p>
         </div>
         <div className="border border-ink-900/8 bg-white p-8">
-          <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
+          <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-ink-400">
             浏览量（PV）
           </p>
           <p className="mt-4 text-5xl font-medium tracking-tight text-ink-950">
@@ -108,15 +108,15 @@ export default function AnalyticsPanel({
       {/* 每日趋势 */}
       <div className="border border-ink-900/8 bg-white p-8">
         <div className="flex items-baseline justify-between gap-4">
-          <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
+          <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-ink-400">
             每日浏览量
           </p>
-          <p className="text-xs text-ink-400">
+          <p className="text-[13px] text-ink-400">
             {range.since} → {range.until}
           </p>
         </div>
         {daily.length === 0 ? (
-          <p className="mt-6 text-sm text-ink-400">当前时间窗口暂无数据。</p>
+          <p className="mt-6 text-[15px] text-ink-400">当前时间窗口暂无数据。</p>
         ) : (
           <div className="mt-8 flex h-40 items-end gap-1">
             {daily.map((d, i) => (
@@ -134,16 +134,16 @@ export default function AnalyticsPanel({
       <div className="grid gap-6 md:grid-cols-2">
         {/* 地域 */}
         <div className="border border-ink-900/8 bg-white p-8">
-          <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
+          <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-ink-400">
             热门国家/地区
           </p>
           {countries.length === 0 ? (
-            <p className="mt-6 text-sm text-ink-400">暂无数据。</p>
+            <p className="mt-6 text-[15px] text-ink-400">暂无数据。</p>
           ) : (
             <ul className="mt-7 space-y-5">
               {countries.map((c) => (
                 <li key={c.key}>
-                  <div className="flex items-baseline justify-between text-sm">
+                  <div className="flex items-baseline justify-between text-[15px]">
                     <span className="font-medium text-ink-950">{c.key}</span>
                     <span className="text-ink-400">
                       {c.visitors.toLocaleString()} 位访客
@@ -163,16 +163,16 @@ export default function AnalyticsPanel({
 
         {/* 设备 */}
         <div className="border border-ink-900/8 bg-white p-8">
-          <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
+          <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-ink-400">
             设备分布
           </p>
           {devices.length === 0 ? (
-            <p className="mt-6 text-sm text-ink-400">暂无数据。</p>
+            <p className="mt-6 text-[15px] text-ink-400">暂无数据。</p>
           ) : (
             <ul className="mt-7 space-y-5">
               {devices.map((d) => (
                 <li key={d.key}>
-                  <div className="flex items-baseline justify-between text-sm">
+                  <div className="flex items-baseline justify-between text-[15px]">
                     <span className="font-medium text-ink-950">
                       {deviceLabel(d.key)}
                     </span>

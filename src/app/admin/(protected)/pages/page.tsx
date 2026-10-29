@@ -42,14 +42,14 @@ export default async function AdminPagesPage() {
                 aria-hidden
                 className="absolute inset-y-0 left-0 w-[3px] origin-top scale-y-0 bg-accent-500 transition-transform duration-300 ease-out group-hover:scale-y-100"
               />
-              <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-400">
+              <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-ink-400">
                 /{p.slug}
               </p>
               <h2 className="mt-4 text-2xl font-medium tracking-tight text-ink-950">
                 {p.title}
               </h2>
-              <p className="mt-3 text-sm text-ink-600">{meta.desc}</p>
-              <p className="mt-6 text-xs text-ink-400 transition-colors duration-300 group-hover:text-ink-950">
+              <p className="mt-3 text-[15px] text-ink-600">{meta.desc}</p>
+              <p className="mt-6 text-[13px] text-ink-400 transition-colors duration-300 group-hover:text-ink-950">
                 {p.sections.length} 个内容块 · 编辑 →
               </p>
             </Link>

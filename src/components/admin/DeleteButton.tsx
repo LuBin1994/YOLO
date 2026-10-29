@@ -40,7 +40,7 @@ export default function DeleteButton({
       type="button"
       onClick={handleDelete}
       disabled={deleting}
-      className="text-xs text-red-600 transition-colors hover:text-red-700 disabled:opacity-50"
+      className="text-[13px] text-red-600 transition-colors hover:text-red-700 disabled:opacity-50"
     >
       {deleting ? "删除中..." : "删除"}
     </button>

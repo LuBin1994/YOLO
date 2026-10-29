@@ -68,10 +68,10 @@ export default function Header() {
           className={`flex items-baseline gap-2 transition-colors duration-300 ${
             onImage ? "text-white" : "text-ink-950"
           }`}
-          aria-label="TEM APPAREL PTE. LTD. — Home"
+          aria-label="YOLO APPAREL PTE. LTD. — Home"
         >
           <span className="text-lg font-medium tracking-tight md:text-xl">
-            TEM APPAREL PTE. LTD.
+            YOLO APPAREL PTE. LTD.
           </span>
         </Link>
 
@@ -84,7 +84,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`group relative text-[13px] tracking-wide transition-colors duration-200 ${
+                className={`group relative text-[15px] tracking-wide transition-colors duration-200 ${
                   onImage
                     ? active
                       ? "font-medium text-white"

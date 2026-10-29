@@ -69,7 +69,7 @@ function IntroBand({
     >
       <div className="container-site flex flex-col gap-4 pb-5 md:flex-row md:items-end md:justify-between md:gap-12 md:pb-7">
         <div>
-          <p className="flex items-center gap-2 text-[9px] font-medium uppercase tracking-[0.22em] text-white/60 md:text-[10px]">
+          <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white/60 md:text-[11px]">
             <span aria-hidden className="h-[2px] w-4 bg-accent-400 md:w-5" />
             {intro.eyebrow}
           </p>
@@ -97,7 +97,7 @@ function IntroBand({
               <Link
                 key={link.href}
                 href={link.href}
-                className="group/link inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.14em] text-white/85 transition-colors duration-200 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:text-[11px]"
+                className="group/link inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-white/85 transition-colors duration-200 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:text-[12px]"
               >
                 {link.label}
                 <span
@@ -109,7 +109,7 @@ function IntroBand({
               </Link>
             ))}
           </div>
-          <p className="hidden text-[9px] uppercase tracking-[0.18em] text-white/45 md:block">
+          <p className="hidden text-[11px] uppercase tracking-[0.18em] text-white/45 md:block">
             Hover to preview · Click to open
           </p>
         </div>
@@ -141,8 +141,8 @@ function IntroBand({
  * 盖住顶部 128/160px——白字压在任何一段视频上都能读。
  *
  * 【视频为什么 preload="none"】
- * 九段合计约 55MB。首屏只显示 poster（WebP，每张 20–70KB），
- * 视频要等到第一次悬停（play()）才发起请求。之前用 "metadata"，
+ * 九段视频走 Mixkit 远程直链，总量约 55MB。首屏只显示 poster（jpg，
+ * 官方同帧缩略图），视频要等到第一次悬停（play()）才发起请求。之前用 "metadata"，
  * 虽然只取文件头，但九段加起来仍是九次额外请求，4G 下对 FCP 有可见影响。
  * 代价：首次悬停有约 200–400ms 的"画面还没动"，poster 仍在，不算错误态。
  *
@@ -481,10 +481,10 @@ export default function VideoMosaic({
                 expanded ? "opacity-100" : "opacity-0"
               }`}
             >
-              <span className="block text-[10px] uppercase tracking-[0.2em] text-white/60">
+              <span className="block text-[11px] uppercase tracking-[0.2em] text-white/60">
                 {active.clip.theme}
               </span>
-              <span className="mt-1 block text-sm font-medium tracking-tight text-white">
+              <span className="mt-1 block text-[15px] font-medium tracking-tight text-white">
                 {active.clip.label}
               </span>
             </span>

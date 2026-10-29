@@ -12,7 +12,7 @@ const inter = Inter({
   display: "swap",
 });
 
-const SITE_NAME = "TEM APPAREL PTE. LTD.";
+const SITE_NAME = "YOLO APPAREL PTE. LTD.";
 const DESCRIPTION =
   "Vertically integrated apparel manufacturer with 16+ own factories across China, Cambodia, Laos, Myanmar and Egypt — down, padded outerwear and jackets for international brands.";
 
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
         url: "/og.jpg",
         width: 1200,
         height: 630,
-        alt: "TEM APPAREL production floor",
+        alt: "YOLO APPAREL production floor",
       },
     ],
   },

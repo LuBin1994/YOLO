@@ -83,14 +83,14 @@ export default function ProductForm({ product }: ProductFormProps) {
   }
 
   const inputCls =
-    "w-full border border-ink-900/15 bg-white px-3 py-2.5 text-sm outline-none transition-colors focus:border-ink-950";
-  const labelCls = "mb-1.5 block text-[11px] uppercase tracking-[0.2em] text-ink-400";
+    "w-full border border-ink-900/15 bg-white px-3 py-2.5 text-[15px] outline-none transition-colors focus:border-ink-950";
+  const labelCls = "mb-1.5 block text-[12px] uppercase tracking-[0.2em] text-ink-400";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* 基础信息 */}
       <section className="space-y-5">
-        <p className="text-[11px] uppercase tracking-[0.24em] text-ink-400">
+        <p className="text-[12px] uppercase tracking-[0.24em] text-ink-400">
           基本信息
         </p>
         <div>
@@ -175,13 +175,13 @@ export default function ProductForm({ product }: ProductFormProps) {
             onChange={(e) => setMaterials(e.target.value)}
             placeholder="100% GOTS Organic Cotton, 65% Recycled Polyester"
           />
-          <p className="mt-1 text-xs text-ink-400">多个材质用逗号分隔。</p>
+          <p className="mt-1 text-[13px] text-ink-400">多个材质用逗号分隔。</p>
         </div>
       </section>
 
       {/* 图片 */}
       <section className="space-y-5">
-        <p className="text-[11px] uppercase tracking-[0.24em] text-ink-400">
+        <p className="text-[12px] uppercase tracking-[0.24em] text-ink-400">
           图片 <span className="text-ink-400">（Supabase 存储）</span>
         </p>
         <ImageUploader
@@ -193,7 +193,7 @@ export default function ProductForm({ product }: ProductFormProps) {
 
       {/* 设置 */}
       <section className="space-y-5">
-        <p className="text-[11px] uppercase tracking-[0.24em] text-ink-400">
+        <p className="text-[12px] uppercase tracking-[0.24em] text-ink-400">
           设置
         </p>
         <div className="grid gap-5 sm:grid-cols-2">
@@ -209,7 +209,7 @@ export default function ProductForm({ product }: ProductFormProps) {
           </div>
         </div>
         <div className="flex flex-wrap gap-8 pt-1">
-          <label className="flex cursor-pointer items-center gap-3 text-sm text-ink-950">
+          <label className="flex cursor-pointer items-center gap-3 text-[15px] text-ink-950">
             <input
               type="checkbox"
               checked={featured}
@@ -218,7 +218,7 @@ export default function ProductForm({ product }: ProductFormProps) {
             />
             首页精选
           </label>
-          <label className="flex cursor-pointer items-center gap-3 text-sm text-ink-950">
+          <label className="flex cursor-pointer items-center gap-3 text-[15px] text-ink-950">
             <input
               type="checkbox"
               checked={published}
@@ -230,7 +230,7 @@ export default function ProductForm({ product }: ProductFormProps) {
         </div>
       </section>
 
-      {error ? <p className="text-sm font-medium text-red-600">{error}</p> : null}
+      {error ? <p className="text-[15px] font-medium text-red-600">{error}</p> : null}
 
       <div className="flex items-center gap-4 border-t hairline pt-6">
         <button
@@ -243,7 +243,7 @@ export default function ProductForm({ product }: ProductFormProps) {
         <button
           type="button"
           onClick={() => router.push("/admin/products")}
-          className="btn-ghost text-sm"
+          className="btn-ghost text-[15px]"
         >
           取消
         </button>

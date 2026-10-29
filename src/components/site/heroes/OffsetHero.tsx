@@ -35,7 +35,7 @@ export default function OffsetHero({
 
       <div className="container-site relative z-10 -mt-20 md:-mt-28">
         <div className="max-w-[42rem] bg-paper px-6 py-8 md:px-10 md:py-10">
-          <p className="flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.3em] text-ink-400">
+          <p className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.3em] text-ink-400">
             <span aria-hidden className="h-[3px] w-6 bg-accent-500" />
             {eyebrow}
           </p>

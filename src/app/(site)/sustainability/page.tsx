@@ -147,7 +147,7 @@ export default function SustainabilityPage() {
                   className="object-contain"
                 />
               </div>
-              <p className="mt-6 text-center text-[11px] text-ink-400">
+              <p className="mt-6 text-center text-[12px] text-ink-400">
                 Recycled polyester, traced from bottle flake to yarn — GRS and
                 RCS certified.
               </p>
@@ -167,7 +167,7 @@ export default function SustainabilityPage() {
                   Five links, and none of them optional.
                 </h2>
               </div>
-              <p className="max-w-sm text-[13px] leading-relaxed text-ink-500">
+              <p className="max-w-sm text-[15px] leading-relaxed text-ink-500">
                 A green claim only holds if it survives the handover between
                 these five. We staff each one separately.
               </p>
@@ -190,7 +190,7 @@ export default function SustainabilityPage() {
                     {p.points.map((point) => (
                       <li
                         key={point}
-                        className="flex gap-2.5 text-[13px] leading-[1.75] text-ink-600"
+                        className="flex gap-2.5 text-[15px] leading-[1.75] text-ink-600"
                       >
                         <span
                           aria-hidden
@@ -211,7 +211,7 @@ export default function SustainabilityPage() {
       <section className="band-dark w-full">
         <div className="container-site section-pad">
           <Reveal>
-            <p className="flex items-center gap-3 text-[11px] uppercase tracking-[0.24em] text-white/55">
+            <p className="flex items-center gap-3 text-[12px] uppercase tracking-[0.24em] text-white/55">
               <span aria-hidden className="h-[2px] w-5 bg-white/60" />
               Environmental technology
             </p>
@@ -227,7 +227,7 @@ export default function SustainabilityPage() {
                   <h3 className="text-base font-medium tracking-tight text-white md:text-lg">
                     {t.title}
                   </h3>
-                  <p className="mt-3 text-[13px] leading-[1.8] text-white/55">
+                  <p className="mt-3 text-[15px] leading-[1.8] text-white/55">
                     {t.body}
                   </p>
                 </div>
@@ -247,7 +247,7 @@ export default function SustainabilityPage() {
                 Audited, tested, traceable.
               </h2>
             </div>
-            <p className="max-w-sm text-[13px] leading-relaxed text-ink-500">
+            <p className="max-w-sm text-[15px] leading-relaxed text-ink-500">
               Certificate numbers and audit reports are available on request —
               we would rather send the paperwork than describe it.
             </p>
@@ -275,7 +275,7 @@ export default function SustainabilityPage() {
                     className="h-9 w-auto max-w-none object-contain"
                   />
                 ) : (
-                  <span className="whitespace-nowrap text-xs font-medium text-ink-950">
+                  <span className="whitespace-nowrap text-[13px] font-medium text-ink-950">
                     {cert.name}
                   </span>
                 )}
@@ -288,13 +288,13 @@ export default function SustainabilityPage() {
           <div className="mt-14 flex flex-wrap items-center gap-4 border-t hairline pt-8">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center bg-ink-950 px-7 py-3.5 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:bg-accent-600"
+              className="inline-flex items-center justify-center bg-ink-950 px-7 py-3.5 text-[15px] font-medium tracking-wide text-white transition-colors duration-300 hover:bg-accent-600"
             >
               Ask for the sustainability pack
             </Link>
             <Link
               href="/factory"
-              className="inline-flex items-center gap-2 text-sm font-medium text-ink-950 transition-colors duration-200 hover:text-accent-600"
+              className="inline-flex items-center gap-2 text-[15px] font-medium text-ink-950 transition-colors duration-200 hover:text-accent-600"
             >
               Where this happens: our two factories
               <span aria-hidden>→</span>

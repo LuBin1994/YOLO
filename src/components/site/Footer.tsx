@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SITE } from "@/lib/site-data";
+import { CERT_HIGHLIGHTS, SITE } from "@/lib/site-data";
 
 const FOOTER_LINKS = [
   { href: "/products", label: "Products" },
@@ -23,7 +23,7 @@ export default function Footer() {
             <p className="text-xl font-medium tracking-tight text-ink-950">
               {SITE.name}
             </p>
-            <p className="mt-3 max-w-sm text-sm leading-relaxed text-ink-600">
+            <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-ink-600">
               {SITE.tagline}. Vertically integrated production with a
               commitment to sustainable materials and ethical manufacturing.
             </p>
@@ -36,7 +36,7 @@ export default function Footer() {
                 <li key={l.href}>
                   <Link
                     href={l.href}
-                    className="text-sm text-ink-600 underline decoration-transparent underline-offset-4 transition-colors duration-300 hover:text-ink-950 hover:decoration-accent-500"
+                    className="text-[15px] text-ink-600 underline decoration-transparent underline-offset-4 transition-colors duration-300 hover:text-ink-950 hover:decoration-accent-500"
                   >
                     {l.label}
                   </Link>
@@ -47,7 +47,7 @@ export default function Footer() {
 
           <div>
             <p className="eyebrow">Contact</p>
-            <ul className="mt-4 space-y-3 text-sm text-ink-600">
+            <ul className="mt-4 space-y-3 text-[15px] text-ink-600">
               <li>
                 <a
                   href={`mailto:${SITE.email}`}
@@ -67,14 +67,15 @@ export default function Footer() {
           className="mt-16 select-none text-[13vw] font-medium leading-[0.85] tracking-[-0.04em] text-ink-950/10 md:text-[9vw]"
           aria-hidden
         >
-          TEM APPAREL
+          YOLO APPAREL
         </p>
 
-        <div className="mt-10 flex flex-col gap-2 border-t hairline pt-8 text-xs text-ink-400 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-2 border-t hairline pt-8 text-[13px] text-ink-400 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {SITE.name}. All rights reserved.
+            {/* SITE.name 自带句点（PTE. LTD.），这里不能再补 "."，否则双句点 */}
+            © {new Date().getFullYear()} {SITE.name} All rights reserved.
           </p>
-          <p>GOTS · Oeko-Tex · BSCI Certified Partners</p>
+          <p>{CERT_HIGHLIGHTS.join(" · ")}</p>
         </div>
       </div>
     </footer>

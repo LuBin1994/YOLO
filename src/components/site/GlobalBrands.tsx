@@ -64,23 +64,21 @@ const BRAND_WIDTH: Record<string, number> = {
  * 这几个直接给定高。
  */
 const BRAND_FIXED_HEIGHT: Record<string, number> = {
-  "U.S. Polo Assn.": 54,
+  /* 2026-10-26：U.S. Polo 换成 seeklogo 的横向徽章（415×160），
+     原来是 55×88 的竖版组合标才需要锁定高度，现在不需要了。 */
 };
 
 /** 把任意墨色的标识压成纯白；透明底不受影响 */
 const TO_WHITE = { filter: "brightness(0) invert(1)" } as const;
 
 /**
- * 这两个**保留原色**，不压白。
+ * 保留原色、不压白。
  *
- * 它们的标识本身就是"一块实心底 + 反白字"的结构（Levi's 红标、Costco 白色
- * 圆角块），不是透明的墨线。`brightness(0) invert(1)` 会把底和字一起压成
- * 同一种白，最后只剩一个纯白方块，辨识度归零。
- * 保留原色放在暖炭底上反而正好：红标、白牌都读得清清楚楚。
- *
- * 等客户给了官方单色反白版（white-on-transparent）再把这两个从名单里删掉。
+ * Levi's 的标识是"实心红标 + 反白字"，压白会变成一块纯白方块，所以保留原色。
+ * 2026-10-26：Costco 已换成 seeklogo 的透明底单色版（去白底后只剩字形），
+ * 压白可读，因此从名单里移除；Levi's 因为没找到可用的透明底版本，仍留在保留原色的名单里。
  */
-const KEEP_COLOR = new Set(["Levi's", "Costco"]);
+const KEEP_COLOR = new Set(["Levi's"]);
 
 export default function GlobalBrands() {
   return (
@@ -90,17 +88,17 @@ export default function GlobalBrands() {
           {/* 左栏：说明 + 入口 */}
           <Reveal>
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-white/50">
+              <p className="text-[12px] font-medium uppercase tracking-[0.3em] text-white/50">
                 {PARTNERS_INTRO.eyebrow}
               </p>
               <h2 className="display-md mt-6 text-white">
                 {PARTNERS_INTRO.title}
               </h2>
 
-              <p className="mt-7 text-[13px] leading-[1.85] text-white/70">
+              <p className="mt-7 text-[15px] leading-[1.85] text-white/70">
                 {PARTNERS_INTRO.lead}
               </p>
-              <p className="mt-4 text-[13px] leading-[1.85] text-white/70">
+              <p className="mt-4 text-[15px] leading-[1.85] text-white/70">
                 {PARTNERS_INTRO.body}
               </p>
 
@@ -108,7 +106,7 @@ export default function GlobalBrands() {
                   箭头单独一格而不是跟在文字后面，是这块版式里唯一的手工感。 */}
               <Link
                 href={PARTNERS_INTRO.cta.href}
-                className="group mt-9 inline-flex items-stretch border border-white/25 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/85 transition-colors duration-300 hover:border-white/60 hover:text-white"
+                className="group mt-9 inline-flex items-stretch border border-white/25 text-[12px] font-semibold uppercase tracking-[0.16em] text-white/85 transition-colors duration-300 hover:border-white/60 hover:text-white"
               >
                 <span className="px-5 py-3">{PARTNERS_INTRO.cta.label}</span>
                 <span

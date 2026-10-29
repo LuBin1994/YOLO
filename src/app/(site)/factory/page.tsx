@@ -50,6 +50,25 @@ interface FactoryProfile {
 const FACTORIES: readonly FactoryProfile[] = [
   {
     index: "01",
+    name: "SHCA Garment (Cambodia) Co., Ltd.",
+    short: "SHCA",
+    address:
+      "Oleang Reul commune, Samraong Tong district, Kampong Speu province, Cambodia",
+    parent:
+      "Zhejiang Heyuan Apparel Manufacturing Co., Ltd. — office in Hangzhou, China",
+    hero: "/media/factory/floor-b.jpg",
+    detail: "/media/factory/cutting-table.jpg",
+    specs: [
+      { label: "Manufacturing area", value: "12,480 m²" },
+      { label: "Production lines", value: "12" },
+      { label: "People", value: "800+" },
+      { label: "Capacity", value: "1,000,000 pcs", note: "per year" },
+    ],
+    products: ["Jackets", "Parkas", "Padded outerwear", "Knit & waffle"],
+    audits: ["WRAP", "SMETA 4-pillar", "GRS"],
+  },
+  {
+    index: "02",
     name: "S-YOLO (Cambodia) Garments Co., Ltd.",
     short: "S-YOLO",
     address:
@@ -69,24 +88,56 @@ const FACTORIES: readonly FactoryProfile[] = [
     products: ["Down jackets", "Padded outerwear", "Long coats"],
     audits: ["SMETA", "WRAP", "SLCP", "Nike"],
   },
+];
+
+/**
+ * 工厂审核：客户要求按四条线分组展示（2026-10-29）。
+ *
+ * 口径来自客户提供的清单，一个字没改。`logo` 缺失的不是漏了——
+ * SLCP 与 Haddad QMS 在公开渠道找不到官方标识（seeklogo 上搜到的是同名
+ * 其他机构，不能用），所以这两项走文字卡。补到图之后加 `logo` 即可。
+ */
+const AUDIT_TRACKS: readonly {
+  label: string;
+  caption: string;
+  items: readonly { name: string; logo?: string }[];
+}[] = [
   {
-    index: "02",
-    name: "SHCA Garment (Cambodia) Co., Ltd.",
-    short: "SHCA",
-    address:
-      "Oleang Reul commune, Samraong Tong district, Kampong Speu province, Cambodia",
-    parent:
-      "Zhejiang Heyuan Apparel Manufacturing Co., Ltd. — office in Hangzhou, China",
-    hero: "/media/factory/floor-b.jpg",
-    detail: "/media/factory/cutting-table.jpg",
-    specs: [
-      { label: "Manufacturing area", value: "12,480 m²" },
-      { label: "Production lines", value: "12" },
-      { label: "People", value: "800+" },
-      { label: "Capacity", value: "1,000,000 pcs", note: "per year" },
+    label: "Social compliance",
+    caption: "Labour & ethics",
+    items: [
+      { name: "WRAP", logo: "/media/certifications/wrap.png" },
+      { name: "SMETA", logo: "/media/certifications/smeta.png" },
+      { name: "Better Work", logo: "/media/audits/better-work.png" },
+      { name: "SLCP" },
     ],
-    products: ["Jackets", "Parkas", "Padded outerwear", "Knit & waffle"],
-    audits: ["WRAP", "SMETA 4-pillar", "GRS"],
+  },
+  {
+    label: "Quality audit",
+    caption: "Customer QMS",
+    items: [
+      { name: "Costco GMP", logo: "/media/audits/costco.png" },
+      { name: "Haddad QMS" },
+    ],
+  },
+  {
+    label: "Brand audit",
+    caption: "Buyer codes of conduct",
+    items: [
+      { name: "Nike", logo: "/media/brands/nike.svg" },
+      { name: "Under Armour", logo: "/media/brands/underarmour.svg" },
+      { name: "Levi's", logo: "/media/brands/levis.png" },
+      { name: "Kontoor", logo: "/media/audits/kontoor.png" },
+      { name: "G-III", logo: "/media/audits/giii.png" },
+    ],
+  },
+  {
+    label: "Environmental",
+    caption: "Chemical & energy",
+    items: [
+      { name: "Higg FEM", logo: "/media/certifications/higg-index.png" },
+      { name: "GRS", logo: "/media/certifications/grs.png" },
+    ],
   },
 ];
 
@@ -201,19 +252,19 @@ export default function FactoryPage() {
 
               <dl className="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 border-t hairline pt-8">
                 <div>
-                  <dt className="text-[11px] uppercase tracking-[0.16em] text-ink-400">
+                  <dt className="text-[12px] uppercase tracking-[0.16em] text-ink-400">
                     Products made
                   </dt>
-                  <dd className="mt-1.5 text-sm leading-snug text-ink-950">
+                  <dd className="mt-1.5 text-[15px] leading-snug text-ink-950">
                     Down jackets, padded outerwear, parkas, coats
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[11px] uppercase tracking-[0.16em] text-ink-400">
+                  <dt className="text-[12px] uppercase tracking-[0.16em] text-ink-400">
                     Audits held
                   </dt>
-                  <dd className="mt-1.5 text-sm leading-snug text-ink-950">
-                    SMETA, WRAP, SLCP, GRS
+                  <dd className="mt-1.5 text-[15px] leading-snug text-ink-950">
+                    13 factory audits across four tracks — listed below
                   </dd>
                 </div>
               </dl>
@@ -251,6 +302,72 @@ export default function FactoryPage() {
               </figure>
             </div>
           </Reveal>
+
+          {/* 审核（2026-10-29 新增）：客户要求把工厂审核单独拎出来、按四条线分组。
+              放在图片拼贴下方跨两列，是因为这 13 项是「我们被谁审过」的硬证据，
+              塞在左栏那两行小字里太轻。有官方标识的用标识，找不到的走文字卡
+              （SLCP / Haddad QMS），不为凑图去找「看起来像」的。 */}
+          <Reveal delay={120} className="lg:col-span-2">
+            <div className="mt-4 border-t hairline pt-8">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+                <div>
+                  <p className="text-[12px] font-medium uppercase tracking-[0.22em] text-ink-600">
+                    Audits &amp; compliance
+                  </p>
+                  <h3 className="mt-3 text-xl font-medium tracking-tight text-ink-950 md:text-2xl">
+                    Audited by the people who buy from us.
+                  </h3>
+                </div>
+                <p className="text-[11px] uppercase tracking-[0.16em] text-ink-400">
+                  13 factory audits · 4 tracks
+                </p>
+              </div>
+
+              <div className="mt-8 grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+                {AUDIT_TRACKS.map((track) => (
+                  <div key={track.label}>
+                    <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-ink-950">
+                      {track.label}
+                    </p>
+                    <p className="mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-400">
+                      {track.caption}
+                    </p>
+
+                    <ul className="mt-4 space-y-2.5">
+                      {track.items.map((item) => (
+                        <li
+                          key={item.name}
+                          className="group flex h-[88px] flex-col items-center justify-center gap-2 rounded-lg border border-ink-900/10 bg-white px-3 transition-colors duration-300 hover:border-ink-900/25"
+                        >
+                          {item.logo ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={item.logo}
+                              alt={item.name}
+                              className="max-h-11 w-auto max-w-[84%] object-contain"
+                            />
+                          ) : (
+                            <span className="text-[15px] font-medium uppercase tracking-[0.06em] text-ink-950">
+                              {item.name}
+                            </span>
+                          )}
+                          {item.logo ? (
+                            <span className="text-[11px] uppercase leading-none tracking-[0.1em] text-ink-400">
+                              {item.name}
+                            </span>
+                          ) : null}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+
+              <p className="mt-6 text-[12px] leading-relaxed text-ink-400">
+                Audit reports and corrective-action plans are available under NDA.
+              </p>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -260,7 +377,7 @@ export default function FactoryPage() {
           <Reveal>
             <div className="flex flex-wrap items-baseline justify-between gap-4">
               <h2 className="display-md max-w-xl">The two plants.</h2>
-              <p className="text-[11px] uppercase tracking-[0.16em] text-ink-400">
+              <p className="text-[12px] uppercase tracking-[0.16em] text-ink-400">
                 Cambodia · company-owned
               </p>
             </div>
@@ -298,16 +415,16 @@ export default function FactoryPage() {
 
                   {/* 文 */}
                   <div>
-                    <p className="flex items-center gap-3 text-[11px] uppercase tracking-[0.24em] text-ink-400">
+                    <p className="flex items-center gap-3 text-[12px] uppercase tracking-[0.24em] text-ink-400">
                       <span aria-hidden className="h-[2px] w-5 bg-accent-500" />
                       Factory {factory.index}
                     </p>
                     <h3 className="mt-4 text-xl font-medium tracking-tight text-ink-950 md:text-2xl">
                       {factory.short}
                     </h3>
-                    <p className="mt-1 text-sm text-ink-600">{factory.name}</p>
+                    <p className="mt-1 text-[15px] text-ink-600">{factory.name}</p>
 
-                    <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-600">
+                    <p className="mt-5 max-w-md text-[15px] leading-relaxed text-ink-600">
                       {factory.address}
                       {factory.parent ? (
                         <>
@@ -320,14 +437,14 @@ export default function FactoryPage() {
                     <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-5 border-t hairline pt-6">
                       {factory.specs.map((s) => (
                         <div key={s.label}>
-                          <dt className="text-[10px] uppercase tracking-[0.14em] text-ink-400">
+                          <dt className="text-[11px] uppercase tracking-[0.14em] text-ink-400">
                             {s.label}
                           </dt>
                           <dd className="mt-1 text-lg font-medium tabular-nums tracking-tight text-ink-950">
                             {s.value}
                           </dd>
                           {s.note ? (
-                            <p className="mt-0.5 text-[11px] text-ink-400">
+                            <p className="mt-0.5 text-[12px] text-ink-400">
                               {s.note}
                             </p>
                           ) : null}
@@ -339,17 +456,17 @@ export default function FactoryPage() {
                       {factory.products.map((p) => (
                         <span
                           key={p}
-                          className="border hairline px-2.5 py-1 text-[11px] tracking-wide text-ink-600"
+                          className="border hairline px-2.5 py-1 text-[12px] tracking-wide text-ink-600"
                         >
                           {p}
                         </span>
                       ))}
                     </div>
 
-                    <p className="mt-6 text-[11px] uppercase tracking-[0.14em] text-ink-400">
+                    <p className="mt-6 text-[12px] uppercase tracking-[0.14em] text-ink-400">
                       Audited by
                     </p>
-                    <p className="mt-1.5 text-sm text-ink-950">
+                    <p className="mt-1.5 text-[15px] text-ink-950">
                       {factory.audits.join(" · ")}
                     </p>
                   </div>
@@ -368,7 +485,7 @@ export default function FactoryPage() {
           <Reveal>
             <div className="flex flex-wrap items-end justify-between gap-6">
               <div>
-                <p className="flex items-center gap-3 text-[11px] uppercase tracking-[0.24em] text-white/55">
+                <p className="flex items-center gap-3 text-[12px] uppercase tracking-[0.24em] text-white/55">
                   <span aria-hidden className="h-[2px] w-5 bg-white/60" />
                   Process
                 </p>
@@ -376,7 +493,7 @@ export default function FactoryPage() {
                   Eight stages, and a check between each pair.
                 </h2>
               </div>
-              <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/40">
                 Drag / scroll →
               </p>
             </div>
@@ -392,7 +509,7 @@ export default function FactoryPage() {
             >
               <article className="group h-full border-t border-white/20 pt-5 transition-colors duration-300 hover:border-accent-400">
                 <div className="flex items-baseline justify-between">
-                  <span className="text-[11px] tabular-nums tracking-[0.2em] text-white/35">
+                  <span className="text-[12px] tabular-nums tracking-[0.2em] text-white/35">
                     {p.step}
                   </span>
                   <span
@@ -403,7 +520,7 @@ export default function FactoryPage() {
                 <h3 className="mt-3 text-base font-medium tracking-tight text-white md:text-lg">
                   {p.title}
                 </h3>
-                <p className="mt-2.5 text-[13px] leading-[1.75] text-white/55">
+                <p className="mt-2.5 text-[15px] leading-[1.75] text-white/55">
                   {p.body}
                 </p>
               </article>
@@ -432,13 +549,13 @@ export default function FactoryPage() {
                     <dd className="text-3xl font-medium tabular-nums tracking-tight text-ink-950 md:text-4xl">
                       {e.value}
                     </dd>
-                    <dt className="mt-1.5 text-[11px] uppercase tracking-[0.14em] text-ink-400">
+                    <dt className="mt-1.5 text-[12px] uppercase tracking-[0.14em] text-ink-400">
                       {e.label}
                     </dt>
                   </div>
                 ))}
               </dl>
-              <p className="mt-6 text-[11px] text-ink-400">
+              <p className="mt-6 text-[12px] text-ink-400">
                 Counts from the S-YOLO machine list, current to May 2026.
               </p>
             </div>
@@ -466,17 +583,17 @@ export default function FactoryPage() {
                     className="h-9 w-auto object-contain opacity-80"
                   />
                 ))}
-                <span className="text-[11px] uppercase tracking-[0.16em] text-ink-400">
+                <span className="text-[12px] uppercase tracking-[0.16em] text-ink-400">
                   + SLCP
                 </span>
               </div>
 
-              <p className="mt-9 text-[11px] uppercase tracking-[0.14em] text-ink-400">
+              <p className="mt-9 text-[12px] uppercase tracking-[0.14em] text-ink-400">
                 Customer audits completed
               </p>
               <ul className="mt-2.5 flex flex-wrap gap-x-5 gap-y-2">
                 {BRAND_AUDITS.map((b) => (
-                  <li key={b} className="text-sm text-ink-950">
+                  <li key={b} className="text-[15px] text-ink-950">
                     {b}
                   </li>
                 ))}
@@ -484,7 +601,7 @@ export default function FactoryPage() {
 
               <Link
                 href="/contact"
-                className="mt-10 inline-flex items-center gap-2 border-b border-ink-950/30 pb-1 text-sm font-medium text-ink-950 transition-colors duration-200 hover:border-ink-950"
+                className="mt-10 inline-flex items-center gap-2 border-b border-ink-950/30 pb-1 text-[15px] font-medium text-ink-950 transition-colors duration-200 hover:border-ink-950"
               >
                 Request the audit pack
                 <span aria-hidden>→</span>
@@ -537,7 +654,7 @@ export default function FactoryPage() {
             <h2 className="display-lg mx-auto max-w-3xl text-ink-950">
               Come and walk the floor.
             </h2>
-            <p className="mx-auto mt-7 max-w-xl text-sm leading-relaxed text-ink-600">
+            <p className="mx-auto mt-7 max-w-xl text-[15px] leading-relaxed text-ink-600">
               We welcome brand audits and factory visits. Tell us which
               construction you are planning and we will book the line that runs
               it.
@@ -545,13 +662,13 @@ export default function FactoryPage() {
             <div className="mt-11 flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center bg-ink-950 px-8 py-4 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:bg-white hover:text-ink-950"
+                className="inline-flex items-center justify-center bg-ink-950 px-8 py-4 text-[15px] font-medium tracking-wide text-white transition-colors duration-300 hover:bg-white hover:text-ink-950"
               >
                 Arrange a visit
               </Link>
               <Link
                 href="/products"
-                className="inline-flex items-center justify-center border border-ink-950/35 px-8 py-4 text-sm font-medium tracking-wide text-ink-950 transition-colors duration-300 hover:border-ink-950 hover:bg-ink-950 hover:text-white"
+                className="inline-flex items-center justify-center border border-ink-950/35 px-8 py-4 text-[15px] font-medium tracking-wide text-ink-950 transition-colors duration-300 hover:border-ink-950 hover:bg-ink-950 hover:text-white"
               >
                 Browse products
               </Link>
