@@ -714,7 +714,6 @@ export const HOME_MARQUEE: readonly MarqueeRow[] = [
       "/media/home/marquee/27.jpg",
       "/media/home/marquee/29.jpg",
       "/media/home/marquee/31.jpg",
-      "/media/home/marquee/33.jpg",
     ],
   },
   {
@@ -736,7 +735,6 @@ export const HOME_MARQUEE: readonly MarqueeRow[] = [
       "/media/home/marquee/28.jpg",
       "/media/home/marquee/30.jpg",
       "/media/home/marquee/32.jpg",
-      "/media/home/marquee/34.jpg",
     ],
   },
 ];
