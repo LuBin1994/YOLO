@@ -25,7 +25,12 @@ export default function DeleteButton({
     setDeleting(true);
     try {
       const res = await fetch(endpoint, { method: "DELETE" });
-      if (!res.ok) throw new Error("删除失败");
+      if (!res.ok) {
+        /* 把接口给的原因透出来：分类被外键拦下时是"还有子分类或产品"，
+           统一吞成"删除失败"用户根本不知道自己该改什么 */
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error ?? "删除失败");
+      }
       onDeleted?.();
       router.refresh();
     } catch (err) {

@@ -111,7 +111,7 @@ export default function SustainabilityPage() {
               <h2 className="display-md mt-5 max-w-xl">
                 An early adopter in China, on purpose.
               </h2>
-              <div className="mt-7 space-y-5 text-base leading-[1.85] text-ink-600">
+              <div className="mt-7 space-y-5 text-[15px] leading-[1.85] text-ink-600">
                 <p>
                   SYS GROUP is one of the pioneers in China to embrace green and
                   sustainable development. We have been committed to this path

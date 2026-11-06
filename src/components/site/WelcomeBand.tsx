@@ -49,7 +49,7 @@ export default function WelcomeBand({
               {body.map((paragraph) => (
                 <p
                   key={paragraph}
-                  className="text-base leading-[1.85] text-ink-600"
+                  className="text-[15px] leading-[1.85] text-ink-600"
                 >
                   {paragraph}
                 </p>

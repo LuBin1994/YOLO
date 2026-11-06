@@ -5,7 +5,7 @@ import DeleteButton from "@/components/admin/DeleteButton";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import Pagination from "@/components/admin/Pagination";
 import ProductFilters from "@/components/admin/ProductFilters";
-import { CATEGORY_LABELS, categoryLabel } from "@/lib/utils";
+import { createCategoryIndex, type Category } from "@/lib/categories";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -39,9 +39,22 @@ export default async function AdminProductsPage({ searchParams }: Props) {
 
   const keyword = q.trim();
 
+  const supabase = await createClient();
+
+  /* 分类：先取全表（十几个节点），后面既做白名单校验、又用来把
+     "童装" 这种父级筛选展开成它所有子孙 slug —— 商品可以挂在任意一级，
+     只 eq 一个 slug 会漏掉挂在子级上的产品。 */
+  const { data: categoryRows } = await supabase
+    .from("categories")
+    .select("id, parent_id, slug, name_zh, name_en, sort_order")
+    .order("sort_order", { ascending: true });
+
+  const categories = (categoryRows ?? []) as Category[];
+  const categoryIndex = createCategoryIndex(categories);
+
   /* 白名单校验：URL 是用户可改的，脏值一律当没传，别直接拼进查询 */
   const categoryFilter =
-    category && Object.hasOwn(CATEGORY_LABELS, category) ? category : "";
+    category && categoryIndex.bySlug.has(category) ? category : "";
   const statusFilter =
     status === "published" || status === "draft" ? status : "";
   const featuredFilter = featured === "only" || featured === "no" ? featured : "";
@@ -50,8 +63,6 @@ export default async function AdminProductsPage({ searchParams }: Props) {
   const requestedPage = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
   const fromRow = (requestedPage - 1) * PAGE_SIZE;
   const toRow = fromRow + PAGE_SIZE - 1;
-
-  const supabase = await createClient();
 
   let query = supabase
     .from("products")
@@ -68,7 +79,10 @@ export default async function AdminProductsPage({ searchParams }: Props) {
       );
     }
   }
-  if (categoryFilter) query = query.eq("category", categoryFilter);
+  if (categoryFilter) {
+    const slugs = categoryIndex.subtreeSlugs(categoryFilter);
+    query = query.in("category", slugs);
+  }
   if (statusFilter) query = query.eq("published", statusFilter === "published");
   if (featuredFilter) query = query.eq("featured", featuredFilter === "only");
 
@@ -115,6 +129,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
           category={categoryFilter}
           status={statusFilter}
           featured={featuredFilter}
+          categories={categories}
         />
       </div>
 
@@ -127,7 +142,9 @@ export default async function AdminProductsPage({ searchParams }: Props) {
               hasFilter
                 ? `（${[
                     keyword ? `关键词「${keyword}」` : null,
-                    categoryFilter ? `分类 ${categoryLabel(categoryFilter)}` : null,
+                    categoryFilter
+                      ? `分类 ${categoryIndex.nameOf(categoryFilter, "zh")}`
+                      : null,
                     statusFilter
                       ? `状态 ${statusFilter === "published" ? "已发布" : "草稿"}`
                       : null,
@@ -183,7 +200,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                   </div>
                 </td>
                 <td className="px-5 py-4 text-ink-600">
-                  {categoryLabel(p.category)}
+                  {categoryIndex.pathOf(p.category, "zh", " / ")}
                 </td>
                 <td className="px-5 py-4 text-ink-600">
                   {p.price_range ?? "—"}

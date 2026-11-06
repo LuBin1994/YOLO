@@ -9,19 +9,9 @@ export function slugify(input: string): string {
     .replace(/^-|-$/g, "");
 }
 
-/** 产品分类中文标签（数据存英文，后台展示中文） */
-export const CATEGORY_LABELS: Record<string, string> = {
-  apparel: "服装",
-  knit: "针织",
-  woven: "梭织",
-  denim: "牛仔",
-  outerwear: "外套",
-  other: "其他",
-};
-
-export function categoryLabel(value: string): string {
-  return CATEGORY_LABELS[value] ?? value;
-}
+/* 产品分类的标签已随分类表迁走（2026-11-06）：
+   后台显示中文名、前台显示英文名，都从 yolo.categories 读，见 src/lib/categories.ts。
+   这里只保留与设备类型有关的常量。 */
 
 /** 设备类型中文标签 */
 export const DEVICE_LABELS: Record<string, string> = {

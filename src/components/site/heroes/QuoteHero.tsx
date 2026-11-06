@@ -58,14 +58,14 @@ export default function QuoteHero({
                   suffix={s.suffix}
                 />
               </dd>
-              <dt className="mt-1 text-[11px] uppercase leading-tight tracking-[0.12em] text-white/45 md:text-[11px]">
+              <dt className="mt-1 text-[11px] uppercase leading-tight tracking-[0.12em] text-white/55 md:text-[11px]">
                 {s.label}
               </dt>
             </div>
           ))}
         </dl>
 
-        <p className="mt-8 flex flex-wrap gap-x-5 gap-y-1 text-[11px] uppercase tracking-[0.18em] text-white/40">
+        <p className="mt-8 flex flex-wrap gap-x-5 gap-y-1 text-[11px] uppercase tracking-[0.18em] text-white/55">
           {meta.map((m) => (
             <span key={m}>{m}</span>
           ))}

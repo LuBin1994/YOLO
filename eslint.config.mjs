@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // 工作区内的素材加工 / 版式验证脚本（CommonJS，仅供本地一次性使用），
+    // 不是应用代码，不要参与 lint —— 否则 `npm run lint` 会被这堆 require 淹没。
+    ".workbuddy/**",
   ]),
 ]);
 

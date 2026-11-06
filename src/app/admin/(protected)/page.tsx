@@ -13,16 +13,14 @@ export const metadata: Metadata = {
 async function getStats() {
   const supabase = await createClient();
 
-  const [products, inquiries, pages] = await Promise.all([
+  const [products, inquiries] = await Promise.all([
     supabase.from("products").select("id", { count: "exact", head: true }),
     supabase.from("inquiries").select("id", { count: "exact", head: true }),
-    supabase.from("pages").select("id", { count: "exact", head: true }),
   ]);
 
   return {
     products: products.count ?? 0,
     inquiries: inquiries.count ?? 0,
-    pages: pages.count ?? 0,
   };
 }
 
@@ -42,12 +40,6 @@ export default async function AdminDashboardPage() {
       value: stats.inquiries,
       hint: "待处理询盘",
     },
-    {
-      href: "/admin/pages",
-      label: "页面",
-      value: stats.pages,
-      hint: "站点内容",
-    },
   ];
 
   return (
@@ -55,10 +47,10 @@ export default async function AdminDashboardPage() {
       <AdminPageHeader
         eyebrow="总览"
         title="数据看板"
-        description="内容、询盘与访客数据一目了然。"
+        description="询盘与访客数据一目了然。"
       />
 
-      <div className="mt-10 grid gap-6 sm:grid-cols-3">
+      <div className="mt-10 grid gap-6 sm:grid-cols-2">
         {cards.map((c) => (
           <Link
             key={c.href}

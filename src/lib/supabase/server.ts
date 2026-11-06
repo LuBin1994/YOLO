@@ -1,11 +1,13 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { DB_SCHEMA } from "./config";
 import type { Database } from "./types";
 
 /**
  * 服务端 Supabase 客户端
  * 用于：Server Components / Route Handlers / Server Actions。
  * 自动携带并刷新用户会话 cookie。
+ * 业务表在 yolo schema（不是 public），所以必须显式指定 db.schema。
  */
 export async function createClient() {
   const cookieStore = await cookies();
@@ -20,6 +22,7 @@ export async function createClient() {
   }
 
   return createServerClient<Database>(url, key, {
+    db: { schema: DB_SCHEMA },
     cookies: {
       getAll() {
         return cookieStore.getAll();

@@ -39,7 +39,7 @@ export default function ContactSection({
         <Heading className={`${headingClassName} mt-5`}>
           Let&apos;s build your program.
         </Heading>
-        <p className="mt-6 max-w-md text-base leading-relaxed text-ink-600">
+        <p className="mt-6 max-w-md text-[15px] leading-relaxed text-ink-600">
           Tell us about your product type, target quantity and market. Our
           export sales team will respond within 24 hours.
         </p>

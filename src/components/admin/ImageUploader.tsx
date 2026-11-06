@@ -15,7 +15,7 @@ interface ImageUploaderProps {
 }
 
 /**
- * 图片上传组件：直传 Supabase Storage（media 存储桶）。
+ * 图片上传组件：直传 Supabase Storage（yolo 存储桶）。
  * 支持多图、删除、标记封面（第一张）。
  */
 export default function ImageUploader({
@@ -118,7 +118,7 @@ export default function ImageUploader({
 
       {error ? <p className="text-[15px] text-red-600">{error}</p> : null}
       <p className="text-[13px] text-ink-400">
-        已上传至 Supabase 存储（media/{folder}）。第一张为封面，单张最大
+        已上传至 Supabase 存储（yolo/{folder}）。第一张为封面，单张最大
         10MB。
       </p>
     </div>

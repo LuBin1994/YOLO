@@ -1,22 +1,42 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/supabase/types";
+import {
+  categoryPathOf,
+  getCategoryIndex,
+  type Category,
+} from "@/lib/categories";
 
 interface ProductCardProps {
   product: Product;
   /** list 视图时显示描述与参数 */
   variant?: "grid" | "list";
+  /** 分类表（来自 yolo.categories），前台显示英文名 */
+  categories: Category[];
 }
 
 /**
  * 产品卡片：图上、标题中、元数据下，无边框、等宽比例，靠间距形成秩序。
  * hover 时图片轻推放大 + 标题浮出青柠下划线，是本站主要的微交互点。
  */
+/**
+ * 分类显示：`womens-padded` → `Womens · Padded`（不直接露 slug）。
+ *
+ * 分类是树，路径从祖先链拼出来；商品挂在任意一级都成立
+ * （挂在女装本身就只有 "Womens"，不补一个假的下级）。
+ * 分类数据缺失时 `categoryPathOf` 会把 slug 可读化，不会露出 `kids-jacket`。
+ */
+function categoryLabel(product: Product, categories: Category[]) {
+  return categoryPathOf(getCategoryIndex(categories), product.category, "en");
+}
+
 export default function ProductCard({
   product,
   variant = "grid",
+  categories,
 }: ProductCardProps) {
   const cover = product.cover_image ?? product.images[0];
+  const label = categoryLabel(product, categories);
 
   if (variant === "list") {
     return (
@@ -37,7 +57,7 @@ export default function ProductCard({
         </div>
         <div className="flex flex-col items-start gap-3 md:px-6">
           <p className="text-[12px] font-medium uppercase tracking-[0.3em] text-ink-400">
-            {product.category}
+            {label}
           </p>
           <h3 className="text-2xl font-medium tracking-tight text-ink-950 underline decoration-transparent decoration-2 underline-offset-[6px] transition-colors duration-300 group-hover:decoration-accent-500 md:text-3xl">
             {product.title}
@@ -79,7 +99,7 @@ export default function ProductCard({
           {product.title}
         </h3>
         <p className="mt-2 flex flex-wrap items-center gap-x-3 text-[13px] uppercase tracking-[0.16em] text-ink-400">
-          <span>{product.category}</span>
+          <span>{label}</span>
           {product.moq ? <span>MOQ {product.moq.toLocaleString()}</span> : null}
         </p>
         {product.price_range ? (

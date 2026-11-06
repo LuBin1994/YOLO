@@ -23,15 +23,27 @@ npm run dev                        # http://localhost:3000
 
 ## Supabase 初始化（一次性）
 
+> **业务表在 `yolo` schema，不在 `public`**（2026-11-06 起）。
+> 建表前后有两件事必须做，漏了整站查询都会失败，见第 5 步。
+
 1. 在 [supabase.com](https://supabase.com) 创建项目，进入 **SQL Editor**。
 2. 依次执行：
-   - `supabase/schema.sql` — 建表、RLS 策略、触发器、Storage 存储桶
-   - `supabase/seed.sql` — 开发占位数据（示例产品 / 页面内容）
-3. **创建后台管理员账号**（后台登录必须，两种方式任选）：
+   - 全新项目：`supabase/schema.sql` — 建 `yolo` schema、表、RLS 策略、触发器、Storage 存储桶
+   - **已有数据的项目**：`supabase/migrate-to-yolo.sql` — 把 `public` 里的表原地搬到 `yolo`（保留数据）
+   - **已有数据的项目**：`supabase/categories.sql` — 建分类表并灌入 13 个基准分类，给 `products.category` 补外键
+     （全新项目跑过 `schema.sql` 就自带了分类表与基准数据，不必再跑）
+   - **已有数据的项目**：`supabase/storage-yolo.sql` — 把 Storage 桶从 `media` 换成 `yolo`
+   - **已有数据的项目**：`supabase/add-mood-image.sql` — 给 `products` 加 `mood_image` 氛围图列
+     （全新项目跑 `schema.sql` 就自带，不必再跑）
+3. **导入商品数据**（可选，全新项目默认产品表为空）：
+   `scripts/import-catalog.mjs`（详见「媒体文件规范」）。
+   **不要再找 `seed.sql` / `seed-products.sql`** —— 本地模拟数据已删除，
+   那两份脚本写的是失效的本地图片路径，误跑会把库里的 Storage URL 覆盖掉。
+4. **创建后台管理员账号**（后台登录必须，两种方式任选）：
    - 方式 A（推荐）：在 **Authentication → Users** 中手动 Invite/创建用户，记下其 UUID；
    - 方式 B：Supabase **Authentication → Providers → Email** 启用后，用邮箱注册，然后执行：
      ```sql
-     insert into public.admins (id, email, display_name, role)
+     insert into yolo.admins (id, email, display_name, role)
      values (
        (select id from auth.users where email = 'admin@yourcompany.com'),
        'admin@yourcompany.com',
@@ -40,7 +52,11 @@ npm run dev                        # http://localhost:3000
      );
      ```
    - 完成后用该账号在 `/admin/login` 登录即可。
-4. **Storage**：`schema.sql` 已自动创建公开存储桶 `media`（10MB 上限，jpeg/png/webp/avif）。目录约定：`media/products/<slug>/`、`media/pages/<slug>/`。
+5. **Storage**：`schema.sql` 已自动创建公开存储桶 **`yolo`**（10MB 上限，jpeg/png/webp/avif）。目录约定：`yolo/products/<slug>/`。
+   **已有项目**跑一次 `supabase/storage-yolo.sql`（从旧的 `media` 桶改名过来；旧桶里如果有东西只提示、不删）。
+6. **暴露 schema（必做）**：**Project Settings → API → Exposed schemas** 加上 `yolo`。
+   这一步不在 SQL 里，改的是 PostgREST 配置。默认只暴露 `public`、`graphql_public`，
+   不加的话所有查询返回 `PGRST106: The schema must be one of the following: public, graphql_public`。
 
 ## 环境变量
 
@@ -55,23 +71,29 @@ npm run dev                        # http://localhost:3000
 
 ## 数据库结构
 
+所有表位于 **`yolo` schema**（`src/lib/supabase/config.ts` 的 `DB_SCHEMA` 是唯一运行时出口，
+`src/lib/supabase/types.ts` 的 `Database` 键必须与之字面量一致）。
+
 | 表 | 用途 | RLS |
 |---|---|---|
-| `products` | 产品（标题/描述/图片数组/分类/材质/MOQ/价格区间） | 公开读，管理员写 |
-| `pages` | 通用页面内容（工厂/绿色理念/社会责任） | 公开读，管理员写 |
-| `inquiries` | 询盘（姓名/邮箱/电话/留言/状态） | 匿名可插入，管理员读写 |
-| `admins` | 后台管理员（关联 `auth.users`） | 仅管理员读 |
+| `yolo.products` | 产品（标题/描述/图片数组/分类/材质/MOQ/价格区间/`mood_image` 氛围图） | 公开读，管理员写 |
+| `yolo.categories` | 产品分类（树状多级：`parent_id` 自引用；`name_zh` 后台显示、`name_en` 前台显示；`sort_order` 同级排序） | 公开读，管理员写 |
+| `yolo.inquiries` | 询盘（姓名/邮箱/电话/留言/状态） | 匿名可插入，管理员读写 |
+| `yolo.admins` | 后台管理员（关联 `auth.users`） | 仅管理员读 |
 
-### pages.sections 富文本结构
+> **分类为什么单独建表**：之前分类是代码里写死的两级数组，后台表单又另写了一套
+> `["apparel","knit",…]`，两边对不上（后台选"服装"、前台按 `kids-jacket` 筛，筛不出东西）。
+> 现在唯一来源是 `yolo.categories`：后台 `/admin/categories` 维护，前台只读英文名。
+> `products.category` 存分类的 **slug**，外键指到本表（`on update cascade`，改 slug 自动带到产品；
+> `on delete restrict`，还有产品/子分类时删不掉）。商品可以挂在**任意一级**，
+> 前台筛选按祖先链判断（`src/lib/categories.ts` 的 `isUnder`），不靠 slug 前缀猜层级。
+> 筛选 UI 用 `path: string[]` 驱动，`buildFilterRows()` 按选中节点动态往下展开，
+> **后台建到几级就出几行**，不预设只有两级；筛选后自动把结果区顶回导航下沿。
 
-```jsonc
-[
-  { "type": "heading",   "content": "Section Title" },
-  { "type": "paragraph", "content": "Body text..." },
-  { "type": "image",     "content": "https://...", "caption": "可选" },
-  { "type": "gallery",   "content": ["https://...", "https://..."] }
-]
-```
+> 为什么不用 `public`：`public` 是所有 Supabase 项目共用的默认 schema，暴露面靠"谁能连上"
+> 而不是白名单。换成自建 schema 后，只有写在 Exposed schemas 里的才对外可见。
+> 代价是每个客户端都必须显式 `db: { schema: "yolo" }`，且新建表要在 `yolo` 里授权——
+> `public` 那套默认权限不覆盖自建 schema，`schema.sql` 里已用 `grant` + `alter default privileges` 补齐。
 
 ## 目录结构
 
@@ -87,9 +109,8 @@ src/
 │  │  └─ contact/          # 联系我们
 │  ├─ admin/               # 后台管理（Auth 守卫）
 │  │  ├─ login/            # 登录页
-│  │  ├─ dashboard/        # 数据看板
+│  │  ├─ (dashboard)       # 数据看板 = (protected)/page.tsx
 │  │  ├─ products/         # 产品 CRUD
-│  │  ├─ pages/            # 内容 CRUD
 │  │  └─ inquiries/        # 询盘管理
 │  ├─ layout.tsx           # 根布局（Inter 字体 + Analytics）
 │  └─ globals.css          # Tailwind v4 设计系统
@@ -105,11 +126,70 @@ src/
 └─ middleware.ts           # 全局会话刷新
 ```
 
+### 工厂页的中国地图（`src/lib/china-map.ts`）
+
+工厂页「Five provinces」区块的那张地图是**编译期内联 SVG**，不是地图 SDK：
+
+- 路径由 `.workbuddy/artifacts/china-network/gen-map.mjs` 从阿里云 DataV.GeoAtlas 的
+  `100000_full.json` 投影、简化后生成。**要改地图就重跑脚本，不要手改 `china-map.ts`。**
+- 数据含 34 个省级要素（台湾省、香港、澳门都在）和一条南海诸岛九段线要素，
+  九段线单独渲染成右下角标 —— 这是国家标准地图的常规画法。**不要删角标，不要删台湾省。**
+- 运行时零请求、零依赖，服务端就渲出 `<path>`，不靠 JS 水合再发地图请求
+  （客户要求站点部署在海外，不能挂境内地图 CDN 和 key）。
+- 高亮省份由 `factory/page.tsx` 的 `CHINA_NODES` 按 `adcode` 指定；
+  **写错 adcode 不会报错，只是那个省不高亮**。
+- 只有客户自己提供带审图号的标准地图成品、或改用天地图静态图 API（客户自己的 key）时，
+  才需要换掉这套实现。
+
 ## 媒体文件规范
 
 - **所有图片**（前台展示、后台上传）必须走 Supabase Storage：上传用 `src/lib/supabase/storage.ts`，读取用公开 URL。
 - **严禁**依赖本地文件系统存储图片。
-- 开发阶段占位图使用 Unsplash 高质量服装/工厂图片，上线前替换为 Storage URL。
+- 产品目录（89 条 / 130 张图）已于 2026-11-06 导入：图片在 `yolo` 桶的 `products/<slug>/NN.jpg`，
+  记录里的 `images` / `cover_image` 存的是 Storage 公开 URL。
+  **本地模拟数据 `src/lib/products-data.ts`、`public/media/products/**` 及旧种子脚本已删除**，
+  数据库是唯一数据源；**分类也只从 `yolo.categories` 读**，静态兜底已删除，
+  后台新建的一级分类（还没上产品）也会立刻出现在前台筛选器里，计数显示 0。
+  产品页首屏图 `hero-showroom.jpg` 不是商品图，已单独移到 `public/media/site/`。
+  `scripts/import-catalog.mjs --sql` 仍可离线生成导入 SQL；默认模式需要先把 130 张图从桶里下载回本地。
+- 其它板块（factory / rnd / login 等）仍有 Unsplash 占位图，上线前替换。
+
+### 氛围图（首页滚动图组专用）
+
+后台商品表单里单独的「氛围图」字段上传到 `yolo` 桶 `products/<slug>/mood/`，存进
+`yolo.products.mood_image`（**独立一列，不进 `images` 数组**）。
+首页跑马灯取所有 `published = true` 且有氛围图的商品，每个商品出一张格子、整格链到
+`/products/[slug]`；**商品详情页不显示氛围图**（详情页只读 `images` / `cover_image`）。
+
+| 氛围图商品数 | 首页表现 |
+|---|---|
+| 0–5 | 回退到 `HOME_MARQUEE` 静态素材（纯展示、不可点），图带不会空 |
+| 6–11 | 1 行氛围图，全部可点 |
+| ≥12 | 2 行（各 6+ 张），时长 72s / 88s 错峰 |
+
+> 阈值来自 `site-data.ts` 的 `MOOD_TILES_PER_ROW = 6`：不足 6 张会被重复铺满视口，
+> 只有 1~2 张时整条图墙会变成同一张图刷屏。行数随后台上传量自动增长，不用改代码。
+> 未执行 `add-mood-image.sql` 时，首页读库失败会静默回退静态素材，
+> 后台保存商品也会自动跳过该字段并打日志，不会整块坏掉。
+
+### 面料特写（与氛围图混排）
+
+`public/media/home/marquee/fabric-01..08.jpg` 是 8 张面料/工艺实拍（皮革、格纹羊毛、
+涂层防泼水、针织），**不是商品图**，整格链到 `/rnd#fabric`（R&D 页的 Fabric development）。
+
+它们由 `site-data.ts` 的 `FABRIC_TILES` + `withFabricTiles()` 插进图带，规则是：
+
+- **插在选完数据源之后**，所以氛围图队列和 `HOME_MARQUEE` 兜底两条路都会带上它们。
+  写进 `HOME_MARQUEE` 是不行的 —— 客户一传够 6 张氛围图，静态那份就被整体替换，
+  8 张面料图会跟着消失。
+- **按位置均匀铺开，不追加到末尾**：目标位是 `(k+0.5)/8`，落位后剩余槽位按原顺序填空。
+  纯计算、不用随机数（随机会让 SSR 与客户端算出不同顺序，直接 hydration 报错）。
+- **时长按格子数等比缩放**（72s→89s / 88s→109s），否则加图后滚动速度会明显变快。
+- 改图或加图：重跑 `.workbuddy/artifacts/fabric-tiles/compress.mjs`（短边 760 / q82 / 白底拍平），
+  再改 `FABRIC_TILES` 的条目即可。校验脚本同目录 `test-merge.mjs`（跑 `withFabricTiles` 的
+  纯函数测试，覆盖氛围图 1 行 / 2 行 / 静态兜底三种形态）。
+
+> R&D 页 `#fabric` 区块带 `scroll-mt-16 md:scroll-mt-20`，跳过来时标题不会被 fixed 导航压住。
 
 ## Vercel 部署
 
@@ -157,8 +237,8 @@ src/
 
 ## 生产检查清单
 
-- [ ] 替换占位图为 Storage 图片
-- [ ] 收紧 Storage bucket 的 `allowed_mime_types`
+- [ ] 替换剩余占位图（factory / rnd / login 的 Unsplash）为 Storage 图片
+- [ ] 收紧 Storage 桶 `yolo` 的 `allowed_mime_types`（产品图导完后再动）
 - [ ] 为 `admins` 表更换默认角色权限
 - [ ] 配置自定义域名与邮件白名单
 - [ ] 环境变量只在 Vercel 配置，`SMTP_PASS` / `VERCEL_TOKEN` 定期轮换

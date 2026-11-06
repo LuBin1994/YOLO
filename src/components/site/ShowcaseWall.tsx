@@ -4,15 +4,21 @@ import type { ShowcaseShot } from "@/lib/site-data";
 /**
  * 案例图墙：三列流式图片 + 钉在视口中央的大字。
  *
- * 【文字用 mix-blend-mode: difference】
+ * 【文字用 mix-blend-mode: difference】（2026-11-04 按客户要求改回）
  * 白色文字叠在整段图墙之上，靠混合模式让**底色决定字的明暗**：
  *   - 落在珍珠白纸面上：白字与浅底相减 → 接近黑色（#f8f6f0 反相 ≈ #07090f，
  *     和站点自己的 ink-950 几乎分不出来）；
  *   - 落在图片上：白色的反相 = 图片颜色的负片，暗处变亮、亮处变暗，
- *     字的轮郭始终是"反着画面走"的，所以任何明暗的图上都读得清。
+ *     字的轮廓始终是"反着画面走"的。
  *
- * 这个做法比"做两层、白字裁进图框"轻得多：不需要克隆一层文字，
- * 也不需要图墙比文字窄，交界完全由像素决定，字落在哪张图上就自动变色。
+ * 中间试过"两层实色"（黑字铺 section、白字裁在图墙内）：纸面上是实黑、
+ * 图上是实白，颜色绝对可控；但整句话跨过图墙边界时会被切成两截
+ * （左边黑、右边白），读起来像断裂。客户选了 difference 的整句统一变色。
+ *
+ * ⚠️ **difference 的已知短板**：文字落在**中低对比度**的图片上时，
+ * 反相后得到的是同一档中间调，对比度极低；局部还会"半句深半句浅"。
+ * 当前 11 张图里浅色（展厅、米色风衣、标签特写）占多数 —— 如果正文落在这几张
+ * 上发虚，**优先调图片顺序（把深色图排到文字行所在的高度），不要再改混合模式**。
  *
  * 【为什么必须 isolate】
  * mix-blend-mode 只跟**同一个隔离组**内的底色混合，否则会一直混到页面最底层。
@@ -72,8 +78,8 @@ export default function ShowcaseWall({
           id="showcase-headline"
           className="sticky top-0 flex h-[100svh] w-screen flex-col items-center justify-center px-5 text-center text-[clamp(24px,5.3vw,76px)] font-medium leading-[1.06] tracking-tight text-white mix-blend-difference md:px-8"
         >
-          {headline.map((line) => (
-            <span key={line} className="block">
+          {headline.map((line, index) => (
+            <span key={index} className="block">
               {line}
             </span>
           ))}

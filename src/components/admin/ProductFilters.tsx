@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CATEGORY_LABELS } from "@/lib/utils";
+import {
+  buildCategoryTree,
+  flattenCategoryTree,
+  type Category,
+} from "@/lib/categories";
 
 export interface ProductFilterValues {
   keyword: string;
@@ -11,6 +15,8 @@ export interface ProductFilterValues {
   status: string;
   /** "" | "only" | "no" */
   featured: string;
+  /** 分类表（树状缩进展示，值传 slug） */
+  categories: Category[];
 }
 
 const SELECT_CLASS =
@@ -25,9 +31,12 @@ export default function ProductFilters({
   category,
   status,
   featured,
+  categories,
 }: ProductFilterValues) {
   const router = useRouter();
   const hasFilter = Boolean(keyword || category || status || featured);
+  /* 分类表是树，下拉里用缩进表达层级；筛父级时服务端会展开成所有子孙 */
+  const categoryOptions = flattenCategoryTree(buildCategoryTree(categories));
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -75,9 +84,9 @@ export default function ProductFilters({
         className={SELECT_CLASS}
       >
         <option value="">全部分类</option>
-        {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
-          <option key={value} value={value}>
-            {label}
+        {categoryOptions.map((node) => (
+          <option key={node.id} value={node.slug}>
+            {`${"　".repeat(node.depth)}${node.depth > 0 ? "└ " : ""}${node.name_zh}`}
           </option>
         ))}
       </select>

@@ -57,7 +57,7 @@ export default function SplitHero({
               <dd className="text-xl font-medium tabular-nums tracking-tight text-white md:text-2xl">
                 {s.value}
               </dd>
-              <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/40">
+              <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/55">
                 {s.label}
               </dt>
             </div>

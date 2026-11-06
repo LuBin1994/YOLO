@@ -147,7 +147,7 @@ export default function ContactForm({ product }: ContactFormProps) {
         <button
           type="submit"
           disabled={state.status === "submitting"}
-          className="btn-primary disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center justify-center bg-ink-950 px-8 py-4 text-[15px] font-medium tracking-wide text-white transition-colors duration-300 hover:bg-white hover:text-ink-950"
         >
           {state.status === "submitting" ? "Sending..." : "Send Inquiry"}
         </button>

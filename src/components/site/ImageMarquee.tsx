@@ -26,18 +26,26 @@ export interface MarqueeRow {
 
 /**
  * 单圈轨道至少要铺满视口，否则位移 -50% 回到起点时会露出空白。
- * 最窄断点（lg）下每格 17vw，故最少 6 格。
+ *
+ * 格子宽度改成「由图片自身宽高比决定」之后就不能再按固定格数算：
+ * 竖图窄、横图宽，6 格可能只有 1000px。改成按**估算总宽度**补轮次，
+ * 4000px 保守覆盖到 2560 宽屏（按 260px ≈ 28vh@900 高、1:1 图估算）。
+ * 这是纯 SSR 计算，不引入客户端测量，也就不存在 hydration 抖动。
  */
-const MIN_TILES_PER_LOOP = 6;
+const MIN_LOOP_WIDTH = 4000;
+const EST_TILE_WIDTH = 260;
 
 function toTile(item: string | MarqueeTile): MarqueeTile {
   return typeof item === "string" ? { src: item } : item;
 }
 
-/** 图片张数不足一屏时整体重复若干轮，保证轨道铺满 */
+/** 图片总宽不足一屏时整轮重复，保证轨道铺满 */
 function fillLoop(tiles: MarqueeTile[]): MarqueeTile[] {
   if (tiles.length === 0) return tiles;
-  const rounds = Math.ceil(MIN_TILES_PER_LOOP / tiles.length);
+  const rounds = Math.max(
+    1,
+    Math.ceil(MIN_LOOP_WIDTH / (tiles.length * EST_TILE_WIDTH))
+  );
   return Array.from({ length: rounds }, () => tiles).flat();
 }
 
@@ -50,7 +58,12 @@ export default function ImageMarquee({
   label?: string;
 }) {
   return (
-    <section className="w-full" aria-label="Product gallery">
+    /* scroll-mt 避开 fixed 导航：用 #home-marquee 定位/验收时不会被 header 盖住 */
+    <section
+      id="home-marquee"
+      className="w-full scroll-mt-20"
+      aria-label="Product gallery"
+    >
       {rows.map((row, rowIndex) => {
         const duration = row.duration ?? 60;
         /** 真实图片数（a11y 只播报这批，填充与副本不重复播报） */
@@ -71,20 +84,36 @@ export default function ImageMarquee({
                   ? ""
                   : (tile.alt ?? `${label} look ${i + 1}, row ${rowIndex + 1}`);
 
+                /*
+                 * 不用 fill：fill 会注入 position:absolute + width:100%，
+                 * 而格子宽度现在要由图片撑开，两者互相依赖就塌成 0。
+                 * 改用 width/height 属性提供初始比例（SSR 预留，不抖），
+                 * 浏览器加载后按图片 natural ratio 自动算出实际宽度。
+                 * 于是：横图格子宽、竖图格子窄，图片完整不裁切。
+                 */
                 const media = (
                   <Image
                     src={tile.src}
                     alt={alt}
-                    fill
-                    sizes="(max-width: 768px) 48vw, (max-width: 1024px) 22vw, 17vw"
-                    className="object-cover"
+                    width={800}
+                    height={800}
+                    sizes="(max-width: 768px) 60vw, 400px"
+                    style={{
+                      display: "block",
+                      height: "100%",
+                      width: "auto",
+                      maxWidth: "none",
+                      objectFit: "contain",
+                    }}
                   />
                 );
 
                 return (
                   <div
                     key={`${tile.src}-${i}`}
-                    className="marquee-cell"
+                    /* marquee-cell--static：没有链接的格子不加悬停反馈。
+                       纯展示的图做交互暗示反而像可点、点下去没反应。 */
+                    className={`marquee-cell${tile.href ? "" : " marquee-cell--static"}`}
                     /* 重复的格子对辅助技术隐藏，避免重复播报 */
                     aria-hidden={isRepeat}
                   >

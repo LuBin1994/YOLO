@@ -21,18 +21,23 @@ const EASE = "cubic-bezier(0.65, 0, 0.35, 1)";
  *
  * 手机端不套这套坐标（视口只有 390 宽，12 列会碎成渣）：
  * 两列五行，01 通栏当封面，其余八格两两成对。
+ *
+ * 2026-11-06 客户要求把正中那格与左下那格对调：sketch ⇄ sewing。
+ * 两格都是 3×3，只换 col-start / row-start，跨度不动，所以是纯位置对调。
+ * 换完正中是「车间女工排排坐」（更贴"我们在做什么"），左下角是「两人看面料册」，
+ * 跟旁边的裁剪刀窄条（cutting）同属案头动作，左下角的叙事反而更连贯。
  */
 const LAYOUT: Record<string, string> = {
   development:
     "col-span-2 md:col-span-5 md:col-start-1 md:row-span-4 md:row-start-1",
   measuring: "md:col-span-3 md:col-start-6 md:row-span-3 md:row-start-1",
   collection: "md:col-span-4 md:col-start-9 md:row-span-5 md:row-start-1",
-  sketch: "md:col-span-3 md:col-start-6 md:row-span-3 md:row-start-4",
+  sketch: "md:col-span-3 md:col-start-3 md:row-span-3 md:row-start-8",
   stitching: "md:col-span-5 md:col-start-1 md:row-span-3 md:row-start-5",
   corridor: "md:col-span-3 md:col-start-6 md:row-span-4 md:row-start-7",
   team: "md:col-span-4 md:col-start-9 md:row-span-5 md:row-start-6",
   cutting: "md:col-span-2 md:col-start-1 md:row-span-3 md:row-start-8",
-  sewing: "md:col-span-3 md:col-start-3 md:row-span-3 md:row-start-8",
+  sewing: "md:col-span-3 md:col-start-6 md:row-span-3 md:row-start-4",
 };
 
 interface Rect {
@@ -109,7 +114,7 @@ function IntroBand({
               </Link>
             ))}
           </div>
-          <p className="hidden text-[11px] uppercase tracking-[0.18em] text-white/45 md:block">
+          <p className="hidden text-[11px] uppercase tracking-[0.18em] text-white/55 md:block">
             Hover to preview · Click to open
           </p>
         </div>
@@ -141,8 +146,9 @@ function IntroBand({
  * 盖住顶部 128/160px——白字压在任何一段视频上都能读。
  *
  * 【视频为什么 preload="none"】
- * 九段视频走 Mixkit 远程直链，总量约 55MB。首屏只显示 poster（jpg，
- * 官方同帧缩略图），视频要等到第一次悬停（play()）才发起请求。之前用 "metadata"，
+ * 九段视频本地托管（/media/home/reel/），压缩后共 18.3MB，但仍是首屏预算里
+ * 最大的一项。首屏只显示 poster（jpg，从压缩后的视频里抽的第一帧），
+ * 视频要等到第一次悬停（play()）才发起请求。之前用 "metadata"，
  * 虽然只取文件头，但九段加起来仍是九次额外请求，4G 下对 FCP 有可见影响。
  * 代价：首次悬停有约 200–400ms 的"画面还没动"，poster 仍在，不算错误态。
  *

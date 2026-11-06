@@ -136,7 +136,7 @@ export default function ResponsibilityPage() {
               <h2 className="display-md mt-5 max-w-lg">
                 We are audited, and we keep the file.
               </h2>
-              <p className="mt-7 max-w-md text-base leading-[1.85] text-ink-600">
+              <p className="mt-7 max-w-md text-[15px] leading-[1.85] text-ink-600">
                 Social compliance is not a badge we print on a page. Both plants
                 run on a digital archive of every inspection, plus a tiered
                 correction process, so a finding is closed before the next audit

@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
 
   images: {
     remotePatterns: [
-      // Supabase Storage（公开读的 media 存储桶）
+      // Supabase Storage（公开读的 yolo 存储桶）
       {
         protocol: "https",
         hostname: "**.supabase.co",

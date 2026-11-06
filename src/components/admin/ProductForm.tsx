@@ -3,29 +3,44 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import ImageUploader from "./ImageUploader";
-import { categoryLabel, slugify } from "@/lib/utils";
+import MoodImageUploader from "./MoodImageUploader";
+import { slugify } from "@/lib/utils";
+import {
+  buildCategoryTree,
+  flattenCategoryTree,
+  type Category,
+} from "@/lib/categories";
 import type { Product } from "@/lib/supabase/types";
 
 interface ProductFormProps {
   /** 编辑模式传入现有产品，新建模式为 null */
   product?: Product | null;
+  /** 全部分类（树状缩进展示，值存 slug） */
+  categories: Category[];
 }
-
-const CATEGORIES = ["apparel", "knit", "woven", "denim", "outerwear", "other"];
 
 /**
  * 产品新建/编辑表单。提交到 /api/admin/products。
+ *
+ * 【分类为什么是缩进下拉】
+ * 2026-11-06 之前这里写死了一套 `["apparel","knit",...]`，
+ * 和前台用的 kids-jacket 那套完全对不上（后台选"服装"，前台根本筛不出东西）。
+ * 现在读 yolo.categories，按层级缩进，商品可以挂到任意一级。
  */
-export default function ProductForm({ product }: ProductFormProps) {
+export default function ProductForm({ product, categories }: ProductFormProps) {
   const router = useRouter();
   const isEdit = Boolean(product);
 
   const [title, setTitle] = useState(product?.title ?? "");
   const [slug, setSlug] = useState(product?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(isEdit);
-  const [category, setCategory] = useState(product?.category ?? "apparel");
+  const [category, setCategory] = useState(product?.category ?? "");
   const [description, setDescription] = useState(product?.description ?? "");
   const [images, setImages] = useState<string[]>(product?.images ?? []);
+  /** 氛围图独立字段：不进 images，所以详情页图集不会多出一张 */
+  const [moodImage, setMoodImage] = useState<string | null>(
+    product?.mood_image ?? null
+  );
   const [materials, setMaterials] = useState(product?.materials.join(", ") ?? "");
   const [moq, setMoq] = useState(product?.moq?.toString() ?? "");
   const [priceRange, setPriceRange] = useState(product?.price_range ?? "");
@@ -42,6 +57,12 @@ export default function ProductForm({ product }: ProductFormProps) {
     [title, slug, slugTouched]
   );
 
+  /* 树形缩进选项：一次点选、任意深度，比多级联动少两步操作 */
+  const categoryOptions = useMemo(
+    () => flattenCategoryTree(buildCategoryTree(categories)),
+    [categories]
+  );
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitting(true);
@@ -53,6 +74,7 @@ export default function ProductForm({ product }: ProductFormProps) {
       category,
       description,
       images,
+      mood_image: moodImage,
       materials: materials
         .split(",")
         .map((s) => s.trim())
@@ -121,17 +143,28 @@ export default function ProductForm({ product }: ProductFormProps) {
         </div>
         <div className="grid gap-5 sm:grid-cols-3">
           <div>
-            <label htmlFor="category" className={labelCls}>分类</label>
+            <label htmlFor="category" className={labelCls}>分类 *</label>
             <select
               id="category"
               className={inputCls}
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              required
             >
-              {CATEGORIES.map((c) => (
-                <option key={c} value={c}>{categoryLabel(c)}</option>
+              <option value="" disabled>
+                请选择分类
+              </option>
+              {categoryOptions.map((node) => (
+                <option key={node.id} value={node.slug}>
+                  {`${"　".repeat(node.depth)}${node.depth > 0 ? "└ " : ""}${node.name_zh}`}
+                </option>
               ))}
             </select>
+            {categoryOptions.length === 0 ? (
+              <p className="mt-1 text-[13px] text-amber-700">
+                还没有分类，先去「分类管理」建一个。
+              </p>
+            ) : null}
           </div>
           <div>
             <label htmlFor="price" className={labelCls}>价格区间</label>
@@ -188,6 +221,18 @@ export default function ProductForm({ product }: ProductFormProps) {
           images={images}
           onChange={setImages}
           folder={`products/${finalSlug || "draft"}`}
+        />
+      </section>
+
+      {/* 氛围图：只在首页滚动图组使用，详情图集不读它 */}
+      <section className="space-y-5">
+        <p className="text-[12px] uppercase tracking-[0.24em] text-ink-400">
+          氛围图 <span className="text-ink-400">（首页滚动图组专用）</span>
+        </p>
+        <MoodImageUploader
+          value={moodImage}
+          onChange={setMoodImage}
+          folder={`products/${finalSlug || "draft"}/mood`}
         />
       </section>
 

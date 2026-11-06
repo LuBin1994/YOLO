@@ -10,7 +10,7 @@ import {
   CERT_HIGHLIGHTS,
   FACTORY_STATS,
   PRODUCT_CAPABILITIES,
-  getPage,
+  getCategories,
   getProducts,
 } from "@/lib/site-data";
 
@@ -21,13 +21,32 @@ export const metadata: Metadata = {
   alternates: { canonical: "/products" },
 };
 
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=2400&auto=format";
+/**
+ * 首屏头图（2026-11-05 换客户实拍：服装展示厅挂满成品的衣架）。
+ *
+ * 【为什么用本地图不用 Unsplash】客户 2026-11-05 指定要这张自有素材
+ * （微信图片_20261026102306_1370_72.jpg）。远程图既不可控也会拖慢首屏。
+ *
+ * 【原图 4:3，hero 容器约 2.29:1】`object-cover` 居中裁切，上下各切掉约 21% ——
+ * 顶部切掉的是天花板与灯轨，底部切掉的是地板，衣架主体完整。
+ * 若哪天改 hero 高度比例，要重新看这张图的裁切（顶对齐会切到衣服下摆）。
+ *
+ * 【为什么放在 /media/site/ 而不是 /media/products/】
+ * 2026-11-06 商品图已全部迁到 Supabase Storage 的 yolo 桶，
+ * 本地 public/media/products/ 整目录删除。这张是**页面首屏头图**不是商品图，
+ * 所以单独挪到 site/ 下，避免和"商品图"混在一起被一起清掉。
+ */
+const HERO_IMAGE = "/media/site/hero-showroom.jpg";
+
+/* 首屏标题。2026-11-05 起内容管理模块已下线，这里是唯一来源 ——
+   改文案直接改这一行，不再走数据库。 */
+const HERO_TITLE = "Styles built for programs.";
 
 export default async function ProductsPage() {
-  const [products, page] = await Promise.all([
+  /* 分类与产品并发取：分类只有十几个节点，但它是筛选器的骨架，不能等产品回来再取 */
+  const [products, categories] = await Promise.all([
     getProducts(),
-    getPage("products"),
+    getCategories(),
   ]);
 
   return (
@@ -41,9 +60,9 @@ export default async function ProductsPage() {
       {/* ① 全宽首屏头图，与首页和工厂页共用同一版式语言 */}
       <PageHero
         eyebrow="Product Catalog"
-        title={page?.title ?? "Styles built for programs."}
+        title={HERO_TITLE}
         subtitle="Every style can be customized — fabric, trims, labels and packaging. Minimums from 300 pieces per colorway."
-        image={page?.hero_image ?? HERO_IMAGE}
+        image={HERO_IMAGE}
       />
 
       {/* ② 关键数字条 */}
@@ -64,7 +83,7 @@ export default async function ProductsPage() {
 
       {/* ③ 目录主体：分类筛选 + 网格/列表切换 */}
       <section className="container-site pt-16 pb-24 md:pt-20 md:pb-32">
-        <ProductBrowser products={products} />
+        <ProductBrowser products={products} categories={categories} />
       </section>
 
       {/* ④ 生产品类：等宽三列，作为目录的延伸说明 */}

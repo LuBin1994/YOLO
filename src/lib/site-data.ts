@@ -1,231 +1,26 @@
 import type { MarqueeRow, MarqueeTile } from "@/components/site/ImageMarquee";
-import type { Page, Product } from "./supabase/types";
+import type { Product } from "./supabase/types";
 
 /**
- * 前台数据访问层
- * 统一封装前台页面的数据获取，Supabase 不可用（未配置环境变量/网络异常）
- * 时自动降级到内置占位数据，保证开发阶段页面可预览。
- * 上线后移除 fallback 不会影响任何功能。
+ * 前台数据访问层。
+ *
+ * 2026-11-06：产品目录已全部入 yolo.products、图片进了 yolo 存储桶，
+ * **本地的 FALLBACK_PRODUCTS 与 public/media/products 已删除**。
+ * 数据库连不上时返回空数组 / null，不再拿一份静态副本冒充在线数据 ——
+ * 那份副本迟早和后台改过的内容对不上，让客户以为"改了没生效"。
+ *
+ * 代价要说清楚：Supabase 不可用时产品页会空、详情页会 404、分类筛选不出现。
+ * 这是刻意的，所以 catch 里必须留下日志，别让故障静默。
+ * **分类同样只从 `yolo.categories` 读**（2026-11-06 二次清理，静态兜底也删了）——
+ * 后台新建的 KNIT / PANTS 系列必须立刻在前台出现，不能被写死的数组顶掉。
  */
 
-/* =============================================================
-   Fallback 数据（与 supabase/seed.sql 保持一致）
-   ============================================================= */
+import type { Category } from "./categories";
 
-export const FALLBACK_PRODUCTS: Product[] = [
-  {
-    id: "fb-01",
-    title: "Organic Cotton Jersey Tee",
-    slug: "organic-cotton-jersey-tee",
-    description:
-      "Heavyweight 220gsm organic cotton jersey. Garment-dyed, pre-shrunk, with a relaxed fit. Ideal for private label basics programs.",
-    category: "apparel",
-    images: [
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1503341504253-dff4815485f1?auto=format&fit=crop&w=1600&q=80",
-    ],
-    cover_image:
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1600&q=80",
-    materials: ["100% GOTS Organic Cotton"],
-    moq: 500,
-    price_range: "$3.8 - $5.2 / pc",
-    featured: true,
-    published: true,
-    sort_order: 1,
-    created_at: "2026-01-01T00:00:00Z",
-    updated_at: "2026-01-01T00:00:00Z",
-  },
-  {
-    id: "fb-02",
-    title: "Eco-Certified Knit Polo",
-    slug: "eco-certified-knit-polo",
-    description:
-      "Pique knit polo in recycled polyester blend. Oeko-Tex certified, quick-dry finish, custom embroidery ready.",
-    category: "knit",
-    images: [
-      "https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?auto=format&fit=crop&w=1600&q=80",
-    ],
-    cover_image:
-      "https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?auto=format&fit=crop&w=1600&q=80",
-    materials: ["65% Recycled Polyester", "35% Cotton"],
-    moq: 800,
-    price_range: "$6.5 - $8.9 / pc",
-    featured: true,
-    published: true,
-    sort_order: 2,
-    created_at: "2026-01-01T00:00:00Z",
-    updated_at: "2026-01-01T00:00:00Z",
-  },
-  {
-    id: "fb-03",
-    title: "Selvedge Denim Jacket",
-    slug: "selvedge-denim-jacket",
-    description:
-      "Classic trucker jacket in 14oz selvedge denim. Sanforized, contrast stitching, branded hardware.",
-    category: "denim",
-    images: [
-      "https://images.unsplash.com/photo-1521093470119-a3ac39643369?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1543076447-215ad9ba6923?auto=format&fit=crop&w=1600&q=80",
-    ],
-    cover_image:
-      "https://images.unsplash.com/photo-1521093470119-a3ac39643369?auto=format&fit=crop&w=1600&q=80",
-    materials: ["14oz Selvedge Denim"],
-    moq: 300,
-    price_range: "$18.0 - $24.0 / pc",
-    featured: false,
-    published: true,
-    sort_order: 3,
-    created_at: "2026-01-01T00:00:00Z",
-    updated_at: "2026-01-01T00:00:00Z",
-  },
-  {
-    id: "fb-04",
-    title: "Relaxed Woven Shirt",
-    slug: "relaxed-woven-shirt",
-    description:
-      "Relaxed-fit woven shirt in Tencel and organic linen blend. Breathable, wrinkle-resistant, perfect for warm climates.",
-    category: "woven",
-    images: [
-      "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=1600&q=80",
-    ],
-    cover_image:
-      "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=1600&q=80",
-    materials: ["60% Tencel", "40% Organic Linen"],
-    moq: 400,
-    price_range: "$9.5 - $12.8 / pc",
-    featured: false,
-    published: true,
-    sort_order: 4,
-    created_at: "2026-01-01T00:00:00Z",
-    updated_at: "2026-01-01T00:00:00Z",
-  },
-  {
-    id: "fb-05",
-    title: "Performance Track Jacket",
-    slug: "performance-track-jacket",
-    description:
-      "Lightweight 3-layer bonded shell for performance outerwear lines. Water-resistant, breathable membrane, taped seams.",
-    category: "outerwear",
-    images: [
-      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=1600&q=80",
-    ],
-    cover_image:
-      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=1600&q=80",
-    materials: ["100% Recycled Nylon"],
-    moq: 600,
-    price_range: "$14.0 - $19.5 / pc",
-    featured: true,
-    published: true,
-    sort_order: 5,
-    created_at: "2026-01-01T00:00:00Z",
-    updated_at: "2026-01-01T00:00:00Z",
-  },
-  {
-    id: "fb-06",
-    title: "Brushed Fleece Hoodie",
-    slug: "brushed-fleece-hoodie",
-    description:
-      "330gsm brushed-back fleece hoodie. Drop shoulder, double-layer hood, kangaroo pocket. Heavyweight streetwear staple.",
-    category: "apparel",
-    images: [
-      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=1600&q=80",
-    ],
-    cover_image:
-      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=1600&q=80",
-    materials: ["80% Cotton", "20% Recycled Polyester"],
-    moq: 500,
-    price_range: "$11.0 - $15.0 / pc",
-    featured: false,
-    published: true,
-    sort_order: 6,
-    created_at: "2026-01-01T00:00:00Z",
-    updated_at: "2026-01-01T00:00:00Z",
-  },
-];
-
-export const FALLBACK_PAGES: Record<string, Page> = {
-  factory: {
-    id: "fb-factory",
-    slug: "factory",
-    title: "Our Factory",
-    hero_image:
-      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2400&q=80",
-    sections: [
-      { type: "heading", content: "Vertically Integrated Production" },
-      {
-        type: "paragraph",
-        content:
-          "Our factories across Southeast Asia manage the full supply chain — from fabric sourcing and dyeing to cutting, sewing, finishing and quality control. This vertical integration gives us unmatched control over quality, lead time and cost.",
-      },
-      {
-        type: "image",
-        content:
-          "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2400&q=80",
-        caption: "Sewing floor, 1,200 operators",
-      },
-      { type: "heading", content: "Capacity & Capability" },
-      {
-        type: "paragraph",
-        content:
-          "Monthly output exceeds 1.2 million pieces across six production lines. We specialize in medium to large-volume programs with full QC, packaging and logistics support.",
-      },
-    ],
-    published: true,
-    created_at: "2026-01-01T00:00:00Z",
-    updated_at: "2026-01-01T00:00:00Z",
-  },
-  sustainability: {
-    id: "fb-sustainability",
-    slug: "sustainability",
-    title: "Sustainability",
-    hero_image:
-      "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=2400&q=80",
-    sections: [
-      { type: "heading", content: "Sustainable Materials" },
-      {
-        type: "paragraph",
-        content:
-          "We source GOTS organic cotton, recycled polyester, Tencel and hemp. All fabrics are Oeko-Tex certified and traceable from fiber to finished garment.",
-      },
-      { type: "heading", content: "Clean Production" },
-      {
-        type: "paragraph",
-        content:
-          "Our dye houses use closed-loop water recycling systems, recovering 85% of wastewater. Solar panels cover 40% of factory rooftops, cutting grid dependency.",
-      },
-    ],
-    published: true,
-    created_at: "2026-01-01T00:00:00Z",
-    updated_at: "2026-01-01T00:00:00Z",
-  },
-  "social-responsibility": {
-    id: "fb-responsibility",
-    slug: "social-responsibility",
-    title: "Social Responsibility",
-    hero_image:
-      "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=2400&q=80",
-    sections: [
-      { type: "heading", content: "People First" },
-      {
-        type: "paragraph",
-        content:
-          "We employ over 3,800 workers across our facilities, with fair wages, dormitory housing, on-site clinics and free vocational training programs.",
-      },
-      { type: "heading", content: "Community Impact" },
-      {
-        type: "paragraph",
-        content:
-          "Annual community programs support local schools, clean water projects and women-led cooperatives in the regions where we operate.",
-      },
-    ],
-    published: true,
-    created_at: "2026-01-01T00:00:00Z",
-    updated_at: "2026-01-01T00:00:00Z",
-  },
-};
+export type { Category };
 
 /* =============================================================
-   数据获取（Supabase SSR，失败自动降级 fallback）
+   数据获取
    ============================================================= */
 
 async function supabaseReady(): Promise<boolean> {
@@ -235,8 +30,56 @@ async function supabaseReady(): Promise<boolean> {
   );
 }
 
+/**
+ * 只在每个进程里报一次，避免数据库挂掉时每个请求都刷一行日志。
+ * 不打印 error 对象里的凭据，只取 message。
+ */
+let dataFailureLogged = false;
+function logDataFailure(where: string, error: unknown) {
+  if (dataFailureLogged) return;
+  dataFailureLogged = true;
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(`[site-data] ${where} 读取失败，页面将显示空数据：${message}`);
+}
+
+/**
+ * 产品分类（树状多级），**唯一来源 `yolo.categories`**。
+ *
+ * 【为什么连静态兜底都不要】
+ * 客户在后台新建分类后必须立刻在前台看见。一份写死的 `FALLBACK_CATEGORIES`
+ * 会让"后台加了、前台没变"变成最难排查的那类问题 —— 页面还正常，只是少两个 tab。
+ * 读库失败就返回空数组 + 日志，和产品数据的失败行为保持一致。
+ *
+ * 【排序】按 sort_order，同值再按英文名。树形结构由 `createCategoryIndex()`
+ * 在用到的地方现建 —— 分类只有十几个节点，没必要为它单独开一次递归查询。
+ */
+export async function getCategories(): Promise<Category[]> {
+  if (!(await supabaseReady())) {
+    logDataFailure("getCategories", "缺少 Supabase 环境变量");
+    return [];
+  }
+
+  try {
+    const { createClient } = await import("./supabase/server");
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("categories")
+      .select("id, parent_id, slug, name_zh, name_en, sort_order")
+      .order("sort_order", { ascending: true });
+
+    if (error) throw error;
+    return data ?? [];
+  } catch (error) {
+    logDataFailure("getCategories", error);
+    return [];
+  }
+}
+
 export async function getProducts(): Promise<Product[]> {
-  if (!(await supabaseReady())) return FALLBACK_PRODUCTS;
+  if (!(await supabaseReady())) {
+    logDataFailure("getProducts", "缺少 Supabase 环境变量");
+    return [];
+  }
 
   try {
     const { createClient } = await import("./supabase/server");
@@ -247,15 +90,17 @@ export async function getProducts(): Promise<Product[]> {
       .order("sort_order", { ascending: true });
 
     if (error) throw error;
-    return (data ?? []).length > 0 ? data : FALLBACK_PRODUCTS;
-  } catch {
-    return FALLBACK_PRODUCTS;
+    return data ?? [];
+  } catch (error) {
+    logDataFailure("getProducts", error);
+    return [];
   }
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   if (!(await supabaseReady())) {
-    return FALLBACK_PRODUCTS.find((p) => p.slug === slug) ?? null;
+    logDataFailure("getProductBySlug", "缺少 Supabase 环境变量");
+    return null;
   }
 
   try {
@@ -268,32 +113,14 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       .maybeSingle();
 
     if (error) throw error;
-    return data;
-  } catch {
-    return FALLBACK_PRODUCTS.find((p) => p.slug === slug) ?? null;
+    /* 查不到就是 404，不再回退静态目录 —— 库里已经是唯一数据源 */
+    return data ?? null;
+  } catch (error) {
+    logDataFailure("getProductBySlug", error);
+    return null;
   }
 }
 
-export async function getPage(slug: string): Promise<Page | null> {
-  if (!(await supabaseReady())) {
-    return FALLBACK_PAGES[slug] ?? null;
-  }
-
-  try {
-    const { createClient } = await import("./supabase/server");
-    const supabase = await createClient();
-    const { data, error } = await supabase
-      .from("pages")
-      .select("*")
-      .eq("slug", slug)
-      .maybeSingle();
-
-    if (error) throw error;
-    return data ?? FALLBACK_PAGES[slug] ?? null;
-  } catch {
-    return FALLBACK_PAGES[slug] ?? null;
-  }
-}
 
 /** 站点品牌信息 */
 export const SITE = {
@@ -322,98 +149,105 @@ export interface ReelClip {
 }
 
 /**
- * 首页视频墙（九宫格改版）。
+ * 首页视频墙（九宫格）。
  *
- * 【素材】Mixkit 免费商用（Free License，无需署名）。2026-10-23 起改为
- * **远程直链**（客户要求），不再放 public 里占仓库体积：
- * - 视频：https://assets.mixkit.co/videos/<id>/<id>-720.mp4
- * - 封面：https://assets.mixkit.co/videos/<id>/<id>-thumb-720-2.jpg（官方同帧缩略图）
- * ⚠️ 依赖第三方 CDN：Mixkit 改版或国内访问受阻时首屏只剩压暗的空格。
- *   2026-10-29 已按"未被引用的素材"清理删除本地旧 mp4/webp（合计 47MB）。
- *   若要回滚到本地播放，素材仍在 git 提交 30f2113 里，`git checkout 30f2113 -- public/media/home/mosaic`
- *   取回后把 src/poster 换成本地路径即可。
+ * 【素材】2026-11-05 起换成**客户自有实拍**（桌面「首页视频」9 段），
+ * 全部本地托管在 `/media/home/reel/`，不再依赖 Mixkit 远程 CDN：
+ * - 视频 `<id>.mp4`：1280×720 / 30fps / 无音轨 / CRF 24 / faststart
+ * - 封面 `<id>.jpg`：从压缩后的视频里抽帧，保证「封面 = 视频第一眼」
  *
- * 主题覆盖客户要求的四类：
- * - 成衣设计：development（设计工作室里打样）、sketch（纸样与面料）
- * - 版房：    measuring（软尺与布卷）、cutting（裁剪刀）
- * - 成衣工厂：stitching（机针细节）、sewing（缝制）、corridor（车间走廊）
- * - 人文关怀：team（团队的手）、corridor（一线工人）
+ * 【压缩口径】（脚本 .workbuddy/artifacts/encode-reel.js）
+ * 源素材 190MB（1080p/4K、9–33Mbps、带音轨）压到 **18.3MB**，缩 10.4 倍：
+ * - 720p：播放面板最大 1180×664，1280×720 与显示尺寸 1:1，再高纯属浪费
+ * - CRF 24：实测同段 CRF27→1.2MB / 25→1.6MB / 23→2.3MB；
+ *   内容是深色织物纹理，27 在暗部有块效应，24 是画质与体积的平衡点
+ * - fps 封顶 30：两段源是 60fps（分格压线 / 裁剪），都是慢速机器特写，
+ *   30fps 看不出差别，体积却近乎减半
+ * - 去音轨：整墙 muted，音轨纯属体积
  *
- * 【体积】远程模式下体积压力转移到 CDN 侧；页面 preload="none"，
- * 进站只拉九张封面 jpg（合计约 700KB），视频首次悬停才加载。
+ * 【首屏代价】视频 `preload="none"`，进站只拉九张封面（合计 872KB），
+ * 视频首次悬停才加载。
+ *
+ * 【id 不能改】VideoMosaic 的 LAYOUT 用它当网格坐标键（12 列 × 10 行里写死
+ * col-start / row-start）。改 id 会让整面墙塌成自动流。
+ *
+ * 【格子比例差很大】（0.88–2.24），素材统一 16:9，靠 object-cover 裁。
+ * 所以竖格分给「主体居中」的画面（裁剪 / 分格压线），横格分给全景
+ * （厂房航拍 2.24 那格最宽、展厅全景 1.67 次之）。
  */
 export const HOME_REEL: readonly ReelClip[] = [
+  /* 顺序即数据顺序，但**落位由 LAYOUT 决定**，与这里的先后无关。 */
   {
     id: "development",
-    label: "Sampling studio",
-    theme: "Design",
-    src: "https://assets.mixkit.co/videos/45750/45750-720.mp4",
-    poster: "https://assets.mixkit.co/videos/45750/45750-thumb-720-2.jpg",
-    alt: "Designer working at a sewing machine in a bright sampling studio",
+    label: "Showroom",
+    theme: "Collection",
+    src: "/media/home/reel/development.mp4",
+    poster: "/media/home/reel/development.jpg",
+    alt: "Wide view of the showroom floor lined with garment rails",
   },
   {
     id: "measuring",
-    label: "Measuring",
-    theme: "Pattern room",
-    src: "https://assets.mixkit.co/videos/35388/35388-720.mp4",
-    poster: "https://assets.mixkit.co/videos/35388/35388-thumb-720-2.jpg",
-    alt: "Measuring tape resting on rolls of fabric in a pattern room",
+    label: "Design studio",
+    theme: "Design",
+    src: "/media/home/reel/measuring.mp4",
+    poster: "/media/home/reel/measuring.jpg",
+    alt: "Designers reviewing samples on a tablet in the studio",
   },
   {
     id: "collection",
-    label: "Finished goods",
+    label: "Kidswear range",
     theme: "Collection",
-    src: "https://assets.mixkit.co/videos/33167/33167-720.mp4",
-    poster: "https://assets.mixkit.co/videos/33167/33167-thumb-720-2.jpg",
-    alt: "Knitwear hanging in a row on a garment rail",
+    src: "/media/home/reel/collection.mp4",
+    poster: "/media/home/reel/collection.jpg",
+    alt: "Colourful childrenswear jackets hanging on a rail",
   },
   {
     id: "sketch",
     label: "Fabric selection",
     theme: "Design",
-    src: "https://assets.mixkit.co/videos/21538/21538-720.mp4",
-    poster: "https://assets.mixkit.co/videos/21538/21538-thumb-720-2.jpg",
-    alt: "Hands comparing fabric swatches over a technical sketch",
+    src: "/media/home/reel/sketch.mp4",
+    poster: "/media/home/reel/sketch.jpg",
+    alt: "Two people comparing fabric swatches against a wall of sketches",
   },
   {
     id: "stitching",
-    label: "Stitching",
-    theme: "Production floor",
-    src: "https://assets.mixkit.co/videos/45527/45527-720.mp4",
-    poster: "https://assets.mixkit.co/videos/45527/45527-thumb-720-2.jpg",
-    alt: "Close-up of an industrial sewing machine needle stitching fabric",
+    label: "Our campus",
+    theme: "People",
+    src: "/media/home/reel/stitching.mp4",
+    poster: "/media/home/reel/stitching.jpg",
+    alt: "Aerial view of the factory campus and its rooftops",
   },
   {
     id: "corridor",
-    label: "On the floor",
-    theme: "People",
-    src: "https://assets.mixkit.co/videos/23378/23378-720.mp4",
-    poster: "https://assets.mixkit.co/videos/23378/23378-thumb-720-2.jpg",
-    alt: "Worker in overalls walking down a factory corridor",
+    label: "Quilting",
+    theme: "Production floor",
+    src: "/media/home/reel/corridor.mp4",
+    poster: "/media/home/reel/corridor.jpg",
+    alt: "Close-up of a quilting machine stitching padded fabric",
   },
   {
     id: "team",
-    label: "Our team",
-    theme: "People",
-    src: "https://assets.mixkit.co/videos/35959/35959-720.mp4",
-    poster: "https://assets.mixkit.co/videos/35959/35959-thumb-720-2.jpg",
-    alt: "Team members joining hands in a circle",
+    label: "Automated stitching",
+    theme: "Production floor",
+    src: "/media/home/reel/team.mp4",
+    poster: "/media/home/reel/team.jpg",
+    alt: "Automated template sewing machine stitching a panel",
   },
   {
     id: "cutting",
     label: "Cutting",
     theme: "Pattern room",
-    src: "https://assets.mixkit.co/videos/14776/14776-720.mp4",
-    poster: "https://assets.mixkit.co/videos/14776/14776-thumb-720-2.jpg",
-    alt: "Scissors cutting through blue fabric on a cutting table",
+    src: "/media/home/reel/cutting.mp4",
+    poster: "/media/home/reel/cutting.jpg",
+    alt: "Hands cutting fabric with shears on a cutting table",
   },
   {
     id: "sewing",
-    label: "Sewing line",
-    theme: "Production floor",
-    src: "https://assets.mixkit.co/videos/12525/12525-720.mp4",
-    poster: "https://assets.mixkit.co/videos/12525/12525-thumb-720-2.jpg",
-    alt: "Hands guiding a shirt under a sewing machine needle",
+    label: "On the floor",
+    theme: "People",
+    src: "/media/home/reel/sewing.mp4",
+    poster: "/media/home/reel/sewing.jpg",
+    alt: "Operator at a sewing machine smiling towards the camera",
   },
 ];
 
@@ -465,23 +299,25 @@ export interface ShowcaseShot {
  * 否则图片未加载完时列高会跳，正在滚动的文字会跟着抖。
  */
 export const HOME_SHOWCASE: readonly ShowcaseShot[] = [
-  { src: "/media/home/mosaic/45750.jpg", alt: "Designer working at a sewing machine in the sampling studio", ratio: "4 / 5" },
-  { src: "/media/home/tile-production.jpg", alt: "Operators sewing garments on the production floor", ratio: "3 / 4" },
-  { src: "/media/home/mosaic/33167.jpg", alt: "Knitwear hanging in a row on a garment rail", ratio: "3 / 4" },
-  { src: "/media/home/mosaic/35388.jpg", alt: "Measuring tape resting on rolls of fabric", ratio: "1 / 1" },
-  { src: "/media/home/tile-campaign.jpg", alt: "Finished shirts hanging against a plain wall", ratio: "4 / 5" },
-  { src: "/media/home/mosaic/45527.jpg", alt: "Close-up of an industrial sewing machine needle", ratio: "16 / 11" },
-  { src: "/media/home/mosaic/21538.jpg", alt: "Hands comparing fabric swatches over a technical sketch", ratio: "4 / 5" },
-  { src: "/media/home/tile-materials.jpg", alt: "Rolls of fabric stacked on mill shelves", ratio: "4 / 3" },
-  { src: "/media/home/mosaic/23378.jpg", alt: "Worker in overalls walking down a factory corridor", ratio: "4 / 5" },
-  { src: "/media/home/tile-quality.jpg", alt: "Workers inspecting garments across an inspection table", ratio: "4 / 3" },
-  { src: "/media/home/mosaic/35959.jpg", alt: "Team members joining hands in a circle", ratio: "1 / 1" },
-  { src: "/media/home/tile-finishing.jpg", alt: "Pressed shirts hanging in a row before packing", ratio: "3 / 4" },
-  { src: "/media/home/mosaic/14776.jpg", alt: "Scissors cutting through blue fabric", ratio: "4 / 3" },
-  { src: "/media/home/tile-pattern.jpg", alt: "Paper pattern pieces laid out on a cutting table", ratio: "4 / 5" },
-  { src: "/media/home/mosaic/12525.jpg", alt: "Hands guiding a shirt under a sewing machine needle", ratio: "3 / 4" },
-  { src: "/media/home/mosaic/45750.jpg", alt: "Sampling studio seen from the cutting table", ratio: "3 / 2" },
-  { src: "/media/home/hero-campaign.jpg", alt: "Campaign image shot for an international brand", ratio: "16 / 9" },
+  /* 2026-11-04 换成客户「首页展示图」文件夹的 11 张。
+     源图 7 张 4:3 横（EXIF orientation=6，靠 `.rotate()` 转正成竖版）、
+     4 张原生 4:3 横。压缩脚本 .workbuddy/artifacts/showcase-import/process.js。
+     **ratio 是图片的真实比例**，三列流式靠它做高低错落，改图必须同步改这里。
+
+     排列按**横竖交错**而不是按拍摄主题分组：全竖的排前面会让第三列只有三张、
+     列高差一整张图，图墙底部空出一块。交错之后三列高度接近（列1/2 各 2竖2横、
+     列3 三竖），底部基本齐平。 */
+  { src: "/media/home/showcase/01.jpg", alt: "SYS Group showroom with fabric swatches and a presentation screen", ratio: "3 / 4" },
+  { src: "/media/home/showcase/08.jpg", alt: "Sample room with development boards and garment rails", ratio: "4 / 3" },
+  { src: "/media/home/showcase/02.jpg", alt: "Menswear rail and a full-length mirror in a boutique", ratio: "3 / 4" },
+  { src: "/media/home/showcase/09.jpg", alt: "YOLO machinery display with a wall of colour swatches", ratio: "4 / 3" },
+  { src: "/media/home/showcase/03.jpg", alt: "Model wearing a pink striped polo in a stockroom", ratio: "3 / 4" },
+  { src: "/media/home/showcase/10.jpg", alt: "Close-up of a sewing machine stitching quilted fabric", ratio: "4 / 3" },
+  { src: "/media/home/showcase/04.jpg", alt: "Model in a cream dress in front of an arched mirror", ratio: "3 / 4" },
+  { src: "/media/home/showcase/11.jpg", alt: "Operator sewing a down jacket beside a rail of finished pieces", ratio: "4 / 3" },
+  { src: "/media/home/showcase/05.jpg", alt: "Camel trench coat on a wooden hanger", ratio: "3 / 4" },
+  { src: "/media/home/showcase/06.jpg", alt: "Down jackets in red, blue, black and cream on a rail", ratio: "3 / 4" },
+  { src: "/media/home/showcase/07.jpg", alt: "MAX&Co. label inside a camel coat collar", ratio: "3 / 4" },
 ];
 
 /**
@@ -550,49 +386,74 @@ export interface PartnerBrand {
 }
 
 /**
- * 合作品牌清单。
+ * 合作品牌清单（2026-11-05 第二次全量替换）。
  *
- * 素材来源：
- * - 矢量（nike / zara / underarmour / jordan）：Simple Icons，CC0，单色
- * - converse / lacoste / abercrombie：Wikimedia Commons / Wikipedia 的官方 SVG
- * - 其余 13 个：从客户 PPT 截图裁切、去红框、透明底处理
+ * 【素材】客户把桌面「品牌」文件夹重组成 1/2/3/4 四个子目录，共 28 个标识
+ * （上一版 15 个已全部下掉，Mango 不在新素材里）。顺序按客户要求 =
+ * **子目录名顺序 1 → 2 → 3 → 4**，目录内按 Windows 资源管理器的文件名序。
+ *
+ * 【加工】见 .workbuddy/artifacts/brand-import2/process.js。只动背景与四周空白，
+ * 图形、比例、配色一律未改。抠底按"边缘中位色"自适应（不再是写死抠白），
+ * 因为这一批里有黑底反白（Pennyblack）和黄底（Stanley）两种非白底。
+ *
+ * ⚠ 两处例外必须知道：
+ *   - **Pennyblack** 客户给的是反白版（黑底白字）。22 个白底标识里放一块纯黑方砖
+ *     无法和解，所以把明暗翻正（白字→近黑字），字形未动。
+ *   - **Stanley** 客户给的是黄底黑字版，抠掉黄底只留黑字。
+ * 两张都能一条命令改回原色。
+ *
+ * 【底色为什么必须是浅色】28 个里绝大多数是黑墨（Nike / Jordan / Converse /
+ * Under Armour / Wrangler / Puma 系那一挂），黑标放黑底等于消失。
  *
  * ⚠ 品牌标识是商标，展示需在合作合同里有授权约定。
  */
 export const PARTNER_BRANDS: readonly PartnerBrand[] = [
-  { name: "Nike", logo: "/media/brands/nike.svg" },
-  { name: "Zara", logo: "/media/brands/zara.svg" },
-  { name: "Costco", logo: "/media/brands/costco.png" },
-  { name: "Levi's", logo: "/media/brands/levis.png" },
-  { name: "Under Armour", logo: "/media/brands/underarmour.svg" },
-  { name: "Mango", logo: "/media/brands/mango.png" },
-  { name: "Lacoste", logo: "/media/brands/lacoste.svg" },
-  { name: "Abercrombie & Fitch", logo: "/media/brands/abercrombie.svg" },
-  { name: "Jordan", logo: "/media/brands/jordan.svg" },
-  { name: "Converse", logo: "/media/brands/converse.svg" },
-  { name: "Max&Co.", logo: "/media/brands/maxco.png" },
-  { name: "Weekend MaxMara", logo: "/media/brands/weekend-maxmara.png" },
-  { name: "Marella", logo: "/media/brands/marella.png" },
-  { name: "Pennyblack", logo: "/media/brands/pennyblack.png" },
-  { name: "iBlues", logo: "/media/brands/iblues.png" },
-  { name: "Gaudì", logo: "/media/brands/gaudi.png" },
-  { name: "Ellesse", logo: "/media/brands/ellesse.png" },
-  { name: "U.S. Polo Assn.", logo: "/media/brands/us-polo.png" },
-  { name: "Springfield", logo: "/media/brands/springfield.png" },
-  { name: "Stanley", logo: "/media/brands/stanley.png" },
+  /* 顺序 = 目录 1（Max Mara 系 + 意大利成衣） → 2（美国/运动/牛仔） →
+     3（大卖场） → 4（快时尚）。**不要按视觉节奏重排**，客户明确要求按目录名走。 */
+  { name: "Max&Co.", logo: "/media/brands/partners/maxco.png" },
+  { name: "Weekend MaxMara", logo: "/media/brands/partners/weekend-maxmara.png" },
+  { name: "U.S. Polo Assn.", logo: "/media/brands/partners/us-polo.png" },
+  { name: "EMME", logo: "/media/brands/partners/emme.png" },
+  { name: "Gaudì", logo: "/media/brands/partners/gaudi.png" },
+  { name: "iBlues", logo: "/media/brands/partners/iblues.png" },
+  { name: "Intrend", logo: "/media/brands/partners/intrend.png" },
+  { name: "Marella", logo: "/media/brands/partners/marella.png" },
+  { name: "Pennyblack", logo: "/media/brands/partners/pennyblack.png" },
+  { name: "Armata di Mare", logo: "/media/brands/partners/armata-di-mare.png" },
+  { name: "Conte of Florence", logo: "/media/brands/partners/conte-of-florence.png" },
+  { name: "Refrigue", logo: "/media/brands/partners/refrigue.png" },
+  { name: "Levi's", logo: "/media/brands/partners/levis.png" },
+  { name: "Nike", logo: "/media/brands/partners/nike.png" },
+  { name: "Lacoste", logo: "/media/brands/partners/lacoste.png" },
+  { name: "Jordan", logo: "/media/brands/partners/jordan.png" },
+  { name: "Abercrombie & Fitch", logo: "/media/brands/partners/abercrombie.png" },
+  { name: "Bench.", logo: "/media/brands/partners/bench.png" },
+  { name: "Buffalo", logo: "/media/brands/partners/buffalo.png" },
+  { name: "Converse", logo: "/media/brands/partners/converse.png" },
+  { name: "Under Armour", logo: "/media/brands/partners/underarmour.png" },
+  { name: "Hurley", logo: "/media/brands/partners/hurley.png" },
+  { name: "Stanley", logo: "/media/brands/partners/stanley.png" },
+  { name: "Wrangler", logo: "/media/brands/partners/wrangler.png" },
+  { name: "Walmart", logo: "/media/brands/partners/walmart.png" },
+  { name: "Costco", logo: "/media/brands/partners/costco.png" },
+  { name: "Scotch & Soda", logo: "/media/brands/partners/scotch-soda.png" },
+  { name: "Zara", logo: "/media/brands/partners/zara.png" },
 ];
 
 export const PARTNERS_INTRO = {
   eyebrow: "Clients & partners",
   title: "Brands we sew for.",
   /**
-   * 合作品牌区块的两段说明（2026-10-22 参考 Primesource 的 Global Brands 改版）。
-   * 左侧文案栏 + 右侧标识墙的版式需要两段正文，比原来一句 note 更像"能力介绍"。
+   * 合作品牌区块的两段说明。
    * 内容只写已经在前台别处出现过的口径，不新增承诺。
    */
   /* 不写死数量：标识增减时文案会立刻变错。牌子数量在上方信任带的
-     "Brands served" 里已经有统计，这里不必重复。 */
-  lead: "Italian, French and American labels — Weekend Max Mara, Max&Co., GAUDI, U.S. Polo Assn., Lacoste, Nike — from high-street volume programmes to technically difficult small runs.",
+     "Brands served" 里已经有统计，这里不必重复。
+     **换标识时必须回头核这段点名的牌子还在不在。**
+     2026-11-04 那次去掉过 GAUDI；2026-11-05 客户的新素材里 Gaudì 又回来了。
+     现存 28 个里，这里点到的六个（Weekend MaxMara / Max&Co. / U.S. Polo Assn.
+     / Lacoste / Levi's / Nike）都在，所以这句仍然成立。 */
+  lead: "Italian, French and American labels — Weekend MaxMara, Max&Co., U.S. Polo Assn., Lacoste, Levi's, Nike — from high-street volume programmes to technically difficult small runs.",
   body: "Four design centres in Hangzhou, Spain, Paris and New York keep the range close to the market; 16+ own factories keep lead time in our hands.",
   cta: { label: "Inside our factories", href: "/factory" },
 } as const;
@@ -635,41 +496,250 @@ export const PRODUCT_CAPABILITIES = [
   },
 ] as const;
 
-/**
- * 产品页：图片跑马灯两行。
- * 图源直接取自产品数据（cover_image + images 去重），不维护独立的静态图集。
- */
-export function buildProductMarquee(products: Product[]): MarqueeRow[] {
-  const tiles: MarqueeTile[] = [];
+/* =============================================================
+   首页氛围图（滚动图组专用）
+   ============================================================= */
 
-  for (const product of products) {
-    // cover_image 常常等于 images[0]，去重后按原顺序保留
-    const sources = [product.cover_image, ...product.images].filter(
-      (src, index, all): src is string =>
-        Boolean(src) && all.indexOf(src) === index
-    );
+/** 只取三列，别把 89 条完整产品记录打进首页 */
+export interface MoodProduct {
+  slug: string;
+  title: string;
+  mood_image: string;
+}
 
-    for (const src of sources) {
-      tiles.push({
-        src,
-        href: `/products/${product.slug}`,
-        alt: product.title,
-      });
-    }
+/** 取所有「发布了 + 有氛围图」的商品，供首页滚动图组使用 */
+export async function getMoodProducts(): Promise<MoodProduct[]> {
+  if (!(await supabaseReady())) {
+    logDataFailure("getMoodProducts", "缺少 Supabase 环境变量");
+    return [];
   }
 
-  if (tiles.length === 0) return [];
+  try {
+    const { createClient } = await import("./supabase/server");
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select("slug, title, mood_image")
+      .eq("published", true)
+      .not("mood_image", "is", null)
+      .neq("mood_image", "")
+      .order("sort_order", { ascending: true });
 
-  /* 分两行、时长不同以免节奏整齐划一；行数由 durations.length 决定，图按奇偶交替分配 */
-  const durations = [40, 54];
-  return durations
-    .map((duration, rowIndex) => ({
-      duration,
-      images: tiles.filter((_, i) => i % durations.length === rowIndex),
-    }))
-    /* 图片极少时可能分不出两行，空行直接丢掉 */
-    .filter((row) => row.images.length > 0);
+    if (error) throw error;
+    return (data ?? []).filter(
+      (row): row is MoodProduct =>
+        typeof row.mood_image === "string" && row.mood_image.length > 0
+    );
+  } catch (error) {
+    logDataFailure("getMoodProducts", error);
+    return [];
+  }
 }
+
+/**
+ * 每个商品出**一张**氛围图格子，整格链到详情页。
+ *
+ * 【为什么有数量门槛】
+ * ImageMarquee 的 fillLoop 会把不足 6 张的一行重复铺满视口。
+ * 只有 1~2 个商品配了氛围图时，整条图墙会变成同一张图刷屏，比静态图组还差。
+ * 所以：≥12 张出两行（每行各 6+ 张，零重复），6~11 张只出一行，
+ * <6 张返回空数组由调用方回退到 HOME_MARQUEE 静态素材。
+ * 行数随后台上传量自动增长，不用改代码。
+ */
+export const MOOD_TILES_PER_ROW = 6;
+
+export function buildMoodMarquee(products: MoodProduct[]): MarqueeRow[] {
+  if (products.length < MOOD_TILES_PER_ROW) return [];
+
+  const tiles: MarqueeTile[] = products.map((p) => ({
+    src: p.mood_image,
+    href: `/products/${p.slug}`,
+    alt: p.title,
+  }));
+
+  const rowCount = products.length >= MOOD_TILES_PER_ROW * 2 ? 2 : 1;
+  const durations = [72, 88];
+
+  return durations.slice(0, rowCount).map((duration, rowIndex) => ({
+    duration,
+    /* 奇偶交错：同系列/同款的氛围图不要挤在同一行相邻位置 */
+    images: tiles.filter((_, i) => i % rowCount === rowIndex),
+  }));
+}
+
+
+/**
+ * 面料 / 工艺特写（2026-11-06 客户追加的 8 张）。
+ *
+ * 这批图**不是商品图**，是面料研发的实拍（皮革、格纹羊毛、涂层防泼水、针织）。
+ * 因此不接商品详情，整格链到 R&D 页的「Fabric development」锚点（`/rnd#fabric`）。
+ *
+ * 【为什么单独一个常量、不塞进 HOME_MARQUEE】
+ * 首页图带有两个数据源：有氛围图的商品（优先）或 HOME_MARQUEE（兜底）。
+ * 只往 HOME_MARQUEE 里塞的话，客户一上传够 6 张氛围图，这 8 张就整批消失了。
+ * 所以拆出来，由 `withFabricTiles()` 在选完数据源之后统一插进去 —— 两种模式下都在。
+ *
+ * 素材规格对齐 01–34.jpg：短边 760 / jpeg q82 / 白底拍平，合计 791KB。
+ * 压缩脚本 `.workbuddy/artifacts/fabric-tiles/compress.mjs`。
+ */
+export const FABRIC_TILES: readonly MarqueeTile[] = [
+  {
+    src: "/media/home/marquee/fabric-01.jpg",
+    href: "/rnd#fabric",
+    alt: "Cracked and glazed leather surface, raking light",
+  },
+  {
+    src: "/media/home/marquee/fabric-02.jpg",
+    href: "/rnd#fabric",
+    alt: "Caramel suede and vintage crackle leather swatches",
+  },
+  {
+    src: "/media/home/marquee/fabric-03.jpg",
+    href: "/rnd#fabric",
+    alt: "Navy and brown check wool swatches",
+  },
+  {
+    src: "/media/home/marquee/fabric-04.jpg",
+    href: "/rnd#fabric",
+    alt: "Leather colour card set in eight finishes",
+  },
+  {
+    src: "/media/home/marquee/fabric-05.jpg",
+    href: "/rnd#fabric",
+    alt: "Wool check swatch strips fanned out by colourway",
+  },
+  {
+    src: "/media/home/marquee/fabric-06.jpg",
+    href: "/rnd#fabric",
+    alt: "Water beading on a finished water-repellent shell",
+  },
+  {
+    src: "/media/home/marquee/fabric-07.jpg",
+    href: "/rnd#fabric",
+    alt: "White cotton poplin with a mesh yoke under natural light",
+  },
+  {
+    src: "/media/home/marquee/fabric-08.jpg",
+    href: "/rnd#fabric",
+    alt: "Pink rib knit jersey, folded",
+  },
+];
+
+/**
+ * 把面料特写均匀插进已有图带。
+ *
+ * 不追加到末尾：客户要的是「跟产品图混杂」。做法是按最终长度算出每张图的目标位，
+ * 落位后剩下的槽位再按原顺序填空 —— 两层循环都只跑一遍，也不需要随机数
+ * （随机会让 SSR 与客户端算出不同的顺序，直接 hydration 报错）。
+ *
+ * 多行时按 `index % rows.length` 分到各行，两行各自都散得开。
+ */
+export function withFabricTiles(
+  rows: readonly MarqueeRow[]
+): MarqueeRow[] {
+  if (rows.length === 0) return [];
+
+  return rows.map((row, rowIndex) => {
+    const extra = FABRIC_TILES.filter((_, i) => i % rows.length === rowIndex);
+    if (extra.length === 0) return row;
+
+    const base = row.images.map((item) =>
+      typeof item === "string" ? { src: item } : item
+    );
+    const total = base.length + extra.length;
+
+    /* 目标落位：extra[k] 落在 (k+0.5)/extra.length 处，两端各留半格 */
+    const slots = new Map<number, MarqueeTile>();
+    extra.forEach((tile, k) => {
+      let pos = Math.round(((k + 0.5) * total) / extra.length) - 1;
+      /* 四舍五入撞位时顺延到下一个空槽，不能覆盖已有的图 */
+      while (slots.has(pos)) pos = (pos + 1) % total;
+      slots.set(Math.max(0, Math.min(total - 1, pos)), tile);
+    });
+
+    const merged: MarqueeTile[] = [];
+    let cursor = 0;
+    for (let slot = 0; slot < total; slot += 1) {
+      const pinned = slots.get(slot);
+      if (pinned) merged.push(pinned);
+      else if (cursor < base.length) merged.push(base[cursor++]);
+    }
+    /* 极端情况下（槽位被挤到末尾）兜底补齐，宁可多一张也别丢图 */
+    while (cursor < base.length) merged.push(base[cursor++]);
+
+    /* 轨道变长后若沿用原时长，视觉速度会明显变快（位移相同、时间不变）。
+       按格子数等比拉长，保证 px/s 不变 —— 加图不该让图带"跑起来"。 */
+    const duration = row.duration
+      ? Math.round((row.duration * merged.length) / base.length)
+      : undefined;
+
+    return { ...row, duration, images: merged };
+  });
+}
+
+/**
+ * 首页滚动图（2026-11-04 客户提供的静态素材）。
+ *
+ * 【现在是**兜底**，不是默认图源】
+ * 2026-11-06 起首页优先取「有氛围图的商品」（见上方 buildMoodMarquee），
+ * 每格链到商品详情；只有氛围图数量不足 / 读库失败时，才退回这套静态图，
+ * 保证首页永远不是一条空白图带。
+ *
+ * 【素材】源图在桌面「首页滚动图」文件夹，34 张 1–4MB，
+ * 用 sharp 压到短边 760px / q82，合计 3.6MB（脚本 .workbuddy/artifacts/marquee-import/process.js）。
+ * 命名按源文件名排序编号 01–34，不带原始 UUID/WPS 前缀。
+ *
+ * 【为什么两行交错分配】
+ * 源文件里有同款多角度（安德玛 1/2/3、耐克 1/2、乔丹 1）。按原顺序切两半会让
+ * 同款挤在一起；改成奇偶交错，两组各自都散得开。
+ */
+export const HOME_MARQUEE: readonly MarqueeRow[] = [
+  {
+    /* 两行给不同时长，避免滚动节奏整齐划一 */
+    duration: 72,
+    images: [
+      "/media/home/marquee/01.jpg",
+      "/media/home/marquee/03.jpg",
+      "/media/home/marquee/05.jpg",
+      "/media/home/marquee/07.jpg",
+      "/media/home/marquee/09.jpg",
+      "/media/home/marquee/11.jpg",
+      "/media/home/marquee/13.jpg",
+      "/media/home/marquee/15.jpg",
+      "/media/home/marquee/17.jpg",
+      "/media/home/marquee/19.jpg",
+      "/media/home/marquee/21.jpg",
+      "/media/home/marquee/23.jpg",
+      "/media/home/marquee/25.jpg",
+      "/media/home/marquee/27.jpg",
+      "/media/home/marquee/29.jpg",
+      "/media/home/marquee/31.jpg",
+      "/media/home/marquee/33.jpg",
+    ],
+  },
+  {
+    duration: 88,
+    images: [
+      "/media/home/marquee/02.jpg",
+      "/media/home/marquee/04.jpg",
+      "/media/home/marquee/06.jpg",
+      "/media/home/marquee/08.jpg",
+      "/media/home/marquee/10.jpg",
+      "/media/home/marquee/12.jpg",
+      "/media/home/marquee/14.jpg",
+      "/media/home/marquee/16.jpg",
+      "/media/home/marquee/18.jpg",
+      "/media/home/marquee/20.jpg",
+      "/media/home/marquee/22.jpg",
+      "/media/home/marquee/24.jpg",
+      "/media/home/marquee/26.jpg",
+      "/media/home/marquee/28.jpg",
+      "/media/home/marquee/30.jpg",
+      "/media/home/marquee/32.jpg",
+      "/media/home/marquee/34.jpg",
+    ],
+  },
+];
 
 /**
  * 产能数据（产品页顶部数据条仍在使用）。
@@ -697,6 +767,7 @@ export interface OfficeNode {
   roles: readonly OfficeRole[];
   lon: number;
   lat: number;
+  /** 标签相对**钉尖**的像素偏移（不是地图单位，见 GLOBAL_OFFICES 顶部注释） */
   labelDx?: number;
   labelDy?: number;
   labelAnchor?: "start" | "middle" | "end";
@@ -708,34 +779,44 @@ export interface OfficeNode {
 
 /** 全球站点（口径来自 2026-02 公司介绍册） */
 export const GLOBAL_OFFICES: readonly OfficeNode[] = [
-  /* 标签偏移是量出来的：准星臂长约 13 单位，标签必须让开准星本体，
-     同时避开相邻站点。改准星尺寸要重新核对这组值（会撞字）。 */
+  /* 【labelDx / labelDy 是像素，不是地图单位】（2026-11-05 改）
+     图钉 20×28px、标签 11px 都是固定像素，而地图随容器缩放；
+     三者若用同一单位就必然对不上。改成 px 之后"文字离钉多远"是常数。
+     钉尖落在坐标上、钉身向上长 28px，所以 labelDy 取正数就落到钉下方、
+     负数要小于 -28 才在钉头上方。
+     改图钉尺寸必须重核这组值（会撞字）。 */
   { id: "hangzhou", label: "Hangzhou", name: "Hangzhou", roles: ["hq", "design"],
-    lon: 120.2, lat: 30.3, labelDx: 13, labelDy: 15, labelAnchor: "start",
+    lon: 120.2, lat: 30.3, labelDx: 13, labelDy: -4, labelAnchor: "start",
     region: "East Asia" },
   { id: "spain", label: "Spain", name: "Spain", roles: ["design"],
-    lon: -3.7, lat: 40.4, labelDx: -11, labelDy: 13, labelAnchor: "end",
+    lon: -3.7, lat: 40.4, labelDx: -13, labelDy: 10, labelAnchor: "end",
     region: "Western Europe" },
   { id: "paris", label: "Paris", name: "Paris", roles: ["design", "sales"],
-    lon: 2.35, lat: 48.86, labelDx: -9, labelDy: -11, labelAnchor: "end",
+    lon: 2.35, lat: 48.86, labelDx: -8, labelDy: -34, labelAnchor: "end",
     region: "Western Europe" },
   { id: "new-york", label: "New York", name: "New York", roles: ["design", "sales"],
-    lon: -74.0, lat: 40.7, labelDx: -11, labelDy: 13, labelAnchor: "end",
+    lon: -74.0, lat: 40.7, labelDx: -13, labelDy: 10, labelAnchor: "end",
     region: "North America" },
   { id: "china-production", label: "China · 4 provinces", name: "China", roles: ["production"],
-    lon: 117, lat: 33, clusterRadius: 30, labelDx: 0, labelDy: -42, labelAnchor: "middle",
+    lon: 117, lat: 33, clusterRadius: 30, labelDx: 0, labelDy: -50, labelAnchor: "middle",
     note: "Zhejiang · Jiangsu · Anhui · Jiangxi", region: "East Asia" },
   { id: "cambodia", label: "Cambodia", name: "Cambodia", roles: ["production"],
-    lon: 104.9, lat: 12.6, labelDx: 11, labelDy: 15, labelAnchor: "start",
+    lon: 104.9, lat: 12.6, labelDx: 11, labelDy: 12, labelAnchor: "start",
     region: "Southeast Asia" },
+  /* Laos 的标签放**正上方居中**（0, -56, middle）。
+     【为什么不放下方】老挝与柬埔寨只差 7.3 个纬度、2.4 个经度 —— 两枚钉在
+     1312px 的地图上垂直只隔 27px、水平 8px，标签一搁到钉下方就落到缅甸那枚钉
+     的脚下，读者会认成"缅甸"。
+     【为什么不用 -34、-46】中国四省的虚线圈（半径 30 单位）左缘正好扫过老挝
+     钉顶正上方；-46 时标签右端离圈左缘只剩 2px。抬到 -56 才有余量。 */
   { id: "laos", label: "Laos", name: "Laos", roles: ["production"],
-    lon: 102.5, lat: 19.9, labelDx: 11, labelDy: -9, labelAnchor: "start",
+    lon: 102.5, lat: 19.9, labelDx: 0, labelDy: -56, labelAnchor: "middle",
     region: "Southeast Asia" },
   { id: "myanmar", label: "Myanmar", name: "Myanmar", roles: ["production"],
-    lon: 96, lat: 19.8, labelDx: -11, labelDy: -9, labelAnchor: "end",
+    lon: 96, lat: 19.8, labelDx: -11, labelDy: -2, labelAnchor: "end",
     region: "Southeast Asia" },
   { id: "egypt", label: "Egypt", name: "Egypt", roles: ["production"],
-    lon: 30.8, lat: 26.8, labelDx: 11, labelDy: 13, labelAnchor: "start",
+    lon: 30.8, lat: 26.8, labelDx: 12, labelDy: 8, labelAnchor: "start",
     region: "North Africa" },
 ];
 

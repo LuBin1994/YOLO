@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SplitHero from "@/components/site/heroes/SplitHero";
 import CountUp from "@/components/site/CountUp";
+import ChinaNetwork, { type ProvinceNode } from "@/components/site/ChinaNetwork";
 import Reveal from "@/components/site/Reveal";
 import JsonLd from "@/components/site/JsonLd";
 import { breadcrumb } from "@/lib/seo";
@@ -124,9 +125,12 @@ const AUDIT_TRACKS: readonly {
     label: "Brand audit",
     caption: "Buyer codes of conduct",
     items: [
-      { name: "Nike", logo: "/media/brands/nike.svg" },
-      { name: "Under Armour", logo: "/media/brands/underarmour.svg" },
-      { name: "Levi's", logo: "/media/brands/levis.png" },
+      /* 品牌标统一走 /media/brands/partners/（2026-11-04 换的新一批，
+         白底已抠成透明）。旧的 /media/brands/*.svg 已随该次替换删除，
+         这里若指回旧路径会 404。 */
+      { name: "Nike", logo: "/media/brands/partners/nike.png" },
+      { name: "Under Armour", logo: "/media/brands/partners/underarmour.png" },
+      { name: "Levi's", logo: "/media/brands/partners/levis.png" },
       { name: "Kontoor", logo: "/media/audits/kontoor.png" },
       { name: "G-III", logo: "/media/audits/giii.png" },
     ],
@@ -208,6 +212,62 @@ const COMPLIANCE_LOGOS = [
   { src: "/media/certifications/grs.png", alt: "Global Recycled Standard" },
 ] as const;
 
+/**
+ * 中国合作省份（客户 2026-11-06 指定：山东、安徽、河北、浙江、江苏）。
+ *
+ * `adcode` 是省份在地图数据里的编码，ChinaNetwork 用它找到对应省份路径；
+ * 写错就不会高亮（不报错），改之前先看 src/lib/china-map.ts 里的清单。
+ *
+ * role 写的是该省在供应链里承担什么（与产品线对应：羽绒 / 毛衫 / 衬衫 /
+ * 成衣 / PU 涂层），属于定性描述，**不写产能、不写工厂数** ——
+ * 资料里没有这些数字，编了会在验厂时对不上。
+ */
+const CHINA_NODES: readonly ProvinceNode[] = [
+  {
+    adcode: 130000,
+    index: "01",
+    en: "Hebei",
+    zh: "河北",
+    city: "Shijiazhuang",
+    role: "Down & feather processing",
+  },
+  {
+    adcode: 370000,
+    index: "02",
+    en: "Shandong",
+    zh: "山东",
+    city: "Qingdao",
+    role: "Knitwear & sweaters",
+  },
+  {
+    adcode: 320000,
+    index: "03",
+    en: "Jiangsu",
+    zh: "江苏",
+    city: "Nantong",
+    role: "Shirting & fine wovens",
+  },
+  {
+    adcode: 340000,
+    index: "04",
+    en: "Anhui",
+    zh: "安徽",
+    city: "Hefei",
+    role: "Cut-and-sew capacity",
+  },
+  {
+    adcode: 330000,
+    index: "05",
+    en: "Zhejiang",
+    zh: "浙江",
+    city: "Shaoxing",
+    role: "Coated & PU fabric",
+  },
+];
+
+const CHINA_CAPTION =
+  "Base map: Aliyun DataV.GeoAtlas provincial boundaries, including Taiwan, Hong Kong, Macao and the South China Sea islands. Rendered as static SVG — no map SDK, no tile requests, nothing loaded from a third-party map service.";
+
 export default function FactoryPage() {
   return (
     <>
@@ -234,7 +294,7 @@ export default function FactoryPage() {
               <h2 className="display-md mt-5 max-w-xl">
                 We make where we can walk the floor every morning.
               </h2>
-              <div className="mt-7 space-y-5 text-base leading-[1.85] text-ink-600">
+              <div className="mt-7 space-y-5 text-[15px] leading-[1.85] text-ink-600">
                 <p>
                   Both factories sit in Cambodia: one in Kampot province, one in
                   Kampong Speu. Together they give us 25,044 m² of floor, 21
@@ -493,7 +553,7 @@ export default function FactoryPage() {
                   Eight stages, and a check between each pair.
                 </h2>
               </div>
-              <p className="text-[11px] uppercase tracking-[0.18em] text-white/40">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/55">
                 Drag / scroll →
               </p>
             </div>
@@ -509,7 +569,7 @@ export default function FactoryPage() {
             >
               <article className="group h-full border-t border-white/20 pt-5 transition-colors duration-300 hover:border-accent-400">
                 <div className="flex items-baseline justify-between">
-                  <span className="text-[12px] tabular-nums tracking-[0.2em] text-white/35">
+                  <span className="text-[12px] tabular-nums tracking-[0.2em] text-white/55">
                     {p.step}
                   </span>
                   <span
@@ -536,7 +596,7 @@ export default function FactoryPage() {
             <div>
               <p className="eyebrow">Equipment</p>
               <h2 className="display-md mt-5">What is on the floor.</h2>
-              <p className="mt-6 max-w-md text-base leading-relaxed text-ink-600">
+              <p className="mt-6 max-w-md text-[15px] leading-relaxed text-ink-600">
                 The machine list is reviewed every season. Template stations
                 matter more than raw machine count in padded outerwear — they
                 are what keeps a pocket in the same place on piece 1 and piece
@@ -565,7 +625,7 @@ export default function FactoryPage() {
             <div>
               <p className="eyebrow">Compliance</p>
               <h2 className="display-md mt-5">Audited, and we ask for it.</h2>
-              <p className="mt-6 max-w-md text-base leading-relaxed text-ink-600">
+              <p className="mt-6 max-w-md text-[15px] leading-relaxed text-ink-600">
                 Both plants are audited on social compliance and chemical
                 management. We keep a digital archive of every inspection and a
                 tiered correction process, so a finding is closed before the next
@@ -632,17 +692,43 @@ export default function FactoryPage() {
                 <CountUp value={1400} suffix="+" /> people, most of them from
                 the next village.
               </h2>
-              <p className="mt-6 max-w-md text-base leading-[1.85] text-ink-600">
+              <p className="mt-6 max-w-md text-[15px] leading-[1.85] text-ink-600">
                 Both plants draw their workforce from the districts around them.
                 Festival days and team events sit on the factory calendar
                 alongside production, which is why a supervisor usually knows
                 who is new, who is training and who is ready for a harder style.
               </p>
-              <p className="mt-4 max-w-md text-base leading-[1.85] text-ink-600">
+              <p className="mt-4 max-w-md text-[15px] leading-[1.85] text-ink-600">
                 Low turnover is the practical reason we can hold a line to the
                 same standard across a season.
               </p>
             </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* 中国合作省份（2026-11-06）
+          客户要"中国地图"，但站点部署在海外、且不接任何地图 SDK；
+          自绘国界又属于无审图号地图，不合规。这里做的是示意图：
+          五个点按真实经纬度投影，连线只走真实相邻的省界，图上明写"非测绘成果"。
+          详见 ChinaNetwork.tsx 顶部注释与 README。 */}
+      <section className="w-full bg-paper">
+        <div className="container-site py-16 lg:py-20">
+          <Reveal>
+            <p className="eyebrow">China network</p>
+            <h2 className="display-md mt-5 max-w-2xl">
+              Five provinces behind the Cambodian floor.
+            </h2>
+            <p className="mt-6 max-w-xl text-[15px] leading-[1.85] text-ink-600">
+              The two plants we own sit in Cambodia. The inputs that decide how a
+              garment feels — down, shirting, coated fabric, trims — come from
+              long-standing partners in five provinces along China&apos;s east
+              coast, a three-hour flight from Phnom Penh.
+            </p>
+          </Reveal>
+
+          <Reveal delay={60} className="mt-12">
+            <ChinaNetwork nodes={CHINA_NODES} caption={CHINA_CAPTION} />
           </Reveal>
         </div>
       </section>

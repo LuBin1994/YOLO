@@ -135,7 +135,7 @@ export default function RndPage() {
               <h2 className="display-md mt-5 max-w-xl">
                 Design, in four time zones.
               </h2>
-              <div className="mt-7 space-y-5 text-base leading-[1.85] text-ink-600">
+              <div className="mt-7 space-y-5 text-[15px] leading-[1.85] text-ink-600">
                 <p>
                   Hangzhou runs the projects, and it runs them with fabric as the
                   core: the studio sits next to the mill, so a hand-feel decision
@@ -262,7 +262,7 @@ export default function RndPage() {
                     <dd className="text-2xl font-medium tracking-tight text-white md:text-3xl">
                       <CountUp value={5000} />
                     </dd>
-                    <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/40">
+                    <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/55">
                       Samples a year
                     </dt>
                   </div>
@@ -270,7 +270,7 @@ export default function RndPage() {
                     <dd className="text-2xl font-medium tracking-tight text-white md:text-3xl">
                       <CountUp value={80} suffix="%" />
                     </dd>
-                    <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/40">
+                    <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/55">
                       First-fit rate
                     </dt>
                   </div>
@@ -296,7 +296,7 @@ export default function RndPage() {
             {TOOLING.map((t, i) => (
               <Reveal key={t.title} delay={i * 60}>
                 <div className="border-t border-white/15 pt-6">
-                  <p className="text-[12px] uppercase tracking-[0.16em] text-white/40">
+                  <p className="text-[12px] uppercase tracking-[0.16em] text-white/55">
                     {t.gain}
                   </p>
                   <h3 className="mt-2 text-base font-medium tracking-tight text-white md:text-lg">
@@ -312,8 +312,13 @@ export default function RndPage() {
         </div>
       </section>
 
-      {/* 03 Fabric development */}
-      <section className="container-site section-pad" id="fabric">
+      {/* 03 Fabric development
+          scroll-mt 避开 fixed 导航（h-16 / md:h-20）：
+          首页滚动图里的面料特写整格链到这里，跳过来时标题不能被导航压住。 */}
+      <section
+        className="container-site section-pad scroll-mt-16 md:scroll-mt-20"
+        id="fabric"
+      >
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-start lg:gap-20">
           <Reveal>
             <div>
@@ -321,7 +326,7 @@ export default function RndPage() {
               <h2 className="display-md mt-5 max-w-xl">
                 Yarn first, then the fabric, then the garment.
               </h2>
-              <div className="mt-7 space-y-5 text-base leading-[1.85] text-ink-600">
+              <div className="mt-7 space-y-5 text-[15px] leading-[1.85] text-ink-600">
                 <p>
                   The Yarn &amp; Fabric Research Institute works upstream of
                   design. Cashmere — eco, functional and special — and an animal
@@ -441,7 +446,7 @@ export default function RndPage() {
                 <h2 className="display-md mt-5 max-w-lg">
                   Tested here before it is tested by the brand.
                 </h2>
-                <p className="mt-6 max-w-md text-base leading-[1.85] text-ink-600">
+                <p className="mt-6 max-w-md text-[15px] leading-[1.85] text-ink-600">
                   Our lab is run in partnership with SGS. Fabric and garment
                   tests happen in-house, so a quality argument is settled with a
                   number before the first bulk roll is cut.

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const NAV_LINKS = [
+  { href: "/", label: "Home" },
   { href: "/products", label: "Products" },
   { href: "/factory", label: "Factory" },
   { href: "/sustainability", label: "Sustainability" },
@@ -54,6 +55,16 @@ export default function Header() {
   const onImage = !solid;
   const barColor = onImage ? "bg-white" : "bg-ink-950";
 
+  /**
+   * 当前项判定。
+   *
+   * 不能直接用 `pathname.startsWith(href)`：Home 的 href 是 "/"，
+   * 而任何路径都以 "/" 开头 —— 那样 Home 会在**每一个页面**都高亮。
+   * 根路径必须精确匹配，其余仍用前缀匹配（/products 高亮 /products/[slug]）。
+   */
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
@@ -68,7 +79,7 @@ export default function Header() {
           className={`flex items-baseline gap-2 transition-colors duration-300 ${
             onImage ? "text-white" : "text-ink-950"
           }`}
-          aria-label="YOLO APPAREL PTE. LTD. — Home"
+          aria-label="YOLO APPAREL PTE. LTD. — back to homepage"
         >
           <span className="text-lg font-medium tracking-tight md:text-xl">
             YOLO APPAREL PTE. LTD.
@@ -76,9 +87,9 @@ export default function Header() {
         </Link>
 
         {/* 桌面导航 */}
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
+        <nav className="hidden items-center gap-6 lg:flex xl:gap-8" aria-label="Main">
           {NAV_LINKS.map((link) => {
-            const active = pathname.startsWith(link.href);
+            const active = isActive(link.href);
             return (
               <Link
                 key={link.href}
@@ -112,7 +123,7 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setMenuOpen((open) => !open)}
-          className="-mr-2 flex h-10 w-10 items-center justify-center md:hidden"
+          className="-mr-2 flex h-10 w-10 items-center justify-center lg:hidden"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
           aria-controls="mobile-nav"
@@ -141,15 +152,15 @@ export default function Header() {
       <nav
         id="mobile-nav"
         aria-label="Mobile"
-        className={`overflow-hidden bg-paper/95 backdrop-blur-md transition-[max-height,opacity,visibility] duration-300 ease-out md:hidden ${
+        className={`overflow-hidden bg-paper/95 backdrop-blur-md transition-[max-height,opacity,visibility] duration-300 ease-out lg:hidden ${
           menuOpen
-            ? "visible max-h-[24rem] opacity-100"
+            ? "visible max-h-[30rem] opacity-100"
             : "invisible max-h-0 opacity-0"
         }`}
       >
         <ul className="container-site flex flex-col">
           {NAV_LINKS.map((link) => {
-            const active = pathname.startsWith(link.href);
+            const active = isActive(link.href);
             return (
               <li key={link.href} className="border-b hairline last:border-b-0">
                 <Link

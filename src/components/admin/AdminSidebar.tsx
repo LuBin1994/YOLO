@@ -22,7 +22,7 @@ const NAV_GROUPS = [
     label: "运营",
     items: [
       { href: "/admin/products", label: "产品管理", icon: "◇" },
-      { href: "/admin/pages", label: "内容管理", icon: "□" },
+      { href: "/admin/categories", label: "分类管理", icon: "⊞" },
       { href: "/admin/inquiries", label: "询盘管理", icon: "✉" },
     ],
   },
@@ -57,7 +57,7 @@ export default function AdminSidebar({ admin }: AdminSidebarProps) {
           <p className="truncate text-[15px] font-medium text-white">
             YOLO APPAREL
           </p>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-white/40">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-white/55">
             管理后台
           </p>
         </div>
@@ -67,7 +67,7 @@ export default function AdminSidebar({ admin }: AdminSidebarProps) {
       <nav className="flex-1 overflow-y-auto px-2 py-6 md:px-3" aria-label="Admin">
         {NAV_GROUPS.map((group) => (
           <div key={group.label} className="mb-7 last:mb-0">
-            <p className="mb-2 hidden px-3 text-[11px] uppercase tracking-[0.24em] text-white/25 md:block">
+            <p className="mb-2 hidden px-3 text-[11px] uppercase tracking-[0.24em] text-white/55 md:block">
               {group.label}
             </p>
             <div className="space-y-1">
@@ -115,7 +115,7 @@ export default function AdminSidebar({ admin }: AdminSidebarProps) {
           <p className="truncate text-[15px] font-medium text-white">
             {admin.displayName}
           </p>
-          <p className="truncate text-[12px] text-white/40">{admin.email}</p>
+          <p className="truncate text-[12px] text-white/55">{admin.email}</p>
         </div>
         <button
           type="button"

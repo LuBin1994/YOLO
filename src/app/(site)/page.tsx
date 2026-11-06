@@ -21,9 +21,11 @@ import {
   HOME_REEL_INTRO,
   HOME_SHOWCASE,
   HOME_SHOWCASE_HEADLINE,
+  HOME_MARQUEE,
   HOME_WELCOME,
-  buildProductMarquee,
-  getProducts,
+  buildMoodMarquee,
+  getMoodProducts,
+  withFabricTiles,
 } from "@/lib/site-data";
 
 export const metadata: Metadata = {
@@ -60,32 +62,26 @@ export const metadata: Metadata = {
  * 作用，现在这口气交给公司介绍自己的 section-pad 和左栏的留白。
  */
 export default async function HomePage() {
-  const products = await getProducts();
-  // 精选区暂停，一并注释；恢复时放开
-  // const featured = products.filter((p) => p.featured).slice(0, 6);
-  /* 横向滚动带的图源就是产品图，与 /products 页同源，点击进对应详情页 */
-  const marqueeRows = buildProductMarquee(products);
+  /* 2026-11-06：滚动图组优先取「有氛围图的商品」，每格链到详情页。
+     首页因此会读一次 Supabase（三列的轻量查询），不再完全静态。
+     buildMoodMarquee 在氛围图数量不足 / 读库失败时返回空数组，
+     这里回退到客户提供的 HOME_MARQUEE 静态素材，图带永远不会空。 */
+  const moodProducts = await getMoodProducts();
+  const moodRows = buildMoodMarquee(moodProducts);
+  /* 面料特写在两种数据源下都要在，所以插在选定之后，不写进 HOME_MARQUEE。 */
+  const marqueeRows = withFabricTiles(
+    moodRows.length > 0 ? moodRows : HOME_MARQUEE
+  );
 
   return (
     <>
       {/* 首屏的 LCP 是视频墙的 poster（<video> 元素本身无法设 fetchPriority）。
-          素材已改 Mixkit 远程直链（2026-10-23），这里预加载面积最大的两格封面，
-          提前完成对 assets.mixkit.co 的握手；其余七张按正常优先级并发。
-          React 19 会把 <link> 提到 <head>。 */}
-      {/* 视频墙素材在第三方 CDN 上：提前建连（DNS + TLS），
-          实测能把首屏 LCP 从 4.8s 压回 3s 出头 */}
-      <link rel="preconnect" href="https://assets.mixkit.co" crossOrigin="" />
-      <link rel="dns-prefetch" href="https://assets.mixkit.co" />
-      <link
-        rel="preload"
-        as="image"
-        href="https://assets.mixkit.co/videos/45750/45750-thumb-720-2.jpg"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://assets.mixkit.co/videos/33167/33167-thumb-720-2.jpg"
-      />
+          2026-11-05 素材改本地托管（/media/home/reel/）后，
+          Mixkit 的 preconnect / dns-prefetch 一并删掉 —— 跨域握手不再存在。
+          只预加载面积最大的两格封面（development 5×4、collection 4×5），
+          其余七张按正常优先级并发。React 19 会把 <link> 提到 <head>。 */}
+      <link rel="preload" as="image" href="/media/home/reel/development.jpg" />
+      <link rel="preload" as="image" href="/media/home/reel/collection.jpg" />
 
       {/* ① 视频墙：九段视频铺满整屏，不规则分格，占住首页第一屏。
           悬停单格即播、其余暂停；点击从原位滑到中央播放，
@@ -102,12 +98,11 @@ export default async function HomePage() {
         stats={HOME_WELCOME.stats}
       />
 
-      {/* ③ 商品图横向滚动带：两行错峰，悬停暂停；点击整格进产品详情。
-          2026-10-22 从拼贴后面提到公司介绍正下方——客户要求
-          "商品跑马灯移在公司介绍下面"。 */}
-      {marqueeRows.length > 0 ? (
-        <ImageMarquee rows={marqueeRows} label="YOLO Apparel style" />
-      ) : null}
+      {/* ③ 滚动图：两行错峰，悬停暂停。
+          2026-11-06 起优先展示「有氛围图的商品」，整格链到 /products/[slug]；
+          氛围图数量不足（<6 张）或读库失败时回退到 HOME_MARQUEE 静态素材，
+          那种情况下格子不带 href、点击不跳转。 */}
+      <ImageMarquee rows={marqueeRows} label="YOLO Apparel style" />
 
       {/* ④ 信任带：全球布局 + 认证，合并为一个区块 */}
       <TrustBand />

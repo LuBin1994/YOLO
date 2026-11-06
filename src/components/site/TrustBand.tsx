@@ -28,21 +28,52 @@ import {
  * 只占 8 列、旁边就是清单，遮挡关系不存在了，也就没有理由再用浮层。
  * 浮层还会挡住南美西岸——那是最容易被误读成"没画完"的一块。
  *
- * 【地图版式：2026-10-29 改为技术图纸】
- * 地图本体自带细边框、经纬刻度、左下角读数条和一行图脚（投影 / 站点编号）。
- * 因此这一层**不再加第二个框**，标题行也不再补边框——否则会出现
- * "标题下一条线 + 地图框上一条线"的双线，在 paper 底上很扎眼。
+ * 【地图版式：2026-11-05 改为图钉版】
+ * 上一轮的"技术图纸"（经纬网、刻度、外框、左下角读数条、投影图脚）已全部撤掉，
+ * 现在只有点阵陆地 + 深绿水滴图钉 + 点开的信息卡，见 WorldMap 顶部注释。
+ * 因为地图不再自带外框，标题行那条 `border-b` 就成了地图上方唯一的线；
+ * 清单上方的 `border-t` 是下方唯一的线 —— **这一层不要再加框**，会变成双线。
  */
 
 
 /* 品牌标识的尺寸表（BRAND_WIDTH / BRAND_FIXED_HEIGHT）已随品牌墙一起
    搬到 GlobalBrands.tsx（2026-10-22）。 */
 
+/** 清单里的角色小字（比地图读数条的短，只作补充说明） */
+const ROLE_SHORT: Record<string, string> = {
+  hq: "HQ",
+  design: "Design",
+  sales: "Sales",
+  production: "Production",
+};
+
 export default function TrustBand() {
+  /**
+   * 站点清单分组。
+   *
+   * 【为什么用 "首次出现" 而不是无条件按 role 过滤】
+   * 杭州同时是总部和设计中心（roles: ["hq","design"]），无脑按 role 过滤会让
+   * Hangzhou 在 HEADQUARTERS 和 DESIGN STUDIO 两列各出现一次 —— 读者会以为
+   * 有两个杭州。改成"归入第一个匹配的角色组"，其余角色用小字标在同一行里，
+   * 信息完整、条目唯一。
+   */
+  const seen = new Set<string>();
   const groups = OFFICE_GROUPS.map((group) => ({
     ...group,
-    items: GLOBAL_OFFICES.filter((office) => office.roles.includes(group.role)),
+    items: GLOBAL_OFFICES.filter((office) => {
+      if (!office.roles.includes(group.role)) return false;
+      if (seen.has(office.id)) return false;
+      seen.add(office.id);
+      return true;
+    }),
   }));
+
+  /** 站点在清单里的角色小字：除了本组角色之外的额外身份 */
+  const extraRoles = (office: (typeof GLOBAL_OFFICES)[number], groupRole: string) =>
+    office.roles
+      .filter((role) => role !== groupRole)
+      .map((role) => ROLE_SHORT[role])
+      .join(" · ");
 
   const certCount = CERTIFICATION_WALL.groups.reduce(
     (total, group) => total + group.items.length,
@@ -108,9 +139,9 @@ export default function TrustBand() {
           <div className="mt-6">
             <WorldMap offices={GLOBAL_OFFICES} />
 
-            {/* 信息层：地图上每个点都能悬停出左下角读数条，但那是"补充"。
-                清单才是主载体——B2B 访客不会去地图上探索，几个国家、
-                什么角色必须能一眼扫完，而且不依赖 hover 也能拿到全量信息。 */}
+            {/* 信息层：地图上点图钉会弹出该站点的角色说明（WorldMap 内）。
+                那只是"补充"——清单才是主载体：B2B 访客不会去地图上探索，
+                几个国家、什么角色必须能一眼扫完，而且不依赖点击也能拿到全量信息。 */}
             <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-7 border-t border-ink-900/12 pt-7 sm:grid-cols-4 lg:gap-x-10">
               {groups.map((group) => (
                 <div key={group.role}>
@@ -122,6 +153,13 @@ export default function TrustBand() {
                       <li key={`${group.role}-${office.id}`}>
                         <p className="text-[15px] font-medium leading-snug tracking-tight text-ink-950">
                           {office.name}
+                          {/* 多重身份的补充说明：杭州归在总部组，
+                              这里补一句它也是设计中心，信息不丢、条目不重 */}
+                          {extraRoles(office, group.role) ? (
+                            <span className="ml-1.5 text-[11px] font-normal uppercase tracking-[0.1em] text-ink-400">
+                              {extraRoles(office, group.role)}
+                            </span>
+                          ) : null}
                         </p>
                         {office.note ? (
                           <p className="mt-0.5 text-[12px] leading-snug text-ink-600">

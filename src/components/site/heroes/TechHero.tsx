@@ -39,7 +39,7 @@ export default function TechHero({
 
       <div className="container-site relative z-10 grid gap-12 pb-14 pt-28 md:pt-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,38%)] lg:items-end lg:gap-16 lg:pb-20">
         <div>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.24em] text-white/40">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.24em] text-white/55">
             <span className="text-accent-400">{fileNo}</span>
             <span aria-hidden className="h-px w-8 bg-white/25" />
             <span>{eyebrow}</span>
@@ -61,7 +61,7 @@ export default function TechHero({
                 <dd className="text-lg font-medium tabular-nums tracking-tight text-white md:text-xl">
                   {f.value}
                 </dd>
-                <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/40">
+                <dt className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/55">
                   {f.label}
                 </dt>
               </div>
