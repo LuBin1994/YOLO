@@ -151,39 +151,46 @@ export interface ReelClip {
 /**
  * 首页视频墙（九宫格）。
  *
- * 【素材】2026-11-05 起换成**客户自有实拍**（桌面「首页视频」9 段），
- * 全部本地托管在 `/media/home/reel/`，不再依赖 Mixkit 远程 CDN：
- * - 视频 `<id>.mp4`：1280×720 / 30fps / 无音轨 / CRF 24 / faststart
- * - 封面 `<id>.jpg`：从压缩后的视频里抽帧，保证「封面 = 视频第一眼」
+ * 【素材】2026-11-17 换成**客户第二批实拍**（桌面「首页视频2」9 段），
+ * 全部本地托管在 `/media/home/reel/`，不再依赖远程 CDN：
+ * - 视频 `<id>.mp4`：1280×720 / 30fps / 无音轨 / CRF 26 / faststart
+ *   （`cutting` 是唯一例外，见下）
+ * - 封面 `<id>.jpg`：**首帧**，与悬停播放的第一眼完全一致
  *
- * 【压缩口径】（脚本 .workbuddy/artifacts/encode-reel.js）
- * 源素材 190MB（1080p/4K、9–33Mbps、带音轨）压到 **18.3MB**，缩 10.4 倍：
- * - 720p：播放面板最大 1180×664，1280×720 与显示尺寸 1:1，再高纯属浪费
- * - CRF 24：实测同段 CRF27→1.2MB / 25→1.6MB / 23→2.3MB；
- *   内容是深色织物纹理，27 在暗部有块效应，24 是画质与体积的平衡点
- * - fps 封顶 30：两段源是 60fps（分格压线 / 裁剪），都是慢速机器特写，
- *   30fps 看不出差别，体积却近乎减半
+ * 【压缩口径】（脚本 .workbuddy/artifacts/reel2/encode.mjs）
+ * 源素材 158MB（4K HEVC 15–54Mbps、带音轨）压到 **14.3MB**，缩 11 倍：
+ * - 720p：播放面板最大 1180×664，1280×720 只放大 1.09 倍，肉眼无感
+ * - CRF 26 + preset veryslow + aq-mode=3：与 720p 无损参考比 SSIM，
+ *   crf22→0.988 / 24→0.986 / 26→0.982，暗部 2 倍放大目视无差；
+ *   veryslow 的 RDO 质量高于 slow，多出的余量换成体积
+ * - fps 保持 30（源全是 30，降帧只掉运动连贯、不省多少）
  * - 去音轨：整墙 muted，音轨纯属体积
  *
- * 【首屏代价】视频 `preload="none"`，进站只拉九张封面（合计 872KB），
+ * 【首屏代价】视频 `preload="none"`，进站只拉九张封面（合计 0.97MB），
  * 视频首次悬停才加载。
  *
  * 【id 不能改】VideoMosaic 的 LAYOUT 用它当网格坐标键（12 列 × 10 行里写死
  * col-start / row-start）。改 id 会让整面墙塌成自动流。
  *
- * 【格子比例差很大】（0.88–2.24），素材统一 16:9，靠 object-cover 裁。
- * 所以竖格分给「主体居中」的画面（裁剪 / 分格压线），横格分给全景
- * （厂房航拍 2.24 那格最宽、展厅全景 1.67 次之）。
+ * 【格子比例差很大】（0.73–1.82），素材全是 16:9，靠 object-cover 裁。
+ * 落位规则：全景纵深给宽格（stitching 1.82 / development 1.36），
+ * 主体居中的机器近景给竖格（collection / corridor / team 0.82–0.87），
+ * 人物近景给近方格（measuring / sewing / sketch 1.09）。
+ *
+ * 【`cutting` 是竖构图】源 ai智能机器.mp4 是 3840×5120（原生 3:4），
+ * 落位正好是最窄的 2×3 竖条（约 0.73）。压成 16:9 会拉伸变形、裁 16:9 会
+ * 切掉大半内容，所以单独输出 **720×960**，与格子比例几乎 1:1、格内零裁切。
+ * 代价：居中展开面板是 16:9，这段只显示中间约 42% 高度。
  */
 export const HOME_REEL: readonly ReelClip[] = [
   /* 顺序即数据顺序，但**落位由 LAYOUT 决定**，与这里的先后无关。 */
   {
     id: "development",
-    label: "Showroom",
-    theme: "Collection",
+    label: "Assembly line",
+    theme: "Production floor",
     src: "/media/home/reel/development.mp4",
     poster: "/media/home/reel/development.jpg",
-    alt: "Wide view of the showroom floor lined with garment rails",
+    alt: "Sewing lines and workstations stretching down a bright production hall",
   },
   {
     id: "measuring",
@@ -191,7 +198,7 @@ export const HOME_REEL: readonly ReelClip[] = [
     theme: "Design",
     src: "/media/home/reel/measuring.mp4",
     poster: "/media/home/reel/measuring.jpg",
-    alt: "Designers reviewing samples on a tablet in the studio",
+    alt: "Two designers reviewing a sample sheet against the studio wall",
   },
   {
     id: "collection",
@@ -199,23 +206,23 @@ export const HOME_REEL: readonly ReelClip[] = [
     theme: "Collection",
     src: "/media/home/reel/collection.mp4",
     poster: "/media/home/reel/collection.jpg",
-    alt: "Colourful childrenswear jackets hanging on a rail",
+    alt: "Padded childrenswear jackets in bright colours hanging on a rail",
   },
   {
     id: "sketch",
-    label: "Fabric selection",
-    theme: "Design",
+    label: "Cutting room",
+    theme: "Pattern room",
     src: "/media/home/reel/sketch.mp4",
     poster: "/media/home/reel/sketch.jpg",
-    alt: "Two people comparing fabric swatches against a wall of sketches",
+    alt: "Two workers laying out and marking fabric panels on a cutting table",
   },
   {
     id: "stitching",
-    label: "Our campus",
-    theme: "People",
+    label: "Overhead rail line",
+    theme: "Production floor",
     src: "/media/home/reel/stitching.mp4",
     poster: "/media/home/reel/stitching.jpg",
-    alt: "Aerial view of the factory campus and its rooftops",
+    alt: "Garment carriers moving along an overhead rail above the sewing floor",
   },
   {
     id: "corridor",
@@ -231,15 +238,15 @@ export const HOME_REEL: readonly ReelClip[] = [
     theme: "Production floor",
     src: "/media/home/reel/team.mp4",
     poster: "/media/home/reel/team.jpg",
-    alt: "Automated template sewing machine stitching a panel",
+    alt: "Automated template sewing machine stitching a padded panel",
   },
   {
     id: "cutting",
-    label: "Cutting",
-    theme: "Pattern room",
+    label: "Smart sewing cell",
+    theme: "Production floor",
     src: "/media/home/reel/cutting.mp4",
     poster: "/media/home/reel/cutting.jpg",
-    alt: "Hands cutting fabric with shears on a cutting table",
+    alt: "Operator checking an automated sewing station against its control screen",
   },
   {
     id: "sewing",
@@ -247,7 +254,7 @@ export const HOME_REEL: readonly ReelClip[] = [
     theme: "People",
     src: "/media/home/reel/sewing.mp4",
     poster: "/media/home/reel/sewing.jpg",
-    alt: "Operator at a sewing machine smiling towards the camera",
+    alt: "Operator at a sewing station smiling towards the camera",
   },
 ];
 
@@ -299,25 +306,28 @@ export interface ShowcaseShot {
  * 否则图片未加载完时列高会跳，正在滚动的文字会跟着抖。
  */
 export const HOME_SHOWCASE: readonly ShowcaseShot[] = [
-  /* 2026-11-04 换成客户「首页展示图」文件夹的 11 张。
-     源图 7 张 4:3 横（EXIF orientation=6，靠 `.rotate()` 转正成竖版）、
-     4 张原生 4:3 横。压缩脚本 .workbuddy/artifacts/showcase-import/process.js。
+  /* 2026-11-17 换成客户「首页展示图」当前的 12 张（上一轮 11 张已备份到
+     .workbuddy/backups/showcase-before-20261117/）。
+     源图 38.4MB，**半数带 EXIF 旋转**（手机竖拍存成横像素，不 rotate() 会躺倒），
+     压到短边 1000 / q82 mozjpeg，合计 1.29MB
+     （脚本 .workbuddy/artifacts/showcase-src/compress-wall.mjs）。
      **ratio 是图片的真实比例**，三列流式靠它做高低错落，改图必须同步改这里。
 
-     排列按**横竖交错**而不是按拍摄主题分组：全竖的排前面会让第三列只有三张、
-     列高差一整张图，图墙底部空出一块。交错之后三列高度接近（列1/2 各 2竖2横、
-     列3 三竖），底部基本齐平。 */
-  { src: "/media/home/showcase/01.jpg", alt: "SYS Group showroom with fabric swatches and a presentation screen", ratio: "3 / 4" },
-  { src: "/media/home/showcase/08.jpg", alt: "Sample room with development boards and garment rails", ratio: "4 / 3" },
-  { src: "/media/home/showcase/02.jpg", alt: "Menswear rail and a full-length mirror in a boutique", ratio: "3 / 4" },
-  { src: "/media/home/showcase/09.jpg", alt: "YOLO machinery display with a wall of colour swatches", ratio: "4 / 3" },
-  { src: "/media/home/showcase/03.jpg", alt: "Model wearing a pink striped polo in a stockroom", ratio: "3 / 4" },
-  { src: "/media/home/showcase/10.jpg", alt: "Close-up of a sewing machine stitching quilted fabric", ratio: "4 / 3" },
-  { src: "/media/home/showcase/04.jpg", alt: "Model in a cream dress in front of an arched mirror", ratio: "3 / 4" },
-  { src: "/media/home/showcase/11.jpg", alt: "Operator sewing a down jacket beside a rail of finished pieces", ratio: "4 / 3" },
-  { src: "/media/home/showcase/05.jpg", alt: "Camel trench coat on a wooden hanger", ratio: "3 / 4" },
-  { src: "/media/home/showcase/06.jpg", alt: "Down jackets in red, blue, black and cream on a rail", ratio: "3 / 4" },
-  { src: "/media/home/showcase/07.jpg", alt: "MAX&Co. label inside a camel coat collar", ratio: "3 / 4" },
+     顺序按「竖 横 竖 横 | 竖 横 竖 横 | 竖 横 竖 竖」交错：
+     前两列各落 2 竖 2 横（列高约 4.16 列宽），第三列 3 竖 1 横（4.74）。
+     7 竖 5 横分三列做不到全等，第三列略长是 CSS columns 的固有结果。 */
+  { src: "/media/home/showcase/wall-01.jpg", alt: "Showroom interior with garment rails and a woven pendant light", ratio: "3 / 4" },
+  { src: "/media/home/showcase/wall-02.jpg", alt: "Hands guiding quilted shell fabric under a sewing machine needle", ratio: "4 / 3" },
+  { src: "/media/home/showcase/wall-03.jpg", alt: "Meeting area with a screen and illustrated wall panels", ratio: "3 / 4" },
+  { src: "/media/home/showcase/wall-04.jpg", alt: "Packed cartons stacked in the dispatch area", ratio: "4 / 3" },
+  { src: "/media/home/showcase/wall-05.jpg", alt: "Showroom seating area with mannequins and a patterned rug", ratio: "3 / 4" },
+  { src: "/media/home/showcase/wall-06.jpg", alt: "Design wall pinned with illustrations above a garment rail", ratio: "4 / 3" },
+  { src: "/media/home/showcase/wall-07.jpg", alt: "Model in a striped knit top and denim skirt against a studio wall", ratio: "3 / 4" },
+  { src: "/media/home/showcase/wall-08.jpg", alt: "Colour swatch discs and vintage sewing machines on the studio wall", ratio: "4 / 3" },
+  { src: "/media/home/showcase/wall-09.jpg", alt: "Close-up of a brand label inside a camel coat collar", ratio: "3 / 4" },
+  { src: "/media/home/showcase/wall-10.jpg", alt: "White company sign wall at the office entrance", ratio: "4 / 3" },
+  { src: "/media/home/showcase/wall-11.jpg", alt: "Colourful padded jackets displayed on a boutique rail", ratio: "3 / 4" },
+  { src: "/media/home/showcase/wall-12.jpg", alt: "Beige trench coat on display in a boutique", ratio: "3 / 4" },
 ];
 
 /**

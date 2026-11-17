@@ -17,8 +17,9 @@ import type { ShowcaseShot } from "@/lib/site-data";
  *
  * ⚠️ **difference 的已知短板**：文字落在**中低对比度**的图片上时，
  * 反相后得到的是同一档中间调，对比度极低；局部还会"半句深半句浅"。
- * 当前 11 张图里浅色（展厅、米色风衣、标签特写）占多数 —— 如果正文落在这几张
- * 上发虚，**优先调图片顺序（把深色图排到文字行所在的高度），不要再改混合模式**。
+ * 当前 12 张图里浅色（展厅、办公室、厂牌墙、米色风衣、标签特写）占多数，
+ * 深色的只有缝纫机近景、彩色羽绒陈列、YOLO 样片墙 —— 如果正文落在这几张浅图上
+ * 发虚，**优先调图片顺序（把深色图排到文字行所在的高度），不要再改混合模式**。
  *
  * 【为什么必须 isolate】
  * mix-blend-mode 只跟**同一个隔离组**内的底色混合，否则会一直混到页面最底层。
@@ -76,7 +77,7 @@ export default function ShowcaseWall({
       <div className="pointer-events-none absolute inset-0">
         <h2
           id="showcase-headline"
-          className="sticky top-0 flex h-[100svh] w-screen flex-col items-center justify-center px-5 text-center text-[clamp(24px,5.3vw,76px)] font-medium leading-[1.06] tracking-tight text-white mix-blend-difference md:px-8"
+          className="sticky top-0 flex h-[100svh] w-screen flex-col items-center justify-center px-5 text-center text-[clamp(24px,5.3vw,100px)] font-medium leading-[1.06] tracking-tight text-white mix-blend-difference md:px-8"
         >
           {headline.map((line, index) => (
             <span key={index} className="block">
