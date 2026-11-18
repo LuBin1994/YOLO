@@ -167,10 +167,6 @@ export default function ChinaNetwork({
             );
           })}
         </svg>
-
-        <p className="mt-5 max-w-2xl text-[12px] leading-relaxed text-ink-400">
-          {caption}
-        </p>
       </div>
 
       {/* 图例：也是这张图的无障碍正文入口（地图本身只有编号） */}

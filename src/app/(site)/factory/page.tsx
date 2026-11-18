@@ -265,9 +265,6 @@ const CHINA_NODES: readonly ProvinceNode[] = [
   },
 ];
 
-const CHINA_CAPTION =
-  "Base map: Aliyun DataV.GeoAtlas provincial boundaries, including Taiwan, Hong Kong, Macao and the South China Sea islands. Rendered as static SVG — no map SDK, no tile requests, nothing loaded from a third-party map service.";
-
 export default function FactoryPage() {
   return (
     <>
@@ -728,7 +725,7 @@ export default function FactoryPage() {
           </Reveal>
 
           <Reveal delay={60} className="mt-12">
-            <ChinaNetwork nodes={CHINA_NODES} caption={CHINA_CAPTION} />
+            <ChinaNetwork nodes={CHINA_NODES}/>
           </Reveal>
         </div>
       </section>

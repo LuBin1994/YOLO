@@ -31,8 +31,7 @@ const EASE = "cubic-bezier(0.65, 0, 0.35, 1)";
  * 只把 08（cutting）从横构图裁剪换成原生竖构图自动化缝制站。
  */
 const LAYOUT: Record<string, string> = {
-  development:
-    "col-span-2 md:col-span-5 md:col-start-1 md:row-span-4 md:row-start-1",
+  development: "col-span-2 md:col-span-5 md:col-start-1 md:row-span-4 md:row-start-1",
   measuring: "md:col-span-3 md:col-start-6 md:row-span-3 md:row-start-1",
   collection: "md:col-span-4 md:col-start-9 md:row-span-5 md:row-start-1",
   sketch: "md:col-span-3 md:col-start-3 md:row-span-3 md:row-start-8",
@@ -117,9 +116,6 @@ function IntroBand({
               </Link>
             ))}
           </div>
-          <p className="hidden text-[11px] uppercase tracking-[0.18em] text-white/55 md:block">
-            Hover to preview · Click to open
-          </p>
         </div>
       </div>
     </div>
@@ -368,23 +364,7 @@ export default function VideoMosaic({
           {/* 压暗层：静止时把温度压下去，悬停时掀开——画面像被点亮 */}
           <span className="absolute inset-0 bg-ink-950/28 transition-colors duration-500 group-hover:bg-ink-950/0" />
 
-          {/* 悬停时的播放徽标：只给一个"可以点开"的信号。
-              原来这里的标签与主题文字会跟底部说明带撞在一起，整体拿掉——
-              具体是哪个工序，点开后的播放面板里有。 */}
-          <span className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full border border-white/55 bg-ink-950/35 backdrop-blur-[2px]">
-              <svg
-                width="11"
-                height="13"
-                viewBox="0 0 12 14"
-                fill="currentColor"
-                className="ml-0.5 text-white"
-                aria-hidden
-              >
-                <path d="M0 0l12 7-12 7z" />
-              </svg>
-            </span>
-          </span>
+         
         </span>
 
         {/* 压暗其余格：用**深色遮罩**而不是降低不透明度。

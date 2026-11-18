@@ -216,7 +216,7 @@ export default function AiConcierge() {
       {sdkReady ? (
         <>
           {/* 入口按钮：桌面为胶囊带文字，移动端为圆形 */}
-          <button
+          {/* <button
             ref={buttonRef}
             type="button"
             onClick={openPanel}
@@ -245,7 +245,7 @@ export default function AiConcierge() {
               />
             </svg>
             <span className="hidden md:inline">Chat with us</span>
-          </button>
+          </button> */}
 
           {/* 面板：收起时同时 inert + 透明，避免不可见内容被 Tab 聚焦 */}
           <div

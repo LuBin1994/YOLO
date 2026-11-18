@@ -151,14 +151,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 </dd>
               </div>
             ) : null}
-            <div className="flex gap-6 border-b hairline py-4">
-              <dt className="w-32 shrink-0 text-[12px] uppercase tracking-[0.2em] text-ink-400">
-                Customization
-              </dt>
-              <dd className="text-[15px] text-ink-950">
-                Fabric · trims · labels · packaging
-              </dd>
-            </div>
+           
           </dl>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
