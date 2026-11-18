@@ -1,14 +1,51 @@
 @import "tailwindcss";
 
 /* =============================================================
-   设计系统 · 纯白 + 暖素灰 + 暖炭 + 森林绿
-   基底：纯白 paper #ffffff（2026-11-05 客户指定，见下）
+   设计系统 · 雾面纸白 + 暖素灰 + 墨绿黑 + 灰绿
+   基底：纸白 paper #F4F2ED（2026-11-18 客户选定「雾面莫兰迪」）
    衬底：暖素灰 sand 三档（页脚带 / 图片占位 / 描边）
-   重音：暖炭 ink-950（保留分量但去掉冷硬）
-   强调：森林绿 accent（**品牌原色**，克制使用）
+   重音：墨绿黑 ink-950 #2A312B（深色带的底）
+   强调：灰绿 accent（品牌绿去饱和后的版本，克制使用）
    =============================================================
 
+   【2026-11-18 整体换色：纯白 → 雾面纸白，饱和四绿 → 低饱和灰绿】
+
+   客户经过三轮比稿，最后圈定了「雾面莫兰迪」那一版。反馈原话是
+   「色彩对比度太高，容易腻，显示不够高端」——这句要拆成两件事，
+   拆错了就会白改：
+
+   1. 「对比度太高」**不是文字对比度**，是**色块之间的跳变**。
+      上一版 A–D 四套方案的色板彩度均值 C* 48、最高 67.9（LAB），
+      饱和色块并列，每块都在抢注意力，看久了确实腻。
+      这一版把十个色值整体压到 C* 均值 7.1、最高 12.3。
+      量化的比对见 `.workbuddy/artifacts/palette/verify-h.js`。
+
+   2. 「不够高端」**跟颜色无关**，是排版的事：字重、留白、细线。
+      标题 500 字重这条没动（本来就克制），但**去掉了所有高饱和装饰**，
+      让层次只剩明度差 + hairline。
+
+   【为什么又改回米白？11-05 那条「纯白」的理由怎么办】
+
+   11-05 客户指定纯白，理由是产品图本身纯白底，压在米白上会浮出一块
+   比页面更亮的矩形（ΔL* 3.1），像"贴上去的图"。这条理由现在依然成立——
+   所以这次**同时给了两个配套改动**，不是把问题甩回去：
+
+   a. `--color-paper` 改 #F4F2ED（L* 95.5），与纯白的 ΔL* 4.5。
+   b. 白底产品图容器（`.card-media` / `.marquee-cell`）底色改为 paper，
+      图片加 `mix-blend-mode: multiply`：白底乘纸色 = 纸色，
+      图块边界彻底消失。代价是商品中间调会整体压暗约 11%（乘了
+      0.96/0.95/0.93），实测在衣服上读作"暖光下的白衬衫"，不是"图变脏"。
+      这是刻意的交换：纸感是客户要的，商品偏暖是可接受的副作用。
+
+   也就是说：**11-05 的结论没有被推翻，是被 multiply 抵消了。**
+   如果哪天有人把 multiply 去掉，请同时把 paper 改回纯白，
+   否则"贴上去的图"会立刻回来。
+
+   【下面这段是 11-05 的原始记录，保留作为背景，其中"纯白"的结论
+     已被上面的 multiply 方案替代，阅读时注意时间顺序】
+
    【2026-11-05 基色由珍珠白 #f8f6f0 改为纯白 #ffffff】
+
    客户指定"paper 用纯白"。这一改不只是换个色值，它连带动了三件事：
 
    1. **产品照终于不用再"贴"在米白上了。**
@@ -44,89 +81,95 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
     "Helvetica Neue", Arial, sans-serif;
 
-  /* 森林绿主色系（品牌资产，退为点缀与细节） */
-  --color-forest-50: #f0f5f1;
-  --color-forest-100: #dce9df;
-  --color-forest-200: #b9d3c2;
-  --color-forest-300: #8db59e;
-  --color-forest-400: #5f9378;
-  --color-forest-500: #3f735d;
-  --color-forest-600: #2f5c4a;
-  --color-forest-700: #264a3c;
-  --color-forest-800: #1f3b31;
-  --color-forest-900: #16302a;
-  --color-forest-950: #0b1e19;
+  /* 2026-11-18：原 forest-* 十档已删 —— 全站 0 引用，是"将来换品牌色"
+     留下的备用开关，实际上从没被用过。品牌绿现在只以 accent-* 三档存在，
+     避免两套同值令牌各自漂移。 */
 
-  /* 苔藓点缀绿 */
+  /* 苔藓点缀绿（仅后台：已回复 / 已发布 / 图表条） */
   --color-moss-300: #a8c686;
   --color-moss-400: #8ab264;
   --color-moss-500: #6d974a;
   --color-moss-600: #557a3a;
 
-  /* 珍珠灰阶：图片占位、分隔线与 hover 底。
-     注：2026-10-22 起首页各区块不再深浅交替（统一 paper），
-     sand-50 目前只用于页脚与内页的区块划分。
+  /* 暖素灰阶：图片占位、分隔线、区块划分。
 
-     【2026-11-05 随 paper 转白，整条灰阶重配】
-     页面变纯白后，素底要同时满足两件互相拉扯的事：
+     【2026-11-18 随 paper 转米白重配】
+     纸底从 L* 100 降到 95.5，整条灰阶跟着下移，但**相对间距保持不变**：
        太浅 → 页脚分界看不见（ΔL* < 3 等于没有）；
-       太深 → 紧挨纯白时显脏、显旧，高端站最忌讳。
-     实测把 ΔL* 定在 **4.5**（白底上"看得见但克制"的档位），每档递进 3–5：
+       太深 → 紧挨纸白时显脏，高端站最忌讳。
+     沿用它原来的 4.5 一档：
 
-       paper      #ffffff   L* 100
-       sand-50    #f5f2ea   L*  95.5  Δ4.5  ← 页脚 / 内页区块带 / 列表 hover
-       sand-100   #efeae0   L*  92.8  Δ2.7  ← 图片占位（字只出现于后台代码块）
-       sand-200   #e2dbcd   L*  87.6  Δ5.2  ← 深一档的占位底
+       paper      #F4F2ED   L* 95.5   C* 2.6
+       sand-50    #E7E4DB   L* 90.6   Δ4.9  ← 页脚 / 内页区块带 / 列表 hover
+       sand-100   #DFDBD1   L* 87.5   Δ3.1  ← 图片占位（场景照；白底产品图走 paper+multiply）
+       sand-200   #D2CDC1   L* 82.5   Δ5.0  ← 深一档的占位底
 
-     **彩度刻意压低**（sand-50 的 R−B 只有 11，原来是 13）：纯白旁边的暖灰
-     一旦过饱和就像"没洗干净的白"。保留一点暖调是为了不让页面变成冷灰的
-     办公软件色 —— 暖调现在由 ink（H45）和这层薄暖灰一起扛。
+     彩度 4.8–6.6，**没有跟着纸底变灰**：纸白是暖的，灰阶若比它更中性，
+     两块拼在一起就像"两种白没调匀"。暖调靠 sand + ink 一起扛。
 
-     文字对比度复算（全部 ≥4.5）：
-       sand-50 上 ink-400 = 5.22、accent-500 = 5.00
-       sand-100 上 ink-400 = 4.79、accent-500 = 4.58 */
-  --color-sand-50: #f5f2ea;
-  --color-sand-100: #efeae0;
-  --color-sand-200: #e2dbcd;
+     文字对比度复算（WCAG 2.2 AA，全部 ≥4.5）：
+       sand-50  上 ink-400 4.70、ink-500 7.06、accent-500 4.64
+       sand-100 上 ink-400 4.32 ← **不达标，但该组合不存在**：
+                sand-100 只作图片占位底和后台代码块，上面从不放弱化文字。
+                将来若要在 sand-100 上写小字，请改用 ink-500（6.49）。 */
+  --color-sand-50: #e7e4db;
+  --color-sand-100: #dfdbd1;
+  --color-sand-200: #d2cdc1;
 
-  /* 暖调墨色：上一版是偏绿的冷灰（#141a16 / #4a554e），
-     压在珍珠白上会显脏；改为暖中性，与米白底保持同一色温。 */
-  --color-ink-900: #26241f;
-  --color-ink-600: #57534a;
-  /* 弱化文字色：paper 上 5.31:1、sand-50 上 4.69:1 —— 均过 WCAG 2.2 AA 的 4.5:1。
-     2026-11-05 从 #6e6a60 提到 #6a6659：sand-50 加深后原值掉到 4.41。 */
-  --color-ink-400: #6a6659;
-  /* 2026-11-05 补：代码里早有 5 处 `text-ink-500`，但令牌从未定义过 ——
-     Tailwind 不生成这条规则，那 5 段说明文字**静默继承成正文色 ink-900**，
-     该弱化的地方看起来和正文一样重。补上这档，落在 600 与 400 之间。
-     paper 上 8.69:1、sand-50 上 7.88:1。 */
-  --color-ink-500: #4a463e;
+  /* 墨色：暖炭 → **墨绿黑**。
+     色相从 H45（暖黄）转到 H130（绿）。这不是审美偏好：
+     纸白 + 灰绿 + 墨绿黑落在同一条色相带上，页面才"整"；
+     否则暖黄墨色配冷绿强调色，会像两个系统拼起来。
+     四档拉开**靠明度不靠色相**（实测值见 verify-final.js）：
 
-  /* ---------- 珍珠白基底 ---------- */
+       ink-900  #333A33  paper 上 10.46  ← 正文
+       ink-600  #525750  paper 上  6.61  ← 说明文字 / 产品描述
+       ink-500  #454B43  paper 上  8.02  ← 次级正文（11-05 补的档）
+       ink-400  #60655C  paper 上  5.34  ← 弱化标签 / eyebrow */
+  --color-ink-900: #333a33;
+  --color-ink-600: #525750;
+  --color-ink-400: #60655c;
+  --color-ink-500: #454b43;
 
-  /* 页面主底色：纯白 #ffffff（2026-11-05 客户指定，由珍珠白 #f8f6f0 改来）。
-     【为什么这个改动值得做】
-     产品照本身是纯白底（实测四角全 #ffffff），压在米白上会浮出一块
-     比页面更亮的长方形（ΔL* 3.1）—— 观感像"贴上去的图"。底色转白之后
-     图片与页面同色，商品直接融进页面，等于免费拿到画廊效果。
-     【代价】"白色浮起"这条语言失效了：白卡片在白底上只剩一条边。
-     所以凡是需要浮起的面（卡片 / 浮层 / 下拉），必须自带 hairline 或投影，
-     不能再靠底色差。已有的白色面板都已经带 border-ink-900/8~12，无需逐个改。
-     【留给真·纯白的用法】`white` 与 `paper` 现在同值，写作上仍分开：
-     结构性底色写 paper，语义上"这是一张卡/一块面板"写 white。 */
-  --color-paper: #ffffff;
+  /* ---------- 纸白基底 ---------- */
 
-  /* 重音色块：由死黑 #0a0a0a 改为暖炭 #1b1a17。
-     仍是深色块，但去掉了纯黑的冷硬感，与珍珠白同色温。 */
-  --color-ink-950: #1b1a17;
+  /* 页面主底色：#F4F2ED（2026-11-18 客户选定「雾面莫兰迪」）。
+     【从纯白改回米白，不算走回头路】
+     11-05 选纯白是为了让白底产品图融进页面 —— 这一条已经交给
+     `.card-media` / `.marquee-cell` 上的 multiply 接管（见文件头 b 条）。
+     纸底换回米白后，另外两件事反而更成立：
+       · ShowcaseWall 的 difference 文字落在纸面上反相成 #0b0d12，
+         对纸底 17.4:1；比纯白反相出的纯黑更柔和，正是想要的效果。
+       · 认证卡与后台面板的 bg-white 现在能在纸面上**浮起**了 ——
+         11-05 之后"白色浮起"这条语言一度是失效的，现在恢复。
+     【写作约定】white 与 paper 现在是两个值：
+     结构性底色写 paper，语义上"这是一张卡 / 一块面板"写 white。
+     凡是新加的白色面板，仍要自带 hairline（border-ink-900/8~12）。 */
+  --color-paper: #fff;
 
-  /* ---------- 强调色：森林绿（品牌原色）---------- */
-  /* 取值与上方 forest-400/500/600 一致，单独命名是为了留一个"换强调色
-     只改这里"的开关：将来品牌色调整时，全站强调用法不需要逐个找。
-     用法约束见文件头。 */
-  --color-accent-400: #5f9378;
-  --color-accent-500: #3f735d;
-  --color-accent-600: #2f5c4a;
+  /* 深色带 / 品牌墙 / 页脚的底：暖炭 #1b1a17 → 墨绿黑 #2A312B。
+     L* 10.5 → 19.5，白字仍有 13.35:1。
+     **这是本次唯一"变浅"的令牌**，目的是让深色块读起来像"深松绿"
+     而不是"黑"。副作用：深底上 text-white/70 一类次级文字对比降一档，
+     实测仍在 9:1 以上，不影响。
+     `.btn-primary` 里原本写死的 bg-black 已同步改为 bg-ink-950。 */
+  --color-ink-950: #2a312b;
+
+  /* ---------- 强调色：灰绿（品牌绿去饱和）---------- */
+  /* 品牌原色 #3f735d 的饱和版在低对比体系里太跳：保留色相（H150 一带），
+     把 C* 从 22 压到 10，三档仍按"深底用亮的、浅底用深的"分工：
+
+       accent-400  #8AA093  → 深底上的小方块 / 圆点 / 编号（ink-950 上 4.79）
+       accent-500  #54695F  → 纸面细线、导航激活态、hover 下划线（paper 上 5.27）
+       accent-600  #3F5345  → 需要更重一档的文字 / 描边（paper 上 7.41）
+
+     **白字压 accent-500 依然成立（5.89）**，所以后台那批
+     `bg-ink-950 hover:bg-accent-500 text-white` 的按钮不用改。
+     这条必须守住：一旦有人把 accent-500 再调浅，那批按钮的 hover 态
+     会静默变成"白字压浅绿"，看不见但也没坏 —— 属于最难查的那类 bug。 */
+  --color-accent-400: #8aa093;
+  --color-accent-500: #54695f;
+  --color-accent-600: #3f5345;
 
   /* 留白节奏 */
   --spacing-section: clamp(4rem, 10vw, 8rem);
@@ -216,11 +259,12 @@ body {
 }
 
 /* ---------- 按钮 ---------- */
-/* 主按钮：森林绿底 + **白字**（5.64:1）。
-   注意不能配暖炭字——森林绿上暖炭字只有 3.07:1，过不了 AA。
-   hover 反转为暖炭底白字。 */
+/* 主按钮：墨绿黑底 + **白字**（13.35:1）。
+   2026-11-18：原本写死的 bg-black 改为 bg-ink-950 —— 纯黑在米白纸底上
+   是一块"死黑"，与墨绿黑体系脱节；hover 时翻成白底墨字，仍是全站最重
+   的一个动作。 */
 .btn-primary {
-  @apply inline-flex items-center justify-center gap-2 bg-black px-7 py-3.5 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:bg-white hover:text-black;
+  @apply inline-flex items-center justify-center gap-2 bg-ink-950 px-7 py-3.5 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:bg-white hover:text-ink-950;
 }
 
 /* 深底上的主按钮（首屏、深色带）。
@@ -312,9 +356,25 @@ body {
    横向裁切会把服装的下摆与腿部切掉，读者第一眼会读成"目录缩略图"。
    竖构图才能看到完整廓形，这是全站最省力、收益最高的一处改动。
    列表视图（ProductCard list variant）仍有显式的 4/3 覆盖——那是密集
-   浏览模式，需要一屏扫更多行，属于有意的差异。 */
+   浏览模式，需要一屏扫更多行，属于有意的差异。
+
+   【2026-11-18 底色 sand-100 → paper，并加 multiply】
+   产品图是白底棚拍（源图四角 #ffffff）。纸底转成米白 #F4F2ED 之后，
+   白底图会重新变成"贴在页面上的一块白"（这是 11-05 改纯白要解决的问题，
+   现在由 multiply 接管）。
+   multiply 的原理：白(255) 乘任何颜色 = 那个颜色，所以纯白底直接等于
+   纸色，图块边界消失；商品本身的中间调被压暗约 11%，读起来是
+   "暖光下的白衬衫"，不会显得脏。
+   底色必须同时写成 paper：multiply 只跟**最近的背景**混合，
+   若这里仍留 sand-100，白底会乘成 sand-100 而不是纸色，露出一块灰。
+   也不要在本类或其祖先上加 transform / filter / opacity——
+   那会创建隔离组，multiply 就只混到那一层，同样出错。 */
 .card-media {
-  @apply relative aspect-[4/5] overflow-hidden bg-sand-100;
+  @apply relative aspect-[4/5] overflow-hidden bg-paper;
+}
+
+.card-media img {
+  mix-blend-mode: multiply;
 }
 
 /* 强调色文字（用于标签、链接 hover） */
@@ -352,7 +412,33 @@ body {
  * 横图宽、竖图窄，整张图完整显示。
  */
 .marquee-cell {
-  @apply relative h-[26vh] w-auto shrink-0 overflow-hidden bg-sand-100 md:h-[28vh];
+  @apply relative h-[26vh] w-auto shrink-0 overflow-hidden bg-paper md:h-[28vh];
+}
+
+/* 白底产品图乘纸色 —— 理由同 .card-media。跑马灯里全是"白底拍平"的
+   面料特写与产品图，不加这层的话，米白页面上会排出一条比页面更亮的白带。 */
+.marquee-cell img {
+  mix-blend-mode: multiply;
+}
+
+/* 悬停反馈：改用覆盖层，**不再给 img 加 filter**。
+   原来写的是 `hover img { filter: brightness(.9) }`，但 filter 会在
+   img 上创建隔离组，multiply 就只跟 cell 的纸色混合一次；
+   hover 时白底被 brightness 压到 #E5E5E5 再乘纸色，会浮出一块
+   比页面暗的方块 —— 越 hover 越像图破了。覆盖层不碰图片本身，没有这个问题。
+   仍只对带链接的格子生效（纯展示的图不做交互暗示）。 */
+.marquee-cell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-ink-950);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.marquee-cell:not(.marquee-cell--static):hover::after {
+  opacity: 0.1;
 }
 
 /* 链接层必须参与普通流，否则 absolute 不撑开父级，宽度又塌回 0 */
@@ -360,15 +446,9 @@ body {
   @apply block h-full w-auto;
 }
 
-/* 悬停反馈用亮度变化，不再 scale —— 放大必然被 overflow-hidden 裁掉，
-   和"图片全显示"冲突。只对带链接的格子生效。 */
-.marquee-cell img {
-  transition: filter 300ms ease;
-}
-
-.marquee-cell:not(.marquee-cell--static):hover img {
-  filter: brightness(0.9);
-}
+/* 悬停反馈见上方的 .marquee-cell::after。
+   这里**不要**再写 `hover img { filter: brightness() }` —— 会和 multiply 打架
+   （filter 创建隔离组，白底被二次相乘后露出暗块）。 */
 
 .marquee-link:focus-visible {
   @apply outline-2 outline-ink-950 outline-offset-[-3px];
@@ -481,4 +561,107 @@ body {
     transform: none;
     transition: none;
   }
+}
+
+/* =============================================================
+   首页 Hero 胶片（FilmHero · /preview/film 原型）
+   ============================================================= */
+
+/*
+ * 走片：旧帧沿横轴抽出、新帧从另一侧推入。
+ * 方向由 --film-dir 决定（1 = 前进，-1 = 后退），组件按切换方向写内联变量，
+ * 于是同一组 keyframes 两个方向都成立，不用维护两套。
+ */
+@keyframes film-slide-in {
+  from {
+    transform: translateX(calc(var(--film-dir, 1) * 100%));
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes film-slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(calc(var(--film-dir, 1) * -100%));
+    opacity: 0;
+  }
+}
+
+@keyframes film-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes film-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.film-slide-in {
+  animation: film-slide-in 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.film-slide-out {
+  animation: film-slide-out 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* reduced-motion：只淡入淡出，不做位移 */
+@media (prefers-reduced-motion: reduce) {
+  .film-slide-in {
+    animation-name: film-fade-in;
+    animation-duration: 260ms;
+  }
+  .film-slide-out {
+    animation-name: film-fade-out;
+    animation-duration: 260ms;
+  }
+}
+
+/*
+ * 胶片齿孔条：一条深色带，上面一排等距方孔。
+ * 用 background-size 限定成 26×5 的小格再 repeat-x，
+ * 于是每个「方块 + 空白」都是一次平铺，孔距天然等分。
+ */
+.film-sprocket {
+  height: 12px;
+  background-color: #141714;
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.15) 0 9px,
+    transparent 9px
+  );
+  background-size: 26px 5px;
+  background-repeat: repeat-x;
+  background-position: center;
+}
+
+/* 极淡噪点：整块 Hero 铺一层，压住大平面深色底的"塑料感" */
+.film-grain {
+  position: relative;
+}
+
+.film-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* 胶片序列的滚动容器：滚动条不要露出来，接近原生胶片的干净边 */
+.film-strip {
+  scrollbar-width: none;
+}
+
+.film-strip::-webkit-scrollbar {
+  display: none;
 }

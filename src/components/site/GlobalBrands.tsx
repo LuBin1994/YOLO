@@ -82,7 +82,7 @@ const LAYOUT_SCALE = 1;
 
 export default function GlobalBrands() {
   return (
-    <section className="w-full bg-white">
+    <section className="w-full bg-paper">
       {/* 竖向留白交给左右两栏自己给（py-16 / py-20），container 不再加 py ——
           否则黑块上下会各留一段白，变成"浮在白纸上的深色面板"，
           而不是一条从边到边的"左黑右白"色带。 */}
@@ -143,10 +143,14 @@ export default function GlobalBrands() {
               </Reveal>
             </div>
 
-            {/* ---------- 右：白底标识墙 ---------- */}
+            {/* ---------- 右：纸底标识墙 ---------- */}
+            {/* 2026-11-18：bg-white → bg-paper。页面底色已改为纸白 #F4F2ED，
+                这里若仍是纯白，整段会变成一条比页面更亮的白带（ΔL* 4.5），
+                和左栏的深色块拼在一起成了"亮白 + 墨黑"两个硬块。
+                标识本身是透明底 PNG，跟纸底没有融合问题。 */}
             {/* flex + items-center：让七行标识在左栏的高度里垂直居中。
                 不加的话 ul 从顶部开始排，左栏比它高出一截，下方会空一块。 */}
-            <div className="flex items-center bg-white px-6 py-16 sm:px-10 lg:py-16 lg:pl-9 lg:pr-0">
+            <div className="flex items-center bg-paper px-6 py-16 sm:px-10 lg:py-16 lg:pl-9 lg:pr-0">
               <Reveal className="w-full">
                 {/* 28 个 = 4 列 × 7 行，正好整除，不留空格。
                     五列会把超长字标（iBlues 7.6:1 / Pennyblack 12.6:1）压成细条 ——

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -74,16 +75,31 @@ export default function Header() {
       }`}
     >
       <div className="container-site flex h-16 items-center justify-between md:h-20">
+        {/* 品牌字标：2026-11-18 由文字改为客户提供的衬线字标 PNG。
+            原图是白底棕红字，已抠成透明（public/logo-yolo-mark.png，
+            578×159，颜色统一 #8A4139 + 逐像素 alpha）。
+
+            【透明态必须反白】
+            棕红 #8A4139 压在视频墙的暗部上只有约 2:1，等于看不见。
+            brightness(0) 先把 RGB 压成黑（alpha 不动），invert 再翻成白 ——
+            得到的是"白色字标 + 原始抗锯齿边缘"，比换一张白版 PNG 更准，
+            也不用维护两份文件。
+            尺寸走高度、宽度 auto：字标是 3.64:1 的横幅，给宽度会变形。 */}
         <Link
           href="/"
-          className={`flex items-baseline gap-2 transition-colors duration-300 ${
-            onImage ? "text-white" : "text-ink-950"
-          }`}
+          className="flex items-center transition-opacity duration-300 hover:opacity-75"
           aria-label="YOLO APPAREL PTE. LTD. — back to homepage"
         >
-          <span className="text-lg font-medium tracking-tight md:text-xl">
-            YOLO APPAREL PTE. LTD.
-          </span>
+          <Image
+            src="/logo-yolo-mark.png"
+            alt=""
+            width={578}
+            height={159}
+            priority
+            className={`h-[26px] w-auto transition-[filter] duration-300 md:h-[34px] ${
+              onImage ? "[filter:brightness(0)_invert(1)]" : "[filter:none]"
+            }`}
+          />
         </Link>
 
         {/* 桌面导航 */}

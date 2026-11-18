@@ -56,10 +56,8 @@ const JD_ORIGIN = { x: 824, y: 452 };
 
 export default function ChinaNetwork({
   nodes,
-  caption,
 }: {
   nodes: readonly ProvinceNode[];
-  caption: string;
 }) {
   const [active, setActive] = useState<string | null>(null);
   /** clipPath 的 id 必须全局唯一：写成常量，一旦这个区块被复用两次，
