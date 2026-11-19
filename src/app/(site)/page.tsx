@@ -89,13 +89,14 @@ export default async function HomePage() {
           2026-10-22 晚间从第四块提到第一块，顶掉原来的斜切面板首屏。 */}
       <VideoMosaic clips={HOME_REEL} intro={HOME_REEL_INTRO} />
 
-      {/* ② 公司介绍：珍珠白底，左叙述 / 右能力索引。 */}
+      {/* ② 公司介绍：珍珠白底，左文右图；下方能力索引横排三列。 */}
       <WelcomeBand
         eyebrow={HOME_WELCOME.eyebrow}
         lead={HOME_WELCOME.lead}
         body={HOME_WELCOME.body}
         capabilities={HOME_WELCOME.capabilities}
         stats={HOME_WELCOME.stats}
+        image={HOME_WELCOME.image}
       />
 
       {/* ③ 滚动图：两行错峰，悬停暂停。

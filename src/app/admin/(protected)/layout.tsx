@@ -122,7 +122,7 @@ export default async function AdminLayout({
       />
       <main className="min-w-0 flex-1 overflow-x-hidden">
         {/* 放宽内容区（原 max-w-6xl 偏窄，表格与卡片显得局促），并加大纵向留白 */}
-        <div className="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-16">
+        <div className="mx-auto w-full px-6 py-12 md:px-12 md:py-16">
           {children}
         </div>
       </main>

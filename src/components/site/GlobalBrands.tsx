@@ -155,7 +155,7 @@ export default function GlobalBrands() {
                 {/* 28 个 = 4 列 × 7 行，正好整除，不留空格。
                     五列会把超长字标（iBlues 7.6:1 / Pennyblack 12.6:1）压成细条 ——
                     格子变宽后它们才拿得到配平所需的 188px。 */}
-                <ul className="grid grid-cols-2 items-center gap-x-0 gap-y-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-y-1">
+                <ul className="grid grid-cols-2 items-center gap-x-0 gap-y-2 sm:grid-cols-3 lg:grid-cols-6 lg:gap-y-1">
                   {PARTNER_BRANDS.map((brand) => (
                     <li
                       key={brand.name}

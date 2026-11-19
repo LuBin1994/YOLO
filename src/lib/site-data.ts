@@ -368,6 +368,16 @@ export const HOME_WELCOME = {
     { label: "Production countries", value: "5" },
     { label: "Design centres", value: "4" },
   ],
+  /**
+   * 区块配图（2026-11-19）。
+   * 先复用工厂页的品控实拍，客户后续给正式素材时只换这三个字段。
+   * caption 只描述画面，不写工厂名/地点 —— 那种信息需要客户确认后才能上。
+   */
+  image: {
+    src: "/media/factory/qc.jpg",
+    alt: "Inspector checking a finished down jacket at an inline quality station",
+    caption: "Inline inspection on the down filling line",
+  },
 } as const;
 
 /** 清单分组顺序：总部 → 设计 → 销售 → 生产 */
