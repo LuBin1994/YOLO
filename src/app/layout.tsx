@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import JsonLd from "@/components/site/JsonLd";
+import ScrollProgress from "@/components/site/ScrollProgress";
 import { ORGANIZATION_JSON_LD, WEBSITE_JSON_LD } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
@@ -93,6 +94,7 @@ export default function RootLayout({
         </noscript>
       </head>
       <body className="min-h-full flex flex-col">
+        <ScrollProgress />
         {children}
         {/* Vercel Web Analytics：隐私友好的访客数据追踪 */}
         <Analytics />

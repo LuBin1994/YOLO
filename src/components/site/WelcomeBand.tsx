@@ -1,4 +1,6 @@
 import Image from "next/image";
+import CountUp from "./CountUp";
+import Reveal from "./Reveal";
 
 /**
  * 首页公司介绍带：珍珠白底 + 近黑字。
@@ -72,39 +74,50 @@ export default function WelcomeBand({
               ))}
             </div>
 
-            {/* 数据条：dt(标签) 在前保证语义，视觉上用 column-reverse 把数字放上面 */}
+            {/* 数据条：dt(标签) 在前保证语义，视觉上用 column-reverse 把数字放上面。
+                数字接 CountUp：进入视口后从 0 数到目标值，是首页唯一的数字动效点。 */}
             <dl className="mt-10 grid grid-cols-3 gap-6 border-t border-ink-900/12 pt-7">
-              {stats.map((stat) => (
-                <div key={stat.label} className="flex flex-col-reverse">
-                  <dt className="mt-2.5 text-[11px] uppercase leading-snug tracking-[0.14em] text-ink-400">
-                    {stat.label}
-                  </dt>
-                  <dd className="text-3xl font-medium tracking-tight text-ink-950 md:text-4xl">
-                    {stat.value}
-                  </dd>
-                </div>
-              ))}
+              {stats.map((stat) => {
+                /* 从 "16+" / "25,044" 这类字符串里提取数字部分，交给 CountUp */
+                const numMatch = stat.value.match(/[\d,]+/);
+                const num = numMatch
+                  ? parseInt(numMatch[0].replace(/,/g, ""), 10)
+                  : 0;
+                const suffix = stat.value.replace(/[\d,]/g, "").trim();
+                return (
+                  <div key={stat.label} className="flex flex-col-reverse">
+                    <dt className="mt-2.5 text-[11px] uppercase leading-snug tracking-[0.14em] text-ink-400">
+                      {stat.label}
+                    </dt>
+                    <dd className="text-3xl font-medium tracking-tight text-ink-950 md:text-4xl">
+                      <CountUp value={num} suffix={suffix} />
+                    </dd>
+                  </div>
+                );
+              })}
             </dl>
           </div>
 
-          {/* 右：配图 + caption */}
-          <figure className="lg:pt-2">
-            <div className="relative aspect-[10/9] w-full overflow-hidden bg-sand-100">
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                sizes="(min-width: 1024px) 38vw, 100vw"
-                className="object-cover"
-              />
-            </div>
-            {image.caption ? (
-              <figcaption className="mt-3 flex items-baseline gap-2.5 text-[11.5px] leading-relaxed text-ink-400">
-                <span aria-hidden className="h-px w-4 shrink-0 translate-y-[-3px] bg-ink-900/25" />
-                {image.caption}
-              </figcaption>
-            ) : null}
-          </figure>
+          {/* 右：配图 + caption，加 Reveal 入场 */}
+          <Reveal className="lg:pt-2" delay={120}>
+            <figure>
+              <div className="relative aspect-[10/9] w-full overflow-hidden bg-sand-100">
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  sizes="(min-width: 1024px) 38vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
+              {image.caption ? (
+                <figcaption className="mt-3 flex items-baseline gap-2.5 text-[11.5px] leading-relaxed text-ink-400">
+                  <span aria-hidden className="h-px w-4 shrink-0 translate-y-[-3px] bg-ink-900/25" />
+                  {image.caption}
+                </figcaption>
+              ) : null}
+            </figure>
+          </Reveal>
         </div>
 
         {/* 下半：能力索引横排三列 */}

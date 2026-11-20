@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import HeroCollage from "@/components/site/HeroCollage";
 import VideoMosaic from "@/components/site/VideoMosaic";
 import WelcomeBand from "@/components/site/WelcomeBand";
 import ImageMarquee from "@/components/site/ImageMarquee";
@@ -83,11 +84,17 @@ export default async function HomePage() {
       <link rel="preload" as="image" href="/media/home/reel/development.jpg" />
       <link rel="preload" as="image" href="/media/home/reel/collection.jpg" />
 
-      {/* ① 视频墙：九段视频铺满整屏，不规则分格，占住首页第一屏。
-          悬停单格即播、其余暂停；点击从原位滑到中央播放，
-          原位留灰、点 mask 原路滑回（见 VideoMosaic.tsx）。
-          2026-10-22 晚间从第四块提到第一块，顶掉原来的斜切面板首屏。 */}
-      <VideoMosaic clips={HOME_REEL} intro={HOME_REEL_INTRO} />
+      {/* ① 首屏：PC 端用中心辐射式拼贴（HeroCollage），移动端用九宫格视频墙（VideoMosaic）。
+          2026-11-20：PC 端换成 HeroCollage——21 张卡片（9 视频 + 12 图片）
+          以屏幕中心为原点向外辐射，鼠标视差 + 距离放大 + FLIP 展开。
+          移动端保持 VideoMosaic 九宫格，小屏上卡片会挤成一堆。
+          原 VideoMosaic 组件保留，随时可回滚。 */}
+      <div className="hidden md:block">
+        <HeroCollage clips={HOME_REEL} intro={HOME_REEL_INTRO} />
+      </div>
+      <div className="block md:hidden">
+        <VideoMosaic clips={HOME_REEL} intro={HOME_REEL_INTRO} />
+      </div>
 
       {/* ② 公司介绍：珍珠白底，左文右图；下方能力索引横排三列。 */}
       <WelcomeBand

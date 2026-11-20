@@ -18,28 +18,17 @@ const NAV_LINKS = [
 /**
  * 极简导航：Logo 左、导航右。
  *
- * 【透明态（2026-10-23 恢复）】
- * 首页第一屏是满幅视频墙，导航压在它上面、不占位：滚动条在顶部时完全透明
- * + 文字反白，滚过 8px 才变成珍珠白毛玻璃。可读性由**影像侧的顶部压暗**
- * 兜底（VideoMosaic 顶部那道 scrim），不给导航加实底——
- * 加了实底首屏就不再是满幅沉浸的。内页保持实底（PageHero 自带 pt-24）。
+ * 【透明态（2026-10-23 恢复，2026-11-19 关闭）】
+ * 首页第一屏曾是满幅视频墙，导航压在它上面、不占位：滚动条在顶部时完全透明
+ * + 文字反白，滚过 8px 才变成珍珠白毛玻璃。可读性由影像侧的顶部压暗兜底。
  *
- * 注意：透明态要求首屏的影像必须铺到 y=0。若哪天视频墙又改成"从纸底起头"，
- * 白字就会压在纸上读不出来，必须同步改这里。
+ * 2026-11-19 首页首屏换成白底杂志拼版（HeroEditorial），透明反白态失去意义：
+ * 白字压白纸等于隐身。现在全站到顶即实底（bg-paper/90 + backdrop-blur），
+ * 首页与内页导航表现一致，也更干净。
  */
 export default function Header() {
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const isHome = pathname === "/";
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   /* Esc 收起菜单 */
   useEffect(() => {
@@ -51,10 +40,9 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
-  /* 只有「首页 + 到顶 + 菜单未展开」才是透明态 */
-  const solid = scrolled || !isHome || menuOpen;
-  const onImage = !solid;
-  const barColor = onImage ? "bg-white" : "bg-ink-950";
+  /* 2026-11-19：首页首屏换成白底杂志拼版，透明反白态关闭，全站到顶即实底。
+     solid / onImage / scrolled 等透明态相关状态一并移除。 */
+  const barColor = "bg-ink-950";
 
   /**
    * 当前项判定。
@@ -68,11 +56,7 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-        solid
-          ? "bg-paper/90 backdrop-blur-md border-b border-ink-900/8"
-          : "border-b border-transparent bg-transparent text-on-image"
-      }`}
+      className="fixed inset-x-0 top-0 z-50 bg-paper/90 backdrop-blur-md border-b border-ink-900/8 transition-colors duration-300"
     >
       <div className="container-site flex h-16 items-center justify-between md:h-20">
         {/* 品牌字标：2026-11-18 由文字改为客户提供的衬线字标 PNG。
@@ -96,9 +80,7 @@ export default function Header() {
             width={578}
             height={159}
             priority
-            className={`h-[26px] w-auto transition-[filter] duration-300 md:h-[34px] ${
-              onImage ? "[filter:brightness(0)_invert(1)]" : "[filter:none]"
-            }`}
+            className="h-[26px] w-auto md:h-[34px]"
           />
         </Link>
 
@@ -112,23 +94,18 @@ export default function Header() {
                 href={link.href}
                 aria-current={active ? "page" : undefined}
                 className={`group relative text-[15px] tracking-wide transition-colors duration-200 ${
-                  onImage
-                    ? active
-                      ? "font-medium text-white"
-                      : "text-white/75 hover:text-white"
-                    : active
-                      ? "font-medium text-ink-950"
-                      : "text-ink-600 hover:text-ink-950"
+                  active
+                    ? "font-medium text-ink-950"
+                    : "text-ink-600 hover:text-ink-950"
                 }`}
               >
                 {link.label}
-                {/* 下划线：当前项常驻，其余 hover 时滑入。
-                    透明态压在影像上，强调色会沉进暗部，所以那一段改用白色。 */}
+                {/* 下划线：当前项常驻，其余 hover 时滑入 */}
                 <span
                   aria-hidden
-                  className={`absolute -bottom-1.5 left-0 h-[2px] transition-[width] duration-300 ease-out ${
-                    onImage ? "bg-white/80" : "bg-accent-500"
-                  } ${active ? "w-full" : "w-0 group-hover:w-full"}`}
+                  className={`absolute -bottom-1.5 left-0 h-[2px] bg-accent-500 transition-[width] duration-300 ease-out ${
+                    active ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
                 />
               </Link>
             );

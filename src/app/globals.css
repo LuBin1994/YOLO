@@ -186,7 +186,7 @@ body {
 }
 
 ::selection {
-  @apply bg-ink-950 text-white;
+  @apply bg-accent-500 text-white;
 }
 
 /* ---------- 标题层级 ---------- */
@@ -264,18 +264,18 @@ body {
    是一块"死黑"，与墨绿黑体系脱节；hover 时翻成白底墨字，仍是全站最重
    的一个动作。 */
 .btn-primary {
-  @apply inline-flex items-center justify-center gap-2 bg-ink-950 px-7 py-3.5 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:bg-white hover:text-ink-950;
+  @apply inline-flex items-center justify-center gap-2 bg-ink-950 px-7 py-3.5 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:bg-white hover:text-ink-950 active:scale-[0.98];
 }
 
 /* 深底上的主按钮（首屏、深色带）。
    深绿按钮压在深色照片上会整块沉掉，深底上最醒目的永远是白——
    所以这里翻成白底暖炭字，hover 再回到品牌绿。 */
 .btn-light {
-  @apply inline-flex items-center justify-center gap-2 bg-white px-7 py-3.5 text-sm font-medium tracking-wide text-ink-950 transition-colors duration-300 hover:bg-accent-500 hover:text-white;
+  @apply inline-flex items-center justify-center gap-2 bg-white px-7 py-3.5 text-sm font-medium tracking-wide text-ink-950 transition-colors duration-300 hover:bg-accent-500 hover:text-white active:scale-[0.98];
 }
 
 .btn-outline {
-  @apply inline-flex items-center justify-center gap-2 border border-ink-900/20 px-7 py-3.5 text-sm font-medium tracking-wide transition-colors duration-300 hover:border-ink-950 hover:bg-ink-950 hover:text-white;
+  @apply inline-flex items-center justify-center gap-2 border border-ink-900/20 px-7 py-3.5 text-sm font-medium tracking-wide transition-colors duration-300 hover:border-ink-950 hover:bg-ink-950 hover:text-white active:scale-[0.98];
 }
 
 /* 首屏切块面板里的按钮：参考 amersports.com 的紧凑白色方块。
@@ -283,7 +283,7 @@ body {
    两个并排的大按钮会显得笨重，小而紧的白块才有"标签"感。
    hover 仍回到品牌绿（白字，5.64:1）。 */
 .btn-hero {
-  @apply inline-flex items-center justify-center bg-white px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-950 transition-colors duration-300 hover:bg-accent-500 hover:text-white;
+  @apply inline-flex items-center justify-center bg-white px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-950 transition-colors duration-300 hover:bg-accent-500 hover:text-white active:scale-[0.97];
 }
 
 .btn-ghost {
@@ -664,4 +664,140 @@ body {
 
 .film-strip::-webkit-scrollbar {
   display: none;
+}
+
+/* =============================================================
+   2026-11-19 整站质感提升：滚动进度条 + 图片入场 + 导航微交互
+   ============================================================= */
+
+/* 顶部阅读进度条：accent 色细线，随滚动从左到右推进。
+   放在 header 顶部，不占内容空间，是"高端站"最常见的微交互之一。 */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 60;
+  transform-origin: left;
+  transform: scaleX(0);
+  background: var(--color-accent-500);
+  /* 不用 transition，直接跟 scroll 事件同步，避免滞后感 */
+}
+
+/* 图片入场：从 1.04 倍缩放 + 4% 透明度淡入到位，比纯位移更"柔"。
+   用在 WelcomeBand 配图、ShowcaseWall 图组这类大幅图片上。 */
+.reveal-img {
+  opacity: 0;
+  transform: scale(1.04);
+  transition:
+    opacity 900ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-img.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-img {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* 导航链接 hover 时的下划线已用 group-hover 实现，这里补一个
+   键盘 focus-visible 的等效态：让键盘用户也能看到下划线滑入。 */
+.nav-link:focus-visible span[aria-hidden] {
+  width: 100%;
+}
+
+/* ---------- 视差滚动（Parallax）---------- */
+/* 用法：Parallax.tsx 组件把 data-speed 写到元素上，
+   JS 按滚动位置算偏移量，CSS 变量 --parallax-y 驱动 transform。
+   这样 transform 不经过 React state，滚动时不会触发 React 重渲染。 */
+[data-parallax] {
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
+  will-change: transform;
+}
+
+/* 视差容器：需要 overflow-hidden 把超出部分裁掉，
+   否则慢速层会露出窗口外。 */
+.parallax-container {
+  overflow: hidden;
+  position: relative;
+}
+
+/* reduced-motion 下禁用视差：位移是装饰性的，不是语义 */
+@media (prefers-reduced-motion: reduce) {
+  [data-parallax] {
+    transform: none;
+    will-change: auto;
+  }
+}
+
+/* =============================================================
+   2026-11-20 动态拼贴首屏：鼠标驱动视差 + 环绕轨道
+   =============================================================
+   卡片位移由 HeroCollage.tsx 的 rAF + lerp 驱动，
+   通过 CSS 变量 --card-x / --card-y 写入 transform。
+   这里不需要 keyframes —— 视差是"跟手"的，不是自动播放的。
+   reduced-motion 下由组件内部判断禁用，CSS 层面无需处理。 */
+
+/* 环绕轨道旋转：21 张卡片围绕中央标题缓慢旋转（60s 一圈）。
+   轨道容器自身旋转，卡片在轨道上的相对位置不变，
+   但整个环在动 —— 像行星环的公转。 */
+@keyframes hero-orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.hero-orbit {
+  animation: hero-orbit-spin 60s linear infinite;
+  transform-origin: center center;
+}
+
+/* reduced-motion 下禁用轨道旋转 */
+@media (prefers-reduced-motion: reduce) {
+  .hero-orbit {
+    animation: none;
+  }
+}
+
+/* 中央标题入场：从下方 40px 淡入上移，stagger 逐行延迟。
+   与 Reveal 同曲线（cubic-bezier(0.16, 1, 0.3, 1)），但延迟更短、更轻快。 */
+@keyframes hero-text-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.hero-text-enter {
+  animation: hero-text-enter 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* 逐行延迟：eyebrow → 标题 → 正文 → CTA。
+   不用 nth-child（中间有 span/div 隔断），改用显式延迟类。 */
+.hero-delay-0 { animation-delay: 0ms; }
+.hero-delay-1 { animation-delay: 120ms; }
+.hero-delay-2 { animation-delay: 240ms; }
+.hero-delay-3 { animation-delay: 360ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-text-enter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }

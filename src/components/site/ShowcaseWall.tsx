@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ShowcaseShot } from "@/lib/site-data";
+import Parallax from "./Parallax";
 
 /**
  * 案例图墙：三列流式图片 + 钉在视口中央的大字。
@@ -53,21 +54,29 @@ export default function ShowcaseWall({
       <div className="relative px-6 md:px-10">
         <div className="mx-auto w-full max-w-[64rem] md:w-[76%]">
           <div className="columns-2 gap-[3px] md:columns-3">
-            {shots.map((shot, index) => (
-              <figure
-                key={`${shot.src}-${index}`}
-                className="relative mb-[3px] w-full break-inside-avoid bg-sand-100"
-                style={{ aspectRatio: shot.ratio }}
-              >
-                <Image
-                  src={shot.src}
-                  alt={shot.alt}
-                  fill
-                  sizes="(min-width: 768px) 33vw, 50vw"
-                  className="object-cover"
-                />
-              </figure>
-            ))}
+            {shots.map((shot, index) => {
+              /* 三列视差：左列慢速（0.12）、中列中速（0.1）、右列慢速（0.25），
+                 滚动时三列以不同速度上移，图墙从"静态网格"变成"流动的画廊"。
+                 速度差控制在 0.15 以内，再大会出戏。 */
+              const columnIndex = index % 3;
+              const speed = [0.15, 0.05, 0.2][columnIndex];
+              return (
+                <Parallax key={`${shot.src}-${index}`} speed={speed}>
+                  <figure
+                    className="relative mb-[3px] w-full break-inside-avoid bg-sand-100"
+                    style={{ aspectRatio: shot.ratio }}
+                  >
+                    <Image
+                      src={shot.src}
+                      alt={shot.alt}
+                      fill
+                      sizes="(min-width: 768px) 33vw, 50vw"
+                      className="object-cover"
+                    />
+                  </figure>
+                </Parallax>
+              );
+            })}
           </div>
         </div>
       </div>

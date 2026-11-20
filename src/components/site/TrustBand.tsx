@@ -1,3 +1,4 @@
+import CountUp from "./CountUp";
 import Reveal from "./Reveal";
 import WorldMap from "./WorldMap";
 import {
@@ -104,18 +105,24 @@ export default function TrustBand() {
               </h2>
             </div>
 
-            {/* 三个数字先给结论，下面的三块只是把结论展开 */}
+            {/* 三个数字先给结论，下面的三块只是把结论展开。
+                接 CountUp：与 WelcomeBand 的数字动效呼应，首页两处数字都会"数出来"。 */}
             <dl className="grid shrink-0 grid-cols-3 gap-6 sm:gap-10">
-              {numbers.map((item) => (
-                <div key={item.label} className="flex flex-col-reverse">
-                  <dt className="mt-2 text-[11px] uppercase tracking-[0.16em] text-ink-400">
-                    {item.label}
-                  </dt>
-                  <dd className="text-3xl font-medium tabular-nums tracking-tight text-ink-950 md:text-4xl">
-                    {item.value}
-                  </dd>
-                </div>
-              ))}
+              {numbers.map((item) => {
+                const numMatch = item.value.match(/\d+/);
+                const num = numMatch ? parseInt(numMatch[0], 10) : 0;
+                const suffix = item.value.replace(/\d/g, "").trim();
+                return (
+                  <div key={item.label} className="flex flex-col-reverse">
+                    <dt className="mt-2 text-[11px] uppercase tracking-[0.16em] text-ink-400">
+                      {item.label}
+                    </dt>
+                    <dd className="text-3xl font-medium tabular-nums tracking-tight text-ink-950 md:text-4xl">
+                      <CountUp value={num} suffix={suffix} />
+                    </dd>
+                  </div>
+                );
+              })}
             </dl>
           </div>
         </Reveal>
