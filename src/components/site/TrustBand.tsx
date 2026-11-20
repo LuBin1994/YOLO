@@ -218,14 +218,9 @@ export default function TrustBand() {
                           src={item.logo}
                           alt={item.name}
                           title={item.note ?? item.name}
-                          /* fetchPriority="low" 不能删：React 19 会给所有不带
-                             loading="lazy"、也不是 fetchPriority="low" 的 <img>
-                             自动插 <link rel="preload" as="image">。这块在页面中部，
-                             20 张 PNG 一起进 preload 会跟首屏 video poster 抢带宽。
-                             这里不用 loading="lazy"——认证条是横向无限滚动的，
-                             lazy 会让滚出视口的卡片延迟加载，跑马灯里出现空白卡。 */
                           fetchPriority="low"
                           decoding="async"
+                          loading="lazy"
                           className="max-h-full w-auto max-w-full object-contain"
                         />
                       ) : (

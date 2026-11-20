@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
+  WORLD_HIGHLIGHT_PATH,
   WORLD_LAND_PATH,
-  WORLD_MAP_HEIGHT,
   WORLD_MAP_WIDTH,
   WORLD_VIEWBOX,
   projectToMap,
@@ -11,13 +11,18 @@ import {
 import type { OfficeNode, OfficeRole } from "@/lib/site-data";
 
 /**
- * 点阵世界地图 + 绿色定位图钉 + 点击弹信息（2026-11-05 改版）。
+ * 实心剪影世界地图 + 绿色定位图钉 + 点击弹信息。
  *
- * 【这一版去掉了什么】
- * 客户 2026-11-05 看过首页截图后说"坐标系什么不要了"，指的是 2026-10-29 那版
+ * 【2026-11-20 由点阵改为实心剪影（方案 4-solid）】
+ * 原"点阵陆地"在米白纸上糊成网点纸，且绿灰点与 accent-600 图钉撞色。
+ * 现改为 ink-900 92% 实心剪影，明度与图钉拉开，图钉跳出。
+ * 轮廓 path 的 75 个闭合环同向、无洞，直接 fill 安全。
+ *
+ * 【2026-11-05 去掉了什么】
+ * 客户看过首页截图后说"坐标系什么不要了"，指的是 2026-10-29 那版
  * 技术图纸语汇：30° 经纬网、边缘经纬刻度、赤道加重线、左下角三行读数条、
  * 底部 "EQUIRECTANGULAR · WGS-84 / SITES 01–09" 图脚，以及地图外框。
- * 全部移除，只留点阵陆地 —— 地图从"图纸"回到"底色"。
+ * 全部移除，地图从"图纸"回到"底色"。
  *
  * 【换成了什么】
  * 按客户给的目标版式：每个站点一枚**深绿水滴图钉 + 白色内点**，
@@ -55,19 +60,25 @@ import type { OfficeNode, OfficeRole } from "@/lib/site-data";
  * 算百分比必须扣掉 y 的 16 偏移、除以 410 而不是 500，否则点位整体偏下。
  */
 
-const DOT_ID = "wf-land-dots";
-const CLIP_ID = "wf-land-clip";
-
 const INK_900 = "var(--color-ink-900)";
+const ACCENT_400 = "var(--color-accent-400)";
 const ACCENT_600 = "var(--color-accent-600)";
+const SAND_100 = "var(--color-sand-100)";
 
 /**
- * 图钉填色 = 页脚背景色。
- * Footer 用的是 `bg-accent-600`（#3f5345），这里引用同一个令牌，
- * 客户 2026-11-20 要求"坐标 icon 颜色跟页脚一致"。**别改成 accent-500**——
- * 那一档是 #54695f，比页脚浅一档，在米白纸面上会明显发灰。
+ * 图钉填色。
+ *
+ * 【2026-11-20 由 accent-600 改为 ink-900】
+ * 陆地点阵改实心剪影后又从深墨改成 sand-100 浅米灰（见下方地图本体注释）。
+ * 浅陆地上 accent-600 绿钉与 ink-950 标签、米灰陆地三者明度仍偏近，
+ * 且钉身的白心 + 白描边在浅米灰上失效。钉身改用 ink-900 深墨后：
+ * 白描边在浅底/浅陆地上都成立（东南亚三钉手机端重叠仍可分），
+ * 深墨钉从浅米灰陆地上跳出来，与 ink-950 标签是同一墨色家族、
+ * 只靠图标 vs 文字区分，不再靠颜色深浅互相打架。
+ * "与页脚同色"让位于"可读性"——页脚 accent-600 绿仍保留在虚线圈等
+ * 小剂量点缀上。
  */
-const PIN_FILL = ACCENT_600;
+const PIN_FILL = INK_900;
 
 /* viewBox 的可视区域（与 WORLD_VIEWBOX 一致，改那边要同步改这里） */
 const VB_TOP = 16;
@@ -393,44 +404,27 @@ export default function WorldMap({
           setActiveId((current) => (current === id ? null : id));
         }}
       >
-        {/* ---- 地图本体：只有陆地点阵 ---- */}
+        {/* ---- 地图本体：国家轮廓 + 站点国高亮 ----
+            2026-11-20 由点阵改实心剪影，再由单一陆地改「国家底图 + 高亮」两层。
+            底图全部国家 sand-100，站点所在国（美/法/西/意/埃/中/缅/老/柬）
+            叠 sand-200 深一档，既区分又不会被 ink-900 图钉压住。
+            国家边界数据来自 Natural Earth admin_0，按 ADM0_A3 拆分（法国 ISO_A3 是 -99）。 */}
         <svg
           viewBox={WORLD_VIEWBOX}
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
           className="block h-auto w-full"
         >
-          <defs>
-            <pattern
-              id={DOT_ID}
-              width="6"
-              height="6"
-              patternUnits="userSpaceOnUse"
-            >
-              <circle
-                cx="1.5"
-                cy="1.5"
-                r="1.35"
-                fill={INK_900}
-                fillOpacity="0.52"
-              />
-            </pattern>
-            <clipPath id={CLIP_ID}>
-              <path d={WORLD_LAND_PATH} />
-            </clipPath>
-          </defs>
-
-          <rect
-            x="0"
-            y="0"
-            width={WORLD_MAP_WIDTH}
-            height={WORLD_MAP_HEIGHT}
-            fill={`url(#${DOT_ID})`}
-            clipPath={`url(#${CLIP_ID})`}
-          />
+          <path d={WORLD_LAND_PATH} fill={SAND_100} />
+          {/* 高亮站点所在国。用 accent-400 浅绿而不是 sand-200：
+              sand-200 与 sand-100 明度差太小，远看不跳；accent-400 既
+              明确区分，又与绿虚线圈、页脚 accent-600 同属绿色家族，
+              符合"accent 只小剂量"的设计约束。 */}
+          <path d={WORLD_HIGHLIGHT_PATH} fill={ACCENT_400} fillOpacity={0.4} />
 
           {/* 集群虚线圈：只给带 clusterRadius 的站点（中国四省）。
-              画在图钉之下，所以杭州那枚钉看起来正好落在圈里。 */}
+              画在图钉之下，所以杭州那枚钉看起来正好落在圈里。
+              浅米灰陆地上 accent-600 绿虚线可读，恢复用品牌绿。 */}
           {offices.map((office) => {
             if (!office.clusterRadius) return null;
             const [x, y] = projectToMap(office.lon, office.lat);
@@ -443,7 +437,7 @@ export default function WorldMap({
                 r={office.clusterRadius}
                 fill="none"
                 stroke={ACCENT_600}
-                strokeOpacity={isActive ? 0.7 : 0.4}
+                strokeOpacity={isActive ? 0.8 : 0.5}
                 strokeWidth={isActive ? 1.4 : 1}
                 strokeDasharray="4 4"
                 vectorEffect="non-scaling-stroke"
