@@ -27,7 +27,7 @@ export default function QuoteHero({
   }[];
 }) {
   return (
-    <section className="relative flex min-h-[88svh] flex-col justify-end overflow-hidden bg-ink-950">
+    <section className="relative flex min-h-[88svh] flex-col justify-end overflow-hidden bg-accent-600">
       <Image
         src={image}
         alt=""

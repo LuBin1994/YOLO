@@ -178,32 +178,28 @@ export default function VideoMosaic({
   const dialogVideoRef = useRef<HTMLVideoElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const timerRef = useRef<number | null>(null);
-  /** 点开那一刻源视频的进度，居中播放器接着这一帧往下走 */
-  const resumeAt = useRef(0);
 
-  /* 悬停播放：同一时刻只有一个在播。弹层打开时全部暂停，交给面板里的播放器 */
-  useEffect(() => {
-    videos.current.forEach((node, id) => {
-      if (active || id !== hovered) {
-        node.pause();
-        return;
-      }
-      const played = node.play();
-      /* 浏览器可能因解码或策略拒绝播放，这里吞掉即可——
-         失败时 poster 还在，视觉上只是"没动"，不是错误态 */
-      if (played) played.catch(() => {});
-    });
-  }, [hovered, active]);
+  /* 2026-11-20 改版：视频不再悬停播放，只有点击展开后才播。
+     关闭弹层时暂停并重置 currentTime，恢复成 poster。
+     这样首屏只加载 9 张 poster（合计 <1MB），视频零预加载。 */
 
   const close = useCallback(() => {
     setExpanded(false);
     if (timerRef.current) window.clearTimeout(timerRef.current);
     timerRef.current = window.setTimeout(() => {
+      /* 关闭弹层时暂停并重置源视频：恢复成 poster，进度归零 */
+      if (active) {
+        const source = videos.current.get(active.clip.id);
+        if (source) {
+          source.pause();
+          source.currentTime = 0;
+        }
+      }
       setActive(null);
       setTarget(null);
       triggerRef.current?.focus();
     }, ANIM_MS);
-  }, []);
+  }, [active]);
 
   /* 打开后等两帧再置 expanded：确保"停在格子原位"这一帧真画出来了，
      否则浏览器会把首末态合并，过渡直接不发生 */
@@ -258,9 +254,6 @@ export default function VideoMosaic({
       height = vh * 0.78;
       width = height * ratio;
     }
-
-    const source = videos.current.get(clip.id);
-    resumeAt.current = source ? source.currentTime : 0;
 
     triggerRef.current = el;
     setTarget({
@@ -453,13 +446,6 @@ export default function VideoMosaic({
               loop
               autoPlay
               playsInline
-              onLoadedMetadata={() => {
-                const node = dialogVideoRef.current;
-                if (!node) return;
-                if (resumeAt.current > 0 && resumeAt.current < node.duration) {
-                  node.currentTime = resumeAt.current;
-                }
-              }}
               className="h-full w-full object-cover"
             />
 

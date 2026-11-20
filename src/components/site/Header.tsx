@@ -84,8 +84,26 @@ export default function Header() {
           />
         </Link>
 
-        {/* 桌面导航 */}
-        <nav className="hidden items-center gap-6 lg:flex xl:gap-8" aria-label="Main">
+        {/*
+         * 桌面导航：2026-11-20 起改用品牌衬线（Playfair Display，font-serif），
+         * 与左侧字标统一 —— 客户要求「导航文字用 logo 同款字体」。
+         *
+         * 【为什么是大写 + 11.5px 而不是原样的 15px】
+         * 字标是高对比 Didone，发丝笔画在 12–15px 只有 0.5–1px，
+         * 直接套 15px 混排会发灰、显得脏。改成大写成组 + 加字距，
+         * 靠"整组排版"体现衬线气质，这是时装品牌页头的通用做法。
+         *
+         * 【为什么字号/字距分 lg 与 xl 两档】
+         * 实测 7 项大写 + 0.14em 字距约 790px，而 `lg`(1024) 扣掉容器
+         * 内边距与 124px 字标只剩约 850px 可用 —— 贴着边界。所以
+         * lg 收成 11.5px / 0.10em / gap-4，xl 才放开到 12.5px / 0.14em。
+         * 断点仍留在 lg：抬到 xl 会让 1024–1279 的笔记本掉成汉堡菜单。
+         *
+         * 【字重恒为 700】
+         * 只载了 600/700 两档。当前项不再用 font-medium 区分（500 无字重会
+         * 被合成或跳到 600，反而不稳），改用颜色 + 常驻下划线。
+         */}
+        <nav className="hidden items-center gap-4 lg:flex xl:gap-7" aria-label="Main">
           {NAV_LINKS.map((link) => {
             const active = isActive(link.href);
             return (
@@ -93,10 +111,8 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`group relative text-[15px] tracking-wide transition-colors duration-200 ${
-                  active
-                    ? "font-medium text-ink-950"
-                    : "text-ink-600 hover:text-ink-950"
+                className={`group relative font-serif text-[11.5px] font-bold uppercase tracking-[0.1em] transition-colors duration-200 xl:text-[12.5px] xl:tracking-[0.14em] ${
+                  active ? "text-ink-950" : "text-ink-600 hover:text-ink-950"
                 }`}
               >
                 {link.label}
@@ -160,14 +176,16 @@ export default function Header() {
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
                   aria-current={active ? "page" : undefined}
-                  className={`flex items-center justify-between py-4 text-base tracking-wide transition-colors duration-200 ${
-                    active ? "font-medium text-ink-950" : "text-ink-600"
+                  className={`flex items-center justify-between py-4 font-serif text-[15px] font-bold uppercase tracking-[0.12em] transition-colors duration-200 ${
+                    active ? "text-ink-950" : "text-ink-600"
                   }`}
                 >
                   {link.label}
+                  {/* 箭头强制用无衬线：Playfair 不含箭头字形，
+                      混进衬线回退链可能掉成豆腐块 */}
                   <span
                     aria-hidden
-                    className={active ? "text-accent-500" : "text-ink-400"}
+                    className={`font-sans ${active ? "text-accent-500" : "text-ink-400"}`}
                   >
                     →
                   </span>

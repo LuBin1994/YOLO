@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
   WORLD_LAND_PATH,
   WORLD_MAP_HEIGHT,
@@ -60,6 +60,14 @@ const CLIP_ID = "wf-land-clip";
 
 const INK_900 = "var(--color-ink-900)";
 const ACCENT_600 = "var(--color-accent-600)";
+
+/**
+ * 图钉填色 = 页脚背景色。
+ * Footer 用的是 `bg-accent-600`（#3f5345），这里引用同一个令牌，
+ * 客户 2026-11-20 要求"坐标 icon 颜色跟页脚一致"。**别改成 accent-500**——
+ * 那一档是 #54695f，比页脚浅一档，在米白纸面上会明显发灰。
+ */
+const PIN_FILL = ACCENT_600;
 
 /* viewBox 的可视区域（与 WORLD_VIEWBOX 一致，改那边要同步改这里） */
 const VB_TOP = 16;
@@ -140,14 +148,17 @@ function PinMark({ dim }: { dim: boolean }) {
           而不是糊成一块绿斑。桌面宽屏下这圈白边几乎看不见，不影响。 */}
       <path
         d="M12 0.9C6 0.9 1.1 5.8 1.1 11.8c0 8.3 10.9 19.3 10.9 19.3s10.9-11 10.9-19.3C22.9 5.8 18 0.9 12 0.9Z"
-        fill={ACCENT_600}
+        fill={PIN_FILL}
         stroke="var(--color-paper)"
         strokeWidth="1.6"
         strokeLinejoin="round"
       />
-      {/* 参考图是"浅绿环 + 白心"，这里压成细环 + 白点：
-          在 14px 的手机尺寸下也得看得出是一枚定位针，而不是一团绿 */}
-      <circle cx="12" cy="11.6" r="4.2" fill="#ffffff" fillOpacity="0.3" />
+      {/* 【2026-11-20 去掉钉身内的 30% 白环】
+          客户要求图钉与页脚同色（accent-600 #3f5345）。原设计在钉身里铺了一个
+          r=4.2、白 30% 的圆环（为了 14px 下像"浅绿环 + 白心"），它把钉身整体冲淡，
+          小尺寸看上去比页脚浅一档 —— 这是"颜色不一致"的真正来源。
+          白环去掉后钉身是实心 #3f5345，只留白心，与页脚严格同色。
+          代价：手机上少一圈装饰，但白心 + 白描边已足够读出"这是一枚定位针"。 */}
       <circle cx="12" cy="11.6" r="3.1" fill="#ffffff" />
     </svg>
   );
@@ -167,6 +178,52 @@ export default function WorldMap({
 
   /** 指针命中用（见 HIT_RADIUS 注释） */
   const frameRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * 图钉"依次冒出"的触发开关。
+   *
+   * 【为什么用 IntersectionObserver 而不是 CSS animation 直接跑】
+   * 地图在首页偏下的位置，进页面时根本不在视口里。让它一开始就播，
+   * 用户滚到这里时动画早放完了 —— 等于没有。
+   *
+   * 【顺序 = 经度从小到大】
+   * 于是气泡从地图左缘（纽约/巴黎）一路扫到右缘（杭州），
+   * 像一次"从西向东铺开"的编排，而不是按数组顺序随机闪。
+   */
+  const [revealed, setRevealed] = useState(false);
+
+  /** id → 出场序号（按经度） */
+  const popOrder = (() => {
+    const sorted = [...offices].sort((a, b) => a.lon - b.lon);
+    const map = new Map<string, number>();
+    sorted.forEach((office, index) => map.set(office.id, index));
+    return map;
+  })();
+
+  useEffect(() => {
+    const el = frameRef.current;
+
+    /* 无 IntersectionObserver：直接进入终态 */
+    if (!el || typeof IntersectionObserver === "undefined") {
+      const raf = requestAnimationFrame(() => setRevealed(true));
+      return () => cancelAnimationFrame(raf);
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setRevealed(true);
+          io.disconnect();
+        }
+      },
+      /* 地图整块高度不大，0.15 就够；底下留 10% 余量，
+         免得"刚露出 1px 就开始弹"。 */
+      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" }
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   /**
    * 地图当前的实际像素尺寸。
@@ -326,7 +383,7 @@ export default function WorldMap({
     >
       <div
         ref={frameRef}
-        className="relative w-full select-none"
+        className={`map-pins relative w-full select-none ${revealed ? "is-in" : ""}`}
         onPointerLeave={(event) => {
           if (event.pointerType === "mouse") setActiveId(null);
         }}
@@ -397,8 +454,11 @@ export default function WorldMap({
         </svg>
 
         {/* ---- 图钉（HTML，固定像素尺寸） ----
-            外层负责"钉尖对齐坐标"，内层负责激活时的放大 ——
-            两者都要用 transform，叠在一个元素上会互相覆盖。 */}
+            三层各司其职，不能合并：
+            外层 = 钉尖对齐坐标（translate(-50%,-100%)）+ 出场序号 --pin-i
+            中层 = 冒泡动画（.pin-pop，见 globals.css）
+            内层 = 激活时放大（scale-110）
+            动画与定位写在同一层会互相顶掉，这是这个组件最容易踩的坑。 */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
           {offices.map((office) => {
             if (office.clusterRadius) return null; /* 集群只画圈，见顶部注释 */
@@ -409,18 +469,23 @@ export default function WorldMap({
               <span
                 key={`pin-${office.id}`}
                 className="absolute h-[20px] w-[14px] md:h-[28px] md:w-[20px]"
-                style={{
-                  left: `${left}%`,
-                  top: `${top}%`,
-                  transform: "translate(-50%, -100%)",
-                }}
+                style={
+                  {
+                    left: `${left}%`,
+                    top: `${top}%`,
+                    transform: "translate(-50%, -100%)",
+                    "--pin-i": popOrder.get(office.id) ?? 0,
+                  } as CSSProperties
+                }
               >
-                <span
-                  className={`block h-full w-full origin-bottom transition-transform duration-200 ${
-                    isActive ? "scale-110" : "scale-100"
-                  }`}
-                >
-                  <PinMark dim={activeId !== null && !isActive} />
+                <span className="pin-pop block h-full w-full">
+                  <span
+                    className={`block h-full w-full origin-bottom transition-transform duration-200 ${
+                      isActive ? "scale-110" : "scale-100"
+                    }`}
+                  >
+                    <PinMark dim={activeId !== null && !isActive} />
+                  </span>
                 </span>
               </span>
             );
@@ -445,15 +510,20 @@ export default function WorldMap({
               <span
                 key={`label-${office.id}`}
                 className={`map-label absolute ${dim ? "opacity-35" : "opacity-100"}`}
-                style={{
-                  left: `calc(${left}% + ${dx}px)`,
-                  top: `calc(${top}% + ${dy}px)`,
-                  transform: `translate(${
-                    anchor === "start" ? "0" : anchor === "end" ? "-100%" : "-50%"
-                  }, -50%)`,
-                }}
+                style={
+                  {
+                    left: `calc(${left}% + ${dx}px)`,
+                    top: `calc(${top}% + ${dy}px)`,
+                    transform: `translate(${
+                      anchor === "start" ? "0" : anchor === "end" ? "-100%" : "-50%"
+                    }, -50%)`,
+                    "--pin-i": popOrder.get(office.id) ?? 0,
+                  } as CSSProperties
+                }
               >
-                {office.label}
+                {/* 入场动画挂在内部 span：外层正被锚点 transform 和
+                    "选中时压暗"的 opacity 占用，动画上去会顶掉这两者 */}
+                <span className="pin-label">{office.label}</span>
               </span>
             );
           })}

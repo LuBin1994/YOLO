@@ -97,6 +97,7 @@ export default function ImageMarquee({
                     alt={alt}
                     width={800}
                     height={800}
+                    loading="lazy"
                     sizes="(max-width: 768px) 60vw, 400px"
                     style={{
                       display: "block",

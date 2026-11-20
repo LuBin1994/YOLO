@@ -90,7 +90,7 @@ export default function TrustBand() {
   /* 区块底色：2026-10-22 起由 sand-50 改为 paper，首页各区块统一 #f8f6f0，
      不再靠深浅交替划分板块（页脚仍保留 sand-50 作区隔）。 */
   return (
-    <section className="w-full bg-paper">
+    <section className="w-full bg-world-map">
       <div className="container-site py-20 md:py-28">
         {/* ---------- 头部：一句总纲 + 三个数字 ---------- */}
         <Reveal>
@@ -201,7 +201,7 @@ export default function TrustBand() {
               - 卡片尺寸写在 globals.css 的 .cert-card 里，不用任意值 utility：
                 任意值类靠 Tailwind 扫描生成，dev 偶发漏编译时卡片宽度会退回
                 min-content，被 logo 的宽高比撑开（方形标变窄、OEKO-TEX 变一条）。 */}
-          <div className="mt-10 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_9%,#000_91%,transparent)]">
+          <div className="mt-10 overflow-hidden">
             <ul className="cert-marquee flex w-max animate-[marquee-left_80s_linear_infinite] gap-3">
               {(() => {
                 const items = CERTIFICATION_WALL.groups.flatMap((g) => g.items);

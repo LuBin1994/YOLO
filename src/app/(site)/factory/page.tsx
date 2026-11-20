@@ -550,9 +550,6 @@ export default function FactoryPage() {
                   Eight stages, and a check between each pair.
                 </h2>
               </div>
-              <p className="text-[11px] uppercase tracking-[0.18em] text-white/55">
-                Drag / scroll →
-              </p>
             </div>
           </Reveal>
         </div>
@@ -577,7 +574,7 @@ export default function FactoryPage() {
                 <h3 className="mt-3 text-base font-medium tracking-tight text-white md:text-lg">
                   {p.title}
                 </h3>
-                <p className="mt-2.5 text-[15px] leading-[1.75] text-white/55">
+                <p className="mt-2.5 text-[15px] leading-[1.75] text-white/70">
                   {p.body}
                 </p>
               </article>

@@ -102,8 +102,9 @@ export default function ProductBrowser({
     );
     if (Math.abs(target - window.scrollY) < 6) return;
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    window.scrollTo({ top: target, behavior: reduceMotion ? "auto" : "smooth" });
+    /* 2026-11-20：一律平滑滚动。原来按 prefers-reduced-motion 走 auto，
+       客户机命中的结果就是"点筛选页面瞬移"，与其他动效的调性不统一。 */
+    window.scrollTo({ top: target, behavior: "smooth" });
   }, [path]);
 
   const tabRow = rows.find((r) => r.level === 0);

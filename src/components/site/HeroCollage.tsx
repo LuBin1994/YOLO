@@ -28,7 +28,8 @@ import type { ReelClip, ReelIntro } from "@/lib/site-data";
  *   - 展开弹层 z-70/80
  *
  * 【reduced-motion】
- *   视差与放大禁用，卡片静止；点击展开仍可用。
+ *   2026-11-20 起不再降级：客户机开启「减少动态效果」时视差会整块失效，
+ *   按客户要求常开。卡片静止态与点击展开在任何情况下都可用。
  */
 
 /* 元素类型：视频 or 图片 */
@@ -130,27 +131,14 @@ export default function HeroCollage({
   const triggerRef = useRef<HTMLElement | null>(null);
   const timerRef = useRef<number | null>(null);
 
-  /* 悬停播放：同一时刻只有一格在播 */
-  useEffect(() => {
-    videos.current.forEach((node, id) => {
-      if (id !== hovered) {
-        node.pause();
-        return;
-      }
-      const played = node.play();
-      if (played) played.catch(() => {});
-    });
-  }, [hovered]);
+  /* 2026-11-20 改版：视频不再悬停播放，只有点击展开后才播。
+     关闭弹层时暂停并重置 currentTime，恢复成 poster。
+     这样首屏只加载 9 张 poster（合计 <1MB），视频零预加载。 */
 
-  /* 鼠标视差 + 距离放大：rAF 驱动 */
+  /* 鼠标视差 + 距离放大：rAF 驱动。
+     2026-11-20：不再读 prefers-reduced-motion —— 客户环境命中该偏好后
+     视差整块失效（表现为"鼠标滑动没反应"），按客户要求常开。 */
   useEffect(() => {
-    // const forceParallax = new URLSearchParams(window.location.search).get("parallax") === "force";
-    // const reduced = !forceParallax && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // if (reduced) {
-    //   console.log("[HeroCollage] reduced-motion detected, parallax disabled");
-    //   return;
-    // }
-
     const cardElements = document.querySelectorAll<HTMLElement>("[data-card]");
     if (cardElements.length === 0) return;
 
@@ -266,11 +254,19 @@ export default function HeroCollage({
     setIsExpanded(false);
     if (timerRef.current) window.clearTimeout(timerRef.current);
     timerRef.current = window.setTimeout(() => {
+      /* 关闭弹层时暂停并重置视频：恢复成 poster，进度归零 */
+      if (expanded?.item.kind === "video") {
+        const video = document.querySelector<HTMLVideoElement>(`[data-dialog-video="${expanded.item.clip.id}"]`);
+        if (video) {
+          video.pause();
+          video.currentTime = 0;
+        }
+      }
       setExpanded(null);
       setTargetRect(null);
       triggerRef.current?.focus();
     }, ANIM_MS);
-  }, []);
+  }, [expanded]);
 
   /* Esc 收起 */
   useEffect(() => {
@@ -394,6 +390,7 @@ export default function HeroCollage({
                       src={data.src}
                       alt={data.alt}
                       fill
+                      loading="lazy"
                       sizes="(max-width: 768px) 160px, 280px"
                       className="object-cover"
                     />
@@ -493,6 +490,7 @@ export default function HeroCollage({
             {expanded.item.kind === "video" ? (
               <video
                 key={expanded.item.clip.id}
+                data-dialog-video={expanded.item.clip.id}
                 src={expanded.item.clip.src}
                 poster={expanded.item.clip.poster}
                 muted
@@ -506,6 +504,7 @@ export default function HeroCollage({
                 src={expanded.item.src}
                 alt={expanded.item.alt}
                 fill
+                loading="lazy"
                 sizes="(max-width: 768px) 100vw, 800px"
                 className="object-cover"
               />

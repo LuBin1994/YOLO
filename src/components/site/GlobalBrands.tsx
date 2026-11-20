@@ -82,7 +82,7 @@ const LAYOUT_SCALE = 1;
 
 export default function GlobalBrands() {
   return (
-    <section className="w-full bg-paper">
+    <section className="w-full bg-paper bg-green-9AA899">
       {/* 竖向留白交给左右两栏自己给（py-16 / py-20），container 不再加 py ——
           否则黑块上下会各留一段白，变成"浮在白纸上的深色面板"，
           而不是一条从边到边的"左黑右白"色带。 */}
@@ -102,40 +102,40 @@ export default function GlobalBrands() {
               lg 以下 container 内边距是 40px，但那时不显示斜切，无影响。 */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-y-0 -left-16 right-0 hidden bg-ink-950 lg:block"
+            className="pointer-events-none absolute inset-y-0 -left-16 right-0 hidden bg-green-9AA899 lg:block"
             style={{ clipPath: "polygon(0 0, 38% 0, 32% 100%, 0 100%)" }}
           />
 
           <div className="relative grid lg:grid-cols-[35%_1fr]">
             {/* ---------- 左：黑块上的文案 ---------- */}
-            <div className="-mx-6 flex flex-col justify-center bg-ink-950 px-6 py-16 sm:-mx-10 sm:px-10 lg:mx-0 lg:bg-transparent lg:py-20 lg:pl-0 lg:pr-0">
+            <div className="-mx-6 flex flex-col justify-center bg-green-9AA899 px-6 py-16 sm:-mx-10 sm:px-10 lg:mx-0 lg:bg-transparent lg:py-20 lg:pl-0 lg:pr-0">
               {/* 文字必须留在斜边最窄处以内（黑块底部只到 28%，
                   而本列宽 35%），否则白字会掉到白底上。
                   80% × 35% = 28%，正好卡住。 */}
               <Reveal className="lg:max-w-[80%]">
-                <p className="flex items-center gap-3 text-[12px] font-medium uppercase tracking-[0.28em] text-white/50">
+                <p className="flex items-center gap-3 text-[12px] font-medium uppercase tracking-[0.28em]">
                   <span aria-hidden className="h-[3px] w-6 bg-accent-400" />
                   {PARTNERS_INTRO.eyebrow}
                 </p>
-                <h2 className="display-md mt-5 text-white">
+                <h2 className="display-md mt-5">
                   {PARTNERS_INTRO.title}
                 </h2>
 
-                <p className="mt-6 text-[15px] leading-[1.85] text-white/70">
+                <p className="mt-6 text-[15px] leading-[1.85] ">
                   {PARTNERS_INTRO.lead}
                 </p>
-                <p className="mt-4 text-[15px] leading-[1.85] text-white/70">
+                <p className="mt-4 text-[15px] leading-[1.85] ">
                   {PARTNERS_INTRO.body}
                 </p>
 
                 <Link
                   href={PARTNERS_INTRO.cta.href}
-                  className="group mt-8 inline-flex items-stretch border border-white/28 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/85 transition-colors duration-300 hover:border-white/60 hover:text-white"
+                  className="group mt-8 inline-flex items-stretch border border-black text-[11px] font-semibold uppercase tracking-[0.16em] text-black transition-colors duration-300 hover:border-black/60 hover:text-black"
                 >
                   <span className="px-5 py-3">{PARTNERS_INTRO.cta.label}</span>
                   <span
                     aria-hidden
-                    className="flex w-10 items-center justify-center border-l border-white/28 transition-transform duration-300 group-hover:translate-x-1"
+                    className="flex w-10 items-center justify-center border-l border-black transition-transform duration-300 group-hover:translate-x-1"
                   >
                     →
                   </span>
@@ -150,7 +150,7 @@ export default function GlobalBrands() {
                 标识本身是透明底 PNG，跟纸底没有融合问题。 */}
             {/* flex + items-center：让七行标识在左栏的高度里垂直居中。
                 不加的话 ul 从顶部开始排，左栏比它高出一截，下方会空一块。 */}
-            <div className="flex items-center bg-paper px-6 py-16 sm:px-10 lg:py-16 lg:pl-9 lg:pr-0">
+            <div className="flex items-center bg-green-9AA899 px-6 py-16 sm:px-10 lg:py-16 lg:pl-9 lg:pr-0">
               <Reveal className="w-full">
                 {/* 28 个 = 4 列 × 7 行，正好整除，不留空格。
                     五列会把超长字标（iBlues 7.6:1 / Pennyblack 12.6:1）压成细条 ——

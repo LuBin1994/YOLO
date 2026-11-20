@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import JsonLd from "@/components/site/JsonLd";
 import ScrollProgress from "@/components/site/ScrollProgress";
@@ -10,6 +10,22 @@ import "./globals.css";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
+});
+
+/**
+ * 品牌衬线：客户字标（logo-yolo-mark.png）是 Didone / fat-face 一类的高对比现代衬线，
+ * 客户要求导航与其统一。位图反查不出确切字体名，选 Playfair Display ——
+ * 四款开源候选（Playfair / Bodoni Moda / Prata / Abril Fatface）里气质最接近，
+ * OFL 授权可自托管。（对比页 /preview/type 已于 2026-11-20 随预览目录一并删除。）
+ *
+ * 只载 600/700 两档：全站只有导航用它，不载 400/900 省一个字体文件。
+ * 【不要】把它当正文字体用 —— 12–15px 下 1px 的发丝笔画会糊。
+ */
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["600", "700"],
   display: "swap",
 });
 
@@ -86,11 +102,14 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
+    >
       <head>
-        {/* 兜底：JS 未启用/加载失败时，滚动揭示的初始隐藏态会把内容永久藏住 */}
+        {/* 兜底：JS 未启用/加载失败时，滚动揭示与地图图钉的初始隐藏态会把内容永久藏住 */}
         <noscript>
-          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}.pin-pop,.pin-label{opacity:1 !important}`}</style>
         </noscript>
       </head>
       <body className="min-h-full flex flex-col">

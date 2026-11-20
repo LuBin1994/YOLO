@@ -1,178 +1,61 @@
 @import "tailwindcss";
 
-/* =============================================================
-   设计系统 · 雾面纸白 + 暖素灰 + 墨绿黑 + 灰绿
-   基底：纸白 paper #F4F2ED（2026-11-18 客户选定「雾面莫兰迪」）
-   衬底：暖素灰 sand 三档（页脚带 / 图片占位 / 描边）
-   重音：墨绿黑 ink-950 #2A312B（深色带的底）
-   强调：灰绿 accent（品牌绿去饱和后的版本，克制使用）
-   =============================================================
-
-   【2026-11-18 整体换色：纯白 → 雾面纸白，饱和四绿 → 低饱和灰绿】
-
-   客户经过三轮比稿，最后圈定了「雾面莫兰迪」那一版。反馈原话是
-   「色彩对比度太高，容易腻，显示不够高端」——这句要拆成两件事，
-   拆错了就会白改：
-
-   1. 「对比度太高」**不是文字对比度**，是**色块之间的跳变**。
-      上一版 A–D 四套方案的色板彩度均值 C* 48、最高 67.9（LAB），
-      饱和色块并列，每块都在抢注意力，看久了确实腻。
-      这一版把十个色值整体压到 C* 均值 7.1、最高 12.3。
-      量化的比对见 `.workbuddy/artifacts/palette/verify-h.js`。
-
-   2. 「不够高端」**跟颜色无关**，是排版的事：字重、留白、细线。
-      标题 500 字重这条没动（本来就克制），但**去掉了所有高饱和装饰**，
-      让层次只剩明度差 + hairline。
-
-   【为什么又改回米白？11-05 那条「纯白」的理由怎么办】
-
-   11-05 客户指定纯白，理由是产品图本身纯白底，压在米白上会浮出一块
-   比页面更亮的矩形（ΔL* 3.1），像"贴上去的图"。这条理由现在依然成立——
-   所以这次**同时给了两个配套改动**，不是把问题甩回去：
-
-   a. `--color-paper` 改 #F4F2ED（L* 95.5），与纯白的 ΔL* 4.5。
-   b. 白底产品图容器（`.card-media` / `.marquee-cell`）底色改为 paper，
-      图片加 `mix-blend-mode: multiply`：白底乘纸色 = 纸色，
-      图块边界彻底消失。代价是商品中间调会整体压暗约 11%（乘了
-      0.96/0.95/0.93），实测在衣服上读作"暖光下的白衬衫"，不是"图变脏"。
-      这是刻意的交换：纸感是客户要的，商品偏暖是可接受的副作用。
-
-   也就是说：**11-05 的结论没有被推翻，是被 multiply 抵消了。**
-   如果哪天有人把 multiply 去掉，请同时把 paper 改回纯白，
-   否则"贴上去的图"会立刻回来。
-
-   【下面这段是 11-05 的原始记录，保留作为背景，其中"纯白"的结论
-     已被上面的 multiply 方案替代，阅读时注意时间顺序】
-
-   【2026-11-05 基色由珍珠白 #f8f6f0 改为纯白 #ffffff】
-
-   客户指定"paper 用纯白"。这一改不只是换个色值，它连带动了三件事：
-
-   1. **产品照终于不用再"贴"在米白上了。**
-      产品图本身是纯白底（实测四角全是 #ffffff），压在米白 #f8f6f0 上
-      有 ΔL* 3.1 的亮度跳变，观感像"贴上去的图"。改成纯白后图片与页面同色，
-      直接融成画廊 —— 这是这次改动最大的收益，比任何修饰都有效。
-
-   2. **"浮起"的语言必须换。**
-      原来白色卡片靠"白 vs 米白"的色差浮起来。现在两者同色，
-      所以抬升改用**发丝描边**（border-ink-900/10 一类）+ 极轻投影，
-      不要再指望底色差。凡是新加的白色面板，都要自带一条边。
-
-   3. **暖色不能一起丢掉。**
-      页面转白后，品牌的暖调只剩 ink（暖炭 #1b1a17，色相 H45）和 sand 灰阶承担。
-      所以 sand 保留暖调（不是中性灰），只是把明度重新配平 ——
-      见下面灰阶注释。
-
-   【关于被换掉的那一版强调色】
-   上一版是电光青柠 volt-300/400/500（#e6ff85 / #d6f94b / #c4ed2b）。
-   它是 2026-09「要有活力一些」那轮引入的，但它的色相又酸又跳：
-   大面积使用时会和底色打架，小面积使用又像高亮笔痕迹。
-   品牌自己原有的主色是森林绿，这次把强调色换回它。
-
-   【森林绿的用法约束】
-   - 只用于**小剂量**：细线、小方块、hover 下划线、色块底配白字、地图节点环。
-   - 不要大面积铺，也不要在浅底上做正文色（accent-500 上白字 5.49:1，
-     上暖炭字只有 3.07:1，**森林绿底一律配白字**）。
-   - 深色调页面（首屏、暖炭带）上，强调色让位给白色——深底上再叠深绿看不清。
-   ============================================================= */
-
 @theme {
   /* 字体 */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
     "Helvetica Neue", Arial, sans-serif;
+  /* 品牌衬线（Playfair Display，见 layout.tsx 说明）。
+     只给导航用：覆盖 Tailwind 默认的 --font-serif，于是全站 font-serif
+     都指向品牌衬线，不会退到 Georgia/Times。
+     回退链里放 Georgia 而不是 Times：同属高对比衬线，掉字体时气质不跑偏。 */
+  --font-serif: var(--font-playfair), Georgia, "Times New Roman", serif;
 
-  /* 2026-11-18：原 forest-* 十档已删 —— 全站 0 引用，是"将来换品牌色"
-     留下的备用开关，实际上从没被用过。品牌绿现在只以 accent-* 三档存在，
-     避免两套同值令牌各自漂移。 */
-
-  /* 苔藓点缀绿（仅后台：已回复 / 已发布 / 图表条） */
   --color-moss-300: #a8c686;
   --color-moss-400: #8ab264;
   --color-moss-500: #6d974a;
   --color-moss-600: #557a3a;
 
-  /* 暖素灰阶：图片占位、分隔线、区块划分。
-
-     【2026-11-18 随 paper 转米白重配】
-     纸底从 L* 100 降到 95.5，整条灰阶跟着下移，但**相对间距保持不变**：
-       太浅 → 页脚分界看不见（ΔL* < 3 等于没有）；
-       太深 → 紧挨纸白时显脏，高端站最忌讳。
-     沿用它原来的 4.5 一档：
-
-       paper      #F4F2ED   L* 95.5   C* 2.6
-       sand-50    #E7E4DB   L* 90.6   Δ4.9  ← 页脚 / 内页区块带 / 列表 hover
-       sand-100   #DFDBD1   L* 87.5   Δ3.1  ← 图片占位（场景照；白底产品图走 paper+multiply）
-       sand-200   #D2CDC1   L* 82.5   Δ5.0  ← 深一档的占位底
-
-     彩度 4.8–6.6，**没有跟着纸底变灰**：纸白是暖的，灰阶若比它更中性，
-     两块拼在一起就像"两种白没调匀"。暖调靠 sand + ink 一起扛。
-
-     文字对比度复算（WCAG 2.2 AA，全部 ≥4.5）：
-       sand-50  上 ink-400 4.70、ink-500 7.06、accent-500 4.64
-       sand-100 上 ink-400 4.32 ← **不达标，但该组合不存在**：
-                sand-100 只作图片占位底和后台代码块，上面从不放弱化文字。
-                将来若要在 sand-100 上写小字，请改用 ink-500（6.49）。 */
   --color-sand-50: #e7e4db;
   --color-sand-100: #dfdbd1;
   --color-sand-200: #d2cdc1;
 
-  /* 墨色：暖炭 → **墨绿黑**。
-     色相从 H45（暖黄）转到 H130（绿）。这不是审美偏好：
-     纸白 + 灰绿 + 墨绿黑落在同一条色相带上，页面才"整"；
-     否则暖黄墨色配冷绿强调色，会像两个系统拼起来。
-     四档拉开**靠明度不靠色相**（实测值见 verify-final.js）：
-
-       ink-900  #333A33  paper 上 10.46  ← 正文
-       ink-600  #525750  paper 上  6.61  ← 说明文字 / 产品描述
-       ink-500  #454B43  paper 上  8.02  ← 次级正文（11-05 补的档）
-       ink-400  #60655C  paper 上  5.34  ← 弱化标签 / eyebrow */
   --color-ink-900: #333a33;
   --color-ink-600: #525750;
   --color-ink-400: #60655c;
   --color-ink-500: #454b43;
 
-  /* ---------- 纸白基底 ---------- */
+  --color-paper: #fdf2ed;
 
-  /* 页面主底色：#F4F2ED（2026-11-18 客户选定「雾面莫兰迪」）。
-     【从纯白改回米白，不算走回头路】
-     11-05 选纯白是为了让白底产品图融进页面 —— 这一条已经交给
-     `.card-media` / `.marquee-cell` 上的 multiply 接管（见文件头 b 条）。
-     纸底换回米白后，另外两件事反而更成立：
-       · ShowcaseWall 的 difference 文字落在纸面上反相成 #0b0d12，
-         对纸底 17.4:1；比纯白反相出的纯黑更柔和，正是想要的效果。
-       · 认证卡与后台面板的 bg-white 现在能在纸面上**浮起**了 ——
-         11-05 之后"白色浮起"这条语言一度是失效的，现在恢复。
-     【写作约定】white 与 paper 现在是两个值：
-     结构性底色写 paper，语义上"这是一张卡 / 一块面板"写 white。
-     凡是新加的白色面板，仍要自带 hairline（border-ink-900/8~12）。 */
-  --color-paper: #fff;
-
-  /* 深色带 / 品牌墙 / 页脚的底：暖炭 #1b1a17 → 墨绿黑 #2A312B。
-     L* 10.5 → 19.5，白字仍有 13.35:1。
-     **这是本次唯一"变浅"的令牌**，目的是让深色块读起来像"深松绿"
-     而不是"黑"。副作用：深底上 text-white/70 一类次级文字对比降一档，
-     实测仍在 9:1 以上，不影响。
-     `.btn-primary` 里原本写死的 bg-black 已同步改为 bg-ink-950。 */
   --color-ink-950: #2a312b;
 
-  /* ---------- 强调色：灰绿（品牌绿去饱和）---------- */
-  /* 品牌原色 #3f735d 的饱和版在低对比体系里太跳：保留色相（H150 一带），
-     把 C* 从 22 压到 10，三档仍按"深底用亮的、浅底用深的"分工：
-
-       accent-400  #8AA093  → 深底上的小方块 / 圆点 / 编号（ink-950 上 4.79）
-       accent-500  #54695F  → 纸面细线、导航激活态、hover 下划线（paper 上 5.27）
-       accent-600  #3F5345  → 需要更重一档的文字 / 描边（paper 上 7.41）
-
-     **白字压 accent-500 依然成立（5.89）**，所以后台那批
-     `bg-ink-950 hover:bg-accent-500 text-white` 的按钮不用改。
-     这条必须守住：一旦有人把 accent-500 再调浅，那批按钮的 hover 态
-     会静默变成"白字压浅绿"，看不见但也没坏 —— 属于最难查的那类 bug。 */
   --color-accent-400: #8aa093;
   --color-accent-500: #54695f;
   --color-accent-600: #3f5345;
 
+  --color-blue-93A8B4:#93A8B4;
+
+  --color-green-9AA899:#9AA899;
+
+  --color-orange-CA9478:#CA9478;
+
   /* 留白节奏 */
   --spacing-section: clamp(4rem, 10vw, 8rem);
+}
+
+.bg-blue-93A8B4{
+  background-color: var(--color-blue-93A8B4);
+}
+
+.bg-green-9AA899{
+  background-color: var(--color-green-9AA899);
+}
+
+.bg-orange-CA9478{
+  background-color: var(--color-orange-CA9478);
+}
+
+.bg-world-map{
+  background-color: rgba(193,148,120, 0.1);
 }
 
 /* ---------- 基础 ---------- */
@@ -318,7 +201,7 @@ body {
    整站"一条整幅深色带"的用法依然成立，但不要连着来两条：
    两块深色之间的接缝是看不见的。 */
 .band-dark {
-  @apply bg-ink-950 text-white;
+  @apply bg-accent-600 text-white;
 }
 
 /* 大图上叠印的小标签 */
@@ -529,6 +412,78 @@ body {
   transition: opacity 200ms ease;
 }
 
+/* =============================================================
+   世界地图：图钉依次"冒泡"弹出（2026-11-20）
+   =============================================================
+   客户要求：滚到地图这一块时，坐标点依次弹出来。
+
+   做法与约束：
+   - 定位在**最外层** span 上（translate(-50%,-100%) 把钉尖对到坐标），
+     所以动画只能加在中间那层 .pin-pop 上，否则会把定位 transform 顶掉。
+   - 延迟用 --pin-i（无单位序号）× 90ms，序号按**经度从小到大**排，
+     于是气泡会从地图左（纽约）向右（杭州）扫过去，看着像有意图的编排，
+     而不是随机闪。
+   - 默认 opacity: 0，靠父级 .map-pins.is-in 触发；JS 没跑起来时由
+     layout.tsx 的 <noscript> 兜底置 1，不会把图钉永久藏住。
+   - 曲线 cubic-bezier(.2,1.35,.4,1) 会略微过冲（scale 到 1.12），
+     这是"泡泡"感的来源；origin 在底部，钉尖不移动。
+   - 不按 prefers-reduced-motion 降级：客户环境命中该偏好，加了等于没做。
+     （全站动效统一口径，见 MEMORY.md。）
+   ============================================================= */
+
+@keyframes map-pin-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(7px) scale(0.15);
+  }
+  62% {
+    opacity: 1;
+    transform: translateY(0) scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.pin-pop {
+  opacity: 0;
+  transform-origin: 50% 100%;
+}
+
+.map-pins.is-in .pin-pop {
+  animation: map-pin-pop 560ms cubic-bezier(0.2, 1.35, 0.4, 1) both;
+  animation-delay: calc(var(--pin-i, 0) * 90ms);
+}
+
+/* 标签比图钉晚 150ms 跟上：先看见钉、再读到名字，
+   两者同时出现会互相抢。
+   【必须挂在标签内部的 span 上，不能挂在标签本身】
+   标签外层承担绝对定位（left/top）与锚点 transform，
+   如果直接对外层做 transform 动画会把锚点顶掉；
+   而且外层还要靠 opacity-35 做"选中时压暗其他站"，
+   animation 的 fill 终态优先级高于 class，压暗会失效。 */
+.pin-label {
+  display: inline-block;
+  opacity: 0;
+}
+
+.map-pins.is-in .pin-label {
+  animation: map-label-in 420ms ease-out both;
+  animation-delay: calc(var(--pin-i, 0) * 90ms + 150ms);
+}
+
+@keyframes map-label-in {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /*
  * 注意：这里【不要】加 prefers-reduced-motion 把 animation 置为 none 的规则。
  * 产品图片跑马灯是本页的展示主体，命中该偏好时整块会变成死图。
@@ -552,16 +507,13 @@ body {
 }
 
 /*
- * 与跑马灯相反，这里的降级是安全的：内容只是"不做入场动画"，
- * 仍然完整可见。所以 reduced-motion 下直接显示即可，不会造成内容丢失。
+ * 【2026-11-20 移除 reduced-motion 降级】
+ * 原来这里有 @media (prefers-reduced-motion: reduce) { .reveal 直接显示 }。
+ * 客户机器（Windows「减少动态效果」开启）命中该媒体查询，导致全站 reveal
+ * 全部从首帧就是终态、transition 一次都不触发 —— 表现为"代码写了但没效果"。
+ * 客户明确要求无视该系统偏好、入场动效必须可见，故删除该降级分支。
+ * 安全性不受影响：内容本身没被隐藏，少掉的只是入场过渡。
  */
-@media (prefers-reduced-motion: reduce) {
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
 
 /* =============================================================
    首页 Hero 胶片（FilmHero · /preview/film 原型）
@@ -700,13 +652,40 @@ body {
   transform: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .reveal-img {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
+/* 左右进场：WelcomeBand 左栏文字从左侧滑入，右栏图片从右侧滑入。
+   比纯淡入更有方向感，像"两页书翻开"。
+   位移给 56px：再小在 1440 屏上几乎看不出来（客户已反馈过"没效果"）。 */
+.reveal-left {
+  opacity: 0;
+  transform: translate3d(-56px, 0, 0);
+  transition:
+    opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+.reveal-left.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translate3d(56px, 0, 0);
+  transition:
+    opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-right.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/*
+ * 2026-11-20 同上：这里原先也有 reduced-motion 降级把
+ * .reveal-img / .reveal-left / .reveal-right 直接置为终态，
+ * 客户环境命中后左右进场完全看不到。按客户要求删除。
+ */
 
 /* 导航链接 hover 时的下划线已用 group-hover 实现，这里补一个
    键盘 focus-visible 的等效态：让键盘用户也能看到下划线滑入。 */
@@ -714,29 +693,10 @@ body {
   width: 100%;
 }
 
-/* ---------- 视差滚动（Parallax）---------- */
-/* 用法：Parallax.tsx 组件把 data-speed 写到元素上，
-   JS 按滚动位置算偏移量，CSS 变量 --parallax-y 驱动 transform。
-   这样 transform 不经过 React state，滚动时不会触发 React 重渲染。 */
-[data-parallax] {
-  transform: translate3d(0, var(--parallax-y, 0px), 0);
-  will-change: transform;
-}
-
-/* 视差容器：需要 overflow-hidden 把超出部分裁掉，
-   否则慢速层会露出窗口外。 */
-.parallax-container {
-  overflow: hidden;
-  position: relative;
-}
-
-/* reduced-motion 下禁用视差：位移是装饰性的，不是语义 */
-@media (prefers-reduced-motion: reduce) {
-  [data-parallax] {
-    transform: none;
-    will-change: auto;
-  }
-}
+/* ---------- 视差滚动：已于 2026-11-20 移除 ----------
+   ShowcaseWall 的三列视差在流式 columns 布局里读成"图片错位"，
+   客户反馈怪，整块撤掉。Parallax.tsx 组件与 [data-parallax]
+   / .parallax-container 两条规则一并删除，不要再加回来。 */
 
 /* =============================================================
    2026-11-20 动态拼贴首屏：鼠标驱动视差 + 环绕轨道
@@ -763,12 +723,8 @@ body {
   transform-origin: center center;
 }
 
-/* reduced-motion 下禁用轨道旋转 */
-@media (prefers-reduced-motion: reduce) {
-  .hero-orbit {
-    animation: none;
-  }
-}
+/* 2026-11-20 移除轨道旋转的 reduced-motion 降级（同前：客户环境会命中，
+   删掉后首屏卡片环才会真的转起来）。 */
 
 /* 中央标题入场：从下方 40px 淡入上移，stagger 逐行延迟。
    与 Reveal 同曲线（cubic-bezier(0.16, 1, 0.3, 1)），但延迟更短、更轻快。 */
@@ -794,10 +750,8 @@ body {
 .hero-delay-2 { animation-delay: 240ms; }
 .hero-delay-3 { animation-delay: 360ms; }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-text-enter {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-}
+/* 2026-11-20 移除首屏文字入场的 reduced-motion 降级。
+   这条正是「文字和按钮的动效还是没有」的直接原因：
+   客户机器命中该偏好，.hero-text-enter 从首帧就是终态。 */
+
+

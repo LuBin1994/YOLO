@@ -9,7 +9,8 @@ import { useEffect, useRef, useState } from "react";
  * 再多会变成仪表盘。
  *
  * 实现：IntersectionObserver 触发一次，rAF 补间 1100ms，缓动 easeOutExpo。
- * reduced-motion 下直接落位（CSS 无法覆盖 JS 补间，所以这里显式判断）。
+ * 2026-11-20：不再按 prefers-reduced-motion 直接落位 —— 客户机命中该偏好时
+ * 数字一个都不滚，视觉上等于没做。按客户要求常开。
  */
 export default function CountUp({
   value,
@@ -33,11 +34,7 @@ export default function CountUp({
     const el = ref.current;
     if (!el) return;
 
-    const reduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (reduced || typeof IntersectionObserver === "undefined") {
+    if (typeof IntersectionObserver === "undefined") {
       /* 用 rAF 落到下一帧再赋值：既避开"在 effect 里同步 setState"的级联渲染，
          也保证首帧仍然渲染 0（与 SSR 输出一致，不会 hydration 不匹配） */
       const raf = requestAnimationFrame(() => setShown(value));

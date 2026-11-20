@@ -23,7 +23,7 @@ export default function TechHero({
   facts: readonly { label: string; value: string }[];
 }) {
   return (
-    <section className="relative overflow-hidden bg-ink-950">
+    <section className="relative overflow-hidden bg-accent-600">
       {/* 坐标网格：12px 一格，极低对比，只在深底上隐约可见 */}
       <div
         aria-hidden

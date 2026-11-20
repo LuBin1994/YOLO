@@ -48,11 +48,12 @@ export default function WelcomeBand({
   };
 }) {
   return (
-    <section className="w-full bg-paper">
+    <section className="w-full overflow-x-clip bg-paper">
       <div className="container-site section-pad">
-        {/* 上半：左文右图 */}
+        {/* 上半：左文右图 —— 左栏从左侧滑入，右栏从右侧滑入 */}
         <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-16">
-          <div>
+          <Reveal direction="left">
+            <div>
             <p className="eyebrow flex items-center gap-3">
               <span aria-hidden className="h-[3px] w-6 bg-accent-500" />
               {eyebrow}
@@ -96,16 +97,18 @@ export default function WelcomeBand({
                 );
               })}
             </dl>
-          </div>
+            </div>
+          </Reveal>
 
-          {/* 右：配图 + caption，加 Reveal 入场 */}
-          <Reveal className="lg:pt-2" delay={120}>
+          {/* 右：配图 + caption，从右侧滑入 */}
+          <Reveal direction="right" className="lg:pt-2" delay={120}>
             <figure>
               <div className="relative aspect-[10/9] w-full overflow-hidden bg-sand-100">
                 <Image
                   src={image.src}
                   alt={image.alt}
                   fill
+                  loading="lazy"
                   sizes="(min-width: 1024px) 38vw, 100vw"
                   className="object-cover"
                 />
@@ -120,28 +123,6 @@ export default function WelcomeBand({
           </Reveal>
         </div>
 
-        {/* 下半：能力索引横排三列 */}
-        <div className="mt-14 md:mt-16">
-          <p className="text-[11px] uppercase tracking-[0.24em] text-ink-400">
-            Capabilities
-          </p>
-
-          <ul className="mt-5 grid gap-px bg-ink-900/12 sm:grid-cols-2 lg:grid-cols-3">
-            {capabilities.map((item, index) => (
-              <li
-                key={item}
-                className="group flex items-baseline gap-4 bg-paper py-5 pr-6 transition-colors duration-300 hover:bg-sand-50 lg:py-6"
-              >
-                <span className="w-5 shrink-0 text-[11px] tabular-nums tracking-[0.1em] text-ink-400">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span className="text-[18px] font-medium leading-snug tracking-tight text-ink-950 md:text-[20px]">
-                  {item}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
     </section>
   );
