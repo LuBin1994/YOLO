@@ -32,6 +32,13 @@
   --color-accent-500: #54695f;
   --color-accent-600: #3f5345;
 
+  --color-brand: #8a4139;
+  --color-brand-deep: #6c3329;
+  /* 品牌字色 = 页头字标 logo-yolo-mark.png 的字色（逐像素取样 #8a4139，
+     占全部不透明像素的 99.9%）。客户要求导航文字与下划线和字标同色。
+     brand-deep 只用于 hover 的压深，色相不变。
+     对比度：#8a4139 在 paper #fdf2ed 上约 6.6:1，过 WCAG AA（≥4.5:1）。 */
+
   --color-blue-93A8B4:#93A8B4;
 
   --color-green-9AA899:#9AA899;

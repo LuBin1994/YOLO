@@ -102,6 +102,12 @@ export default function Header() {
          * 【字重恒为 700】
          * 只载了 600/700 两档。当前项不再用 font-medium 区分（500 无字重会
          * 被合成或跳到 600，反而不稳），改用颜色 + 常驻下划线。
+         *
+         * 【颜色 = 字标色】（2026-11-20 客户要求）
+         * 文字与下划线统一用 brand（#8a4139，逐像素取自 logo-yolo-mark.png），
+         * 与左侧字标严格同色。当前项与普通项**不再分色**，靠"下划线常驻"
+         * 区分；hover 只把文字压深到 brand-deep（同色相，对比度更高），
+         * 保持可点的反馈，不引入第二种颜色。
          */}
         <nav className="hidden items-center gap-4 lg:flex xl:gap-7" aria-label="Main">
           {NAV_LINKS.map((link) => {
@@ -111,15 +117,13 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`group relative font-serif text-[11.5px] font-bold uppercase tracking-[0.1em] transition-colors duration-200 xl:text-[12.5px] xl:tracking-[0.14em] ${
-                  active ? "text-ink-950" : "text-ink-600 hover:text-ink-950"
-                }`}
+                className={`group relative font-serif text-[11.5px] font-bold uppercase tracking-[0.1em] text-brand transition-colors duration-200 hover:text-brand-deep xl:text-[12.5px] xl:tracking-[0.14em]`}
               >
                 {link.label}
-                {/* 下划线：当前项常驻，其余 hover 时滑入 */}
+                {/* 下划线：当前项常驻，其余 hover 时滑入；颜色与文字、字标一致 */}
                 <span
                   aria-hidden
-                  className={`absolute -bottom-1.5 left-0 h-[2px] bg-accent-500 transition-[width] duration-300 ease-out ${
+                  className={`absolute -bottom-1.5 left-0 h-[2px] bg-brand transition-[width] duration-300 ease-out ${
                     active ? "w-full" : "w-0 group-hover:w-full"
                   }`}
                 />
@@ -176,16 +180,14 @@ export default function Header() {
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
                   aria-current={active ? "page" : undefined}
-                  className={`flex items-center justify-between py-4 font-serif text-[15px] font-bold uppercase tracking-[0.12em] transition-colors duration-200 ${
-                    active ? "text-ink-950" : "text-ink-600"
-                  }`}
+                  className={`flex items-center justify-between py-4 font-serif text-[15px] font-bold uppercase tracking-[0.12em] text-brand transition-colors duration-200 hover:text-brand-deep`}
                 >
                   {link.label}
                   {/* 箭头强制用无衬线：Playfair 不含箭头字形，
                       混进衬线回退链可能掉成豆腐块 */}
                   <span
                     aria-hidden
-                    className={`font-sans ${active ? "text-accent-500" : "text-ink-400"}`}
+                    className={`font-sans ${active ? "text-brand" : "text-ink-400"}`}
                   >
                     →
                   </span>
