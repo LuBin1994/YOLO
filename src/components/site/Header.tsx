@@ -18,17 +18,23 @@ const NAV_LINKS = [
 /**
  * 极简导航：Logo 左、导航右。
  *
- * 【透明态（2026-10-23 恢复，2026-11-19 关闭）】
- * 首页第一屏曾是满幅视频墙，导航压在它上面、不占位：滚动条在顶部时完全透明
- * + 文字反白，滚过 8px 才变成珍珠白毛玻璃。可读性由影像侧的顶部压暗兜底。
+ * 【到顶透明（2026-11-25 按客户要求恢复，仅限浅色首屏的路由 + 桌面端）】
+ * 滚动条在顶部时 header 不铺底色、不描边、不模糊，让首屏画面直接顶到 y=0；
+ * 滚过 8px 立刻变回珍珠白毛玻璃，保证长页面滚动时导航始终清晰可读。
  *
- * 2026-11-19 首页首屏换成白底杂志拼版（HeroEditorial），透明反白态失去意义：
- * 白字压白纸等于隐身。现在全站到顶即实底（bg-paper/90 + backdrop-blur），
- * 首页与内页导航表现一致，也更干净。
+ * 【为什么不是全站、也不是全端】
+ * 1) 只有首屏是**浅底**的页面才敢透明。内页里 /products（PageHero）、/factory
+ *    （SplitHero bg-ink-950）、/sustainability（OffsetHero 顶部整幅照片）、
+ *    /responsibility、/rnd（bg-accent-600）都是**从 y=0 就是深色影像**，
+ *    棕红导航压上去对比度不到 2:1，等于看不见 —— 这些页必须保持实底。
+ * 2) 移动端首页是 VideoMosaic 九宫格视频墙，顶部也是深色影像，
+ *    所以透明只在 `md` 以上生效（用 md: 前缀），手机一律实底。
+ * 3) 菜单展开时必须实底，否则下拉面板与导航条之间会断开。
  */
 export default function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   /* Esc 收起菜单 */
   useEffect(() => {
@@ -40,8 +46,27 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
-  /* 2026-11-19：首页首屏换成白底杂志拼版，透明反白态关闭，全站到顶即实底。
-     solid / onImage / scrolled 等透明态相关状态一并移除。 */
+  /* 到顶判定：阈值 8px，跟"滚一下就变实底"的手感对齐 */
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /**
+   * 首屏是**纸底**、没有满幅影像压到 y=0 的路由，才允许到顶透明。
+   * 新增页面时若首屏也是纸底，记得加进来；判断依据见顶部注释。
+   */
+  const lightTop =
+    pathname === "/" ||
+    pathname === "/contact" ||
+    (pathname.startsWith("/products/") && pathname !== "/products");
+
+  /** 桌面端 + 到顶 + 菜单收起 → 透明 */
+  const seeThrough = lightTop && !scrolled && !menuOpen;
+
+  /* 汉堡按钮的三条线：任何状态下都压在浅底上（透明时首页顶部也是纸底） */
   const barColor = "bg-ink-950";
 
   /**
@@ -56,7 +81,12 @@ export default function Header() {
 
   return (
     <header
-      className="fixed inset-x-0 top-0 z-50 bg-paper/90 backdrop-blur-md border-b border-ink-900/8 transition-colors duration-300"
+      className={`fixed inset-x-0 top-0 z-50 border-b bg-paper/90 backdrop-blur-md transition-colors duration-300 border-ink-900/8 ${
+        /* 透明只作用于 md 以上：手机首页首屏是深色视频墙，压不住 */
+        seeThrough
+          ? "md:border-transparent md:bg-transparent md:backdrop-blur-none"
+          : ""
+      }`}
     >
       <div className="container-site flex h-16 items-center justify-between md:h-20">
         {/* 品牌字标：2026-11-18 由文字改为客户提供的衬线字标 PNG。
